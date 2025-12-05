@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { setToken } from '../utils/auth';
+import '../App.css'; // Ensure global styles are loaded
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -35,9 +36,20 @@ const Login = () => {
 
     try {
       const response = await authAPI.login(formData.email, formData.password);
+      
+      // 1. Save the session token
       setToken(response.token);
+      
+      // 2. CRITICAL FIX: Save user info so Dashboard can read the name
+      if (response.user) {
+        localStorage.setItem('mockai_user', JSON.stringify(response.user));
+      }
+      
+      // 3. Redirect to dashboard
       navigate('/dashboard');
+      
     } catch (err) {
+      console.error("Login Error:", err);
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
@@ -81,11 +93,6 @@ const Login = () => {
           {error && (
             <div className={`alert ${error.includes('registered') ? 'alert-warning' : 'alert-error'}`}>
               {error}
-              {error.includes('registered') && (
-                <div style={{marginTop: '0.5rem'}}>
-                  <Link to="/signup" className="auth-link">Create a new account here</Link>
-                </div>
-              )}
             </div>
           )}
           

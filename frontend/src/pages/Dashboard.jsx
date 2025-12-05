@@ -1,249 +1,150 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { resumeAPI } from '../services/api.js';
+import { authAPI, resumeAPI } from '../services/api.js';
 import Navbar from '../components/Navbar.jsx';
 import FileUpload from '../components/FileUpload.jsx';
+import './Dashboard.css';
 
 const Dashboard = () => {
+  const [user, setUser] = useState(null);
+  const [stats, setStats] = useState({ count: 0, latestScore: 0, averageScore: 0, history: [] });
   const [resume, setResume] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
-  const [activeTab, setActiveTab] = useState('overview');
+  const [showUpload, setShowUpload] = useState(false);
+  const [showConsult, setShowConsult] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchResume();
+    const storedUser = localStorage.getItem('mockai_user');
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+      loadStats(userData.id); // Fetch real Mongo Stats
+    }
+    loadResume();
   }, []);
 
-  const fetchResume = async () => {
+  const loadStats = async (userId) => {
     try {
-      const response = await resumeAPI.getResume();
-      setResume(response.resume);
+      const data = await authAPI.getUserStats(userId);
+      setStats(data);
     } catch (error) {
-      console.error('Error fetching resume:', error);
-    } finally {
-      setLoading(false);
+      console.error("Failed to load stats", error);
     }
   };
 
-  const handleFileUpload = async (file) => {
-    setUploading(true);
-    setMessage('');
+  const loadResume = async () => {
+    const res = await resumeAPI.getResume();
+    if (res.resume) setResume(res.resume);
+  };
 
-    try {
-      const response = await resumeAPI.uploadResume(file);
-      setMessage('Resume uploaded successfully!');
-      setResume(response.resume);
-    } catch (error) {
-      setMessage(error.message || 'Upload failed. Please try again.');
-    } finally {
-      setUploading(false);
+  const handleConsultation = async () => {
+    if(window.confirm("Book a 1-on-1 session for 'Resume Review'?")) {
+        await authAPI.bookConsultation(user.id, "Resume Review");
+        alert("Consultation booked! Check your email.");
+        setShowConsult(false);
     }
   };
-
-  const handleDeleteResume = async () => {
-    if (!window.confirm('Are you sure you want to delete your resume?')) return;
-
-    try {
-      await resumeAPI.deleteResume();
-      setResume(null);
-      setMessage('Resume deleted successfully!');
-    } catch (error) {
-      setMessage(error.message || 'Delete failed. Please try again.');
-    }
-  };
-
-  // --- UPDATED LOGIC HERE ---
-  const startMockInterview = () => {
-    navigate('/interview');
-  };
-
-  if (loading) {
-    return (
-      <div className="dashboard-container">
-        <Navbar />
-        <div className="dashboard-loading">
-          <div className="loading-spinner"></div>
-          <p>Loading your dashboard...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="dashboard-container">
       <Navbar />
       
-      <div className="dashboard-content">
-        <div className="dashboard-header">
-          <h1>Interview Dashboard</h1>
-          <p>Manage your resume, practice interviews, and track your progress</p>
+      {/* 1. HERO SECTION WITH ANALYTICS */}
+      <header className="dashboard-hero">
+        <div className="hero-content">
+          <h1>Hello, <span className="highlight">{user?.name || 'Candidate'}</span>! 🚀</h1>
+          <p className="hero-subtitle">Here is your interview performance overview.</p>
+          
+          <div className="stats-row">
+            <div className="stat-item">
+              <span className="stat-val">{stats.count}</span>
+              <span className="stat-label">Sessions</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-val">{stats.averageScore}%</span>
+              <span className="stat-label">Avg Score</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-val">{stats.latestScore}%</span>
+              <span className="stat-label">Latest</span>
+            </div>
+          </div>
+
+          {/* CSS-Only Progress Bar */}
+          <div className="progress-container">
+            <p>Current Level: <strong>{stats.averageScore > 80 ? 'Pro' : 'Intermediate'}</strong></p>
+            <div className="progress-bar-bg">
+                <div className="progress-bar-fill" style={{width: `${stats.averageScore}%`}}></div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="dashboard-main">
+        <h2 className="section-title">Your Preparation Hub</h2>
+        
+        <div className="options-grid">
+          {/* CARD 1: INTERVIEW */}
+          <div className="option-card primary-card" onClick={() => navigate('/interview')}>
+            <div className="card-icon">🎤</div>
+            <div className="card-content">
+              <h3>Start AI Mock Interview</h3>
+              <p>Real-time audio & video analysis tailored to your resume.</p>
+              <span className="card-action">Start Now &rarr;</span>
+            </div>
+          </div>
+
+          {/* CARD 2: RESUME */}
+          <div className="option-card" onClick={() => setShowUpload(!showUpload)}>
+            <div className="card-icon">📄</div>
+            <div className="card-content">
+              <h3>Resume Analyzer</h3>
+              <p>{resume ? `File: ${resume.fileName}` : "Upload PDF to generate questions."}</p>
+              <span className="card-action">{resume ? 'Update' : 'Upload'} &rarr;</span>
+            </div>
+          </div>
+
+          {/* CARD 3: CONSULTING (NEW) */}
+          <div className="option-card premium-card" onClick={() => setShowConsult(true)}>
+            <div className="card-icon">👨‍🏫</div>
+            <div className="card-content">
+              <h3>Expert Consultation</h3>
+              <p>Book a 1-on-1 session with a human expert to review your scores.</p>
+              <span className="card-action">Book Session &rarr;</span>
+            </div>
+          </div>
         </div>
 
-        {message && (
-          <div className={`alert ${message.includes('failed') ? 'alert-error' : message.includes('coming soon') ? 'alert-warning' : 'alert-success'}`}>
-            {message}
-          </div>
+        {/* Upload Modal */}
+        {showUpload && (
+            <div className="upload-drawer slide-down">
+                <h3>Upload Resume</h3>
+                <FileUpload onFileUpload={(f) => { resumeAPI.uploadResume(f); setShowUpload(false); }} accept=".pdf" />
+            </div>
         )}
 
-        {/* Tab Navigation */}
-        <div className="tab-navigation">
-          <button 
-            className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
-          >
-            📊 Overview
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'resume' ? 'active' : ''}`}
-            onClick={() => setActiveTab('resume')}
-          >
-            📝 Resume Management
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'interviews' ? 'active' : ''}`}
-            onClick={() => setActiveTab('interviews')}
-          >
-            🤖 Mock Interviews
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
-            onClick={() => setActiveTab('analytics')}
-          >
-            📈 Analytics
-          </button>
-        </div>
-
-        {/* Overview Tab */}
-        {activeTab === 'overview' && (
-          <div className="dashboard-grid">
-            {/* Welcome Card */}
-            <div className="dashboard-card welcome-card">
-              <h2>Welcome to MockAi-Interview! 🎉</h2>
-              <p>Get ready to ace your next job interview with our AI-powered practice platform.</p>
-              <div className="welcome-actions">
-                <button className="btn btn-primary" onClick={startMockInterview}>
-                  Start Mock Interview
-                </button>
-                {!resume && (
-                  <button className="btn btn-outline" onClick={() => setActiveTab('resume')}>
-                    Upload Resume First
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="dashboard-card">
-              <h2>Your Progress</h2>
-              <div className="stats-grid">
-                <div className="stat-card">
-                  <div className="stat-icon">🎯</div>
-                  <div className="stat-info">
-                    <h3>Interview Score</h3>
-                    <p>{resume ? '85%' : 'Not rated'}</p>
-                  </div>
+         {/* Consultation Modal */}
+         {showConsult && (
+            <div className="upload-drawer slide-down">
+                <h3>Select Topic</h3>
+                <div className="consult-buttons">
+                    <button className="btn-secondary" onClick={handleConsultation}>Resume Review</button>
+                    <button className="btn-secondary" onClick={() => alert("Coming soon!")}>Mock Debrief</button>
                 </div>
-                <div className="stat-card">
-                  <div className="stat-icon">📊</div>
-                  <div className="stat-info">
-                    <h3>Practice Sessions</h3>
-                    <p>0</p>
-                  </div>
-                </div>
-              </div>
             </div>
-
-            {/* Resume Status */}
-            <div className="dashboard-card">
-              <h2>Resume Status</h2>
-              <div className="resume-status">
-                <div className={`status-indicator ${resume ? 'active' : 'inactive'}`}>
-                  <span className="status-dot"></span>
-                  {resume ? 'Resume Uploaded' : 'No Resume'}
-                </div>
-                {resume ? (
-                  <div className="resume-preview">
-                    <p><strong>File:</strong> {resume.fileName}</p>
-                    <p><strong>Uploaded:</strong> {new Date(resume.uploadedAt).toLocaleDateString()}</p>
-                    <button 
-                      onClick={() => setActiveTab('resume')}
-                      className="btn btn-secondary"
-                    >
-                      Manage Resume
-                    </button>
-                  </div>
-                ) : (
-                  <button 
-                    onClick={() => setActiveTab('resume')}
-                    className="btn btn-primary"
-                  >
-                    Upload Resume
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
         )}
 
-        {/* Resume Management Tab */}
-        {activeTab === 'resume' && (
-          <div className="dashboard-grid">
-            <div className="dashboard-card">
-              <h2>Resume Management</h2>
-              <p>Upload your resume to get personalized interview questions and feedback</p>
-              
-              <FileUpload 
-                onFileUpload={handleFileUpload}
-                accept=".pdf"
-                maxSize={5 * 1024 * 1024}
-                loading={uploading}
-              />
-
-              {resume && (
-                <div className="resume-info">
-                  <h3>Current Resume</h3>
-                  <div className="resume-details">
-                    <p><strong>File Name:</strong> {resume.fileName}</p>
-                    <p><strong>Uploaded:</strong> {new Date(resume.uploadedAt).toLocaleDateString()}</p>
-                  </div>
-                  {resume.analysis && (
-                     <div className="mt-4 p-4 bg-gray-800 rounded">
-                        <h4 className="font-bold">AI Analysis</h4>
-                        <p>{resume.analysis.profile_summary}</p>
-                        <p className="mt-2 text-green-400">Score: {resume.analysis.resume_score}</p>
-                     </div>
-                  )}
-                </div>
-              )}
-            </div>
+        {/* TESTIMONIALS */}
+        <section className="testimonials-section">
+          <h2 className="section-title">Success Stories</h2>
+          <div className="testimonials-grid">
+             {/* ... (Use previous testimonial code here) ... */}
+             <div className="testimonial-card">
+               <p className="quote-text">"The analytics helped me see my improvement week over week."</p>
+               <p className="author-name">- User A.</p>
+             </div>
           </div>
-        )}
-
-        {/* Mock Interviews Tab */}
-        {activeTab === 'interviews' && (
-          <div className="dashboard-grid">
-            <div className="dashboard-card">
-              <h2>Mock Interview Sessions</h2>
-              <p>Practice with AI-powered interviews tailored to your resume and experience</p>
-              
-              <div className="interview-types">
-                <div className="interview-card">
-                  <div className="interview-icon">🎯</div>
-                  <h3>Custom Interview</h3>
-                  <p>Personalized questions based on your resume</p>
-                  <button 
-                    className="btn btn-primary"
-                    onClick={startMockInterview}
-                  >
-                    Start New Session
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        </section>
       </div>
     </div>
   );
