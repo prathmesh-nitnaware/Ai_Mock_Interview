@@ -6,8 +6,10 @@ from bson import ObjectId
 from flask import Blueprint, request, jsonify
 from utils.auth_helpers import token_required
 from extensions import interviews_collection
+from config import Config
 
 interview_bp = Blueprint("interview", __name__)
+client = ollama.Client(host=Config.OLLAMA_HOST)
 
 # ============================
 # Helper: Generate Question
@@ -26,7 +28,7 @@ def generate_question(role, experience, focus, resume_context=""):
     }}
     """
     try:
-        response = ollama.chat(model="llama3:8b", messages=[{"role": "user", "content": prompt}])
+        response = client.chat(model=Config.OLLAMA_MODEL, messages=[{"role": "user", "content": prompt}])
         content = response["message"]["content"]
         start, end = content.find("{"), content.rfind("}")
         return json.loads(content[start:end+1])
@@ -51,7 +53,7 @@ def analyze_answer(question, answer):
     }}
     """
     try:
-        response = ollama.chat(model="llama3:8b", messages=[{"role": "user", "content": prompt}])
+        response = client.chat(model=Config.OLLAMA_MODEL, messages=[{"role": "user", "content": prompt}])
         content = response["message"]["content"]
         start, end = content.find("{"), content.rfind("}")
         return json.loads(content[start:end+1])

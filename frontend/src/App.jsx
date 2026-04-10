@@ -6,7 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 // Routing
 import AppRoutes from "./routes/AppRoutes";
 
-// Styles
+// Styles - Standardizing the premium dark theme aesthetic
 import "./styles/global.css";
 import "./styles/theme.css";
 import "./styles/layout.css";
@@ -15,8 +15,10 @@ import "./App.css";
 function App() {
   return (
     <AuthProvider>
-      {/* Premium Dark Theme is handled via global.css. 
-          'app-root' serves as the primary container for all views.
+      {/* 'app-root' serves as the primary layout container. 
+          The 90% scale fix is applied to child page components 
+          (like Dashboard, Profile, and CodingDojo) to ensure 
+          a consistent, high-fidelity SaaS look.
       */}
       <div className="app-root">
          <AppRoutes />

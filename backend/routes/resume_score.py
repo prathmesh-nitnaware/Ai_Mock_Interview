@@ -4,9 +4,10 @@ import tempfile
 import ollama
 from flask import Blueprint, request, jsonify
 from utils.resume_parser import extract_text_from_file
+from config import Config
 
 resume_bp = Blueprint('resume', __name__)
-client = ollama.Client(host='http://127.0.0.1:11434')
+client = ollama.Client(host=Config.OLLAMA_HOST)
 
 @resume_bp.route('/score', methods=['POST'])
 def score_resume():
@@ -42,7 +43,7 @@ def score_resume():
             
             # Use the EXACT name from your 'ollama list'
             response = client.chat(
-                model='llama3:8b', 
+                model=Config.OLLAMA_MODEL, 
                 messages=[{'role': 'user', 'content': prompt}]
             )
             content = response['message']['content']

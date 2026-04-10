@@ -118,7 +118,7 @@ const Dashboard = () => {
                 </div>
             </Link>
 
-            <Link to="/coding/setup" className="action-link-card">
+            <Link to="/coding/dojo" className="action-link-card">
                 <div className="icon-box"><Terminal size={32} /></div>
                 <div className="card-info">
                   <h3>Coding Dojo</h3>

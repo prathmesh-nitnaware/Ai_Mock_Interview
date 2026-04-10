@@ -7,8 +7,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    {/* The 'future' prop opts into React Router v7 behavior early, 
-        removing the warnings from your console.
+    {/* The 'future' props opt into React Router v7 behavior.
+        v7_startTransition: Wraps state updates in React.startTransition.
+        v7_relativeSplatPath: Changes splat route resolution to be relative to the parent.
     */}
     <BrowserRouter 
       future={{ 

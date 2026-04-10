@@ -14,20 +14,33 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    if (storedUser && storedUser !== 'undefined') {
       try {
         setUser(JSON.parse(storedUser));
       } catch (e) {
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
       }
     }
     setLoading(false);
   }, []);
 
+  /**
+   * NEW: updateUserData
+   * Allows components (like Profile/ResumeVault) to update the global user state
+   * and local storage simultaneously without requiring a re-login.
+   */
+  const updateUserData = (updates) => {
+    setUser(prevUser => {
+      const updatedUser = { ...prevUser, ...updates };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      return updatedUser;
+    });
+  };
+
   const login = async (email, password) => {
     setLoading(true);
     try {
-      // Added /auth/ to match backend
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -52,11 +65,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Updated to receive the object sent by Signup.jsx
   const signup = async (signupData) => {
     setLoading(true);
     try {
-      // Added /auth/ to match backend
       const response = await fetch(`${API_URL}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,7 +77,6 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (response.ok) {
-        // Automatically log them in after signup
         return await login(signupData.email, signupData.password);
       } else {
         setLoading(false);
@@ -85,7 +95,17 @@ export const AuthProvider = ({ children }) => {
     navigate('/login');
   };
 
-  const value = { user, isAuthenticated: !!user, loading, login, signup, logout, API_URL };
+  // Added updateUserData to the value object
+  const value = { 
+    user, 
+    isAuthenticated: !!user, 
+    loading, 
+    login, 
+    signup, 
+    logout, 
+    updateUserData, 
+    API_URL 
+  };
 
   return (
     <AuthContext.Provider value={value}>

@@ -7,4 +7,5 @@ dnspython
 pyjwt
 werkzeug
 google-generativeai
-PyPDF2
+pymupdf
+ollama

@@ -1,17 +1,14 @@
 import os
 from pymongo import MongoClient
-from dotenv import load_dotenv
+from config import Config
 
-load_dotenv()
-
-mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+mongo_uri = Config.MONGO_URI
 
 client = MongoClient(mongo_uri)
 
-db = client["prepai"]
+db = client[Config.DB_NAME]
 
 users_collection = db["users"]
-
 interviews_collection = db["interviews"]
 
-print("MongoDB connected successfully")
+print(f"MongoDB connected successfully to {Config.DB_NAME}")
