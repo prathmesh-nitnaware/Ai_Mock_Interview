@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { 
   CheckCircle2, ArrowRight, RefreshCw, 
-  Sparkles, AlertTriangle, FileSearch, Zap
+  Sparkles, AlertTriangle, FileSearch, Zap, XCircle
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import '../styles/theme.css';
@@ -98,6 +98,57 @@ const ResumeResult = () => {
               {results.summary}
             </p>
           </div>
+
+          {/* Core Strengths Card */}
+          {results.strengths && results.strengths.length > 0 && (
+            <div className="glass-panel">
+              <div className="panel-header-flex">
+                <CheckCircle2 size={18} className="text-success" />
+                <h3 className="panel-heading">Core Strengths</h3>
+              </div>
+              <ul className="list-glass success">
+                {results.strengths.map((strength, i) => (
+                  <li key={i}>
+                    <CheckCircle2 size={16} />
+                    <span>{strength}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Areas for Growth Card */}
+          {results.weaknesses && results.weaknesses.length > 0 && (
+            <div className="glass-panel">
+              <div className="panel-header-flex">
+                <AlertTriangle size={18} className="text-danger" />
+                <h3 className="panel-heading">Critical Weaknesses</h3>
+              </div>
+              <ul className="list-glass danger">
+                {results.weaknesses.map((weakness, i) => (
+                  <li key={i}>
+                    <XCircle size={16} />
+                    <span>{weakness}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Missing Keywords Card */}
+          {results.missing_keywords && results.missing_keywords.length > 0 && (
+            <div className="glass-panel full-width">
+              <div className="panel-header-flex">
+                <FileSearch size={18} className="text-warning" />
+                <h3 className="panel-heading">Missing Keywords</h3>
+              </div>
+              <div className="tags-container mt-4">
+                {results.missing_keywords.map((keyword, i) => (
+                  <span key={i} className="danger-pill">{keyword}</span>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Improvement Tips Card */}
           <div className="glass-panel full-width">

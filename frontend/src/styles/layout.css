@@ -220,12 +220,86 @@
         box-shadow: 20px 0 50px rgba(0,0,0,0.8);
     }
 
-    /* Dim overlay when menu is open */
     .mobile-overlay {
         position: absolute;
         inset: 0;
         background: rgba(0,0,0,0.5);
         backdrop-filter: blur(2px);
         z-index: 80; /* Below sidebar, above content */
+    }
+}
+
+/* -----------------------------------------
+   5. GLOBAL LIVE ANIMATED BACKGROUND
+   ----------------------------------------- */
+/* Master override to ensure the glowing background bleeds through page wrappers */
+.dashboard-root,
+.profile-root,
+.dojo-root,
+.interview-root {
+    background: transparent !important;
+}
+
+.global-live-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: #050505;
+}
+
+.g-blob {
+    position: absolute;
+    filter: blur(90px);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: floatBlob 20s infinite alternate ease-in-out;
+}
+
+.g-blob-1 {
+    width: 600px;
+    height: 600px;
+    background: rgba(99, 102, 241, 0.4); /* indigo glow */
+    top: -10%;
+    left: -10%;
+    animation-duration: 25s;
+}
+
+.g-blob-2 {
+    width: 700px;
+    height: 700px;
+    background: rgba(59, 130, 246, 0.3); /* red glow */
+    bottom: -20%;
+    right: -10%;
+    animation-duration: 28s;
+    animation-direction: alternate-reverse;
+}
+
+.g-blob-3 {
+    width: 500px;
+    height: 500px;
+    background: rgba(139, 92, 246, 0.3); /* red glow */
+    top: 40%;
+    left: 50%;
+    margin-left: -250px;
+    animation-duration: 32s;
+}
+
+@keyframes floatBlob {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(50px, -50px) scale(1.1);
+    }
+    66% {
+        transform: translate(-30px, 40px) scale(0.9);
+    }
+    100% {
+        transform: translate(20px, 20px) scale(1.05);
     }
 }

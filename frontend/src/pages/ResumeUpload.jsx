@@ -72,7 +72,7 @@ const ResumeUpload = () => {
           </div>
           <h1 className="upload-title">Resume Parser</h1>
           <p className="upload-sub">
-            Drop your CV into the engine. We'll parse your formatting, extract your impact metrics, and map your skills against industry standards.
+            Drop your CV into the engine. We'll parse your formatting, extract your impact metrics, map your skills against industry standards, and identify missing keywords, core strengths, and critical weaknesses.
           </p>
         </div>
 

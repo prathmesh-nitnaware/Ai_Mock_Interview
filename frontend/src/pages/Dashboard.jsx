@@ -21,6 +21,8 @@ const Dashboard = () => {
   const [history, setHistory] = useState([]);
   const [stats, setStats] = useState({ total_interviews: 0, average_score: 0 });
   const [loading, setLoading] = useState(true);
+  const [resumeName, setResumeName] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const loadDashboardData = async () => {
     if (!user) return;
@@ -37,10 +39,41 @@ const Dashboard = () => {
         );
         setStats({ total_interviews: total, average_score: avg });
       }
+
+      // Fetch Vault Resume
+      try {
+        const resumeRes = await api.client.get("/api/profile/resume/get");
+        if (resumeRes.data && resumeRes.data.resume_filename) {
+          setResumeName(resumeRes.data.resume_filename);
+        }
+      } catch (err) {
+        // No resume uploaded yet, ignore
+      }
+
     } catch (err) {
       console.error("Dashboard Sync Error:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResumeUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const uploadData = new FormData();
+    uploadData.append("resume", file);
+
+    try {
+      await api.client.post("/api/profile/resume/upload", uploadData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setResumeName(file.name);
+    } catch (err) {
+      alert("Resume upload failed.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -99,6 +132,28 @@ const Dashboard = () => {
                 </div>
             </div>
         </section>
+
+        {/* VAULT UPLOAD PROMPT (Only shows if no resume is synced) */}
+        {!resumeName && (
+          <section className="vault-prompt-section mb-6">
+            <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.5rem 2rem', border: '1px solid rgba(129, 140, 248, 0.3)', background: 'rgba(129, 140, 248, 0.05)' }}>
+              <div>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'white', marginBottom: '0.25rem' }}>Sync Your Resume to the Vault</h3>
+                <p className="text-muted" style={{ fontSize: '0.9rem' }}>Upload your latest PDF resume to use it across Mock Interviews and ATS Scans automatically.</p>
+              </div>
+              <label className="btn-glow-primary" style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                {isUploading ? "UPLOADING..." : "UPLOAD RESUME"}
+                <input
+                  type="file"
+                  hidden
+                  accept=".pdf"
+                  onChange={handleResumeUpload}
+                  disabled={isUploading}
+                />
+              </label>
+            </div>
+          </section>
+        )}
 
         {/* MAIN ACTION TILES */}
         <section className="main-actions-grid">

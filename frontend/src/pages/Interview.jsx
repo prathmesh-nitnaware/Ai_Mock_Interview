@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api"; // This imports the object with methods like initiateInterview
 
@@ -27,14 +27,32 @@ const Interview = () => {
   const [error, setError] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  const [resumeText, setResumeText] = useState(
-    localStorage.getItem("last_resume_text") || "",
-  );
+  const [resumeText, setResumeText] = useState("");
+  const [resumeName, setResumeName] = useState("");
+  const [fetchingResume, setFetchingResume] = useState(true);
+
+  useEffect(() => {
+    const fetchGlobalResume = async () => {
+      try {
+        const res = await api.client.get("/api/profile/resume/get");
+        if(res.data && res.data.resume_text) {
+          setResumeText(res.data.resume_text);
+          setResumeName(res.data.resume_filename);
+        }
+      } catch (err) {
+        // No resume found, that's fine
+      } finally {
+        setFetchingResume(false);
+      }
+    };
+    fetchGlobalResume();
+  }, []);
 
   const [formData, setFormData] = useState({
     role: "",
     experience: "0-2 years",
     type: "Technical",
+    difficulty: "Medium",
     questionCount: 5,
   });
 
@@ -59,30 +77,9 @@ const Interview = () => {
   };
 
   // =========================
-  // RESUME UPLOAD
   // =========================
-
-  const handleResumeUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setIsUploading(true);
-
-    try {
-      // Use the specific service method
-      const result = await api.uploadResumeForInterview(file);
-
-      if (result?.extracted_text) {
-        setResumeText(result.extracted_text);
-        localStorage.setItem("last_resume_text", result.extracted_text);
-      }
-    } catch (err) {
-      console.error("Resume upload error:", err);
-      alert("Resume upload failed. Make sure the backend is running.");
-    } finally {
-      setIsUploading(false);
-    }
-  };
+  // SUBMIT
+  // =========================
 
   // =========================
   // SUBMIT (The Fix is here)
@@ -103,6 +100,7 @@ const Interview = () => {
         role: formData.role,
         experience: formData.experience,
         focus: formData.type,
+        difficulty: formData.difficulty,
         intensity: formData.questionCount,
         resume_context: resumeText,
       };
@@ -174,37 +172,52 @@ const Interview = () => {
 
           <div className={`context-widget ${resumeText ? "active" : ""}`}>
             <div className="cw-header">
-              {resumeText ? (
+              {fetchingResume ? (
+                <Loader2 size={18} className="spin" />
+              ) : resumeText ? (
                 <CheckCircle2 size={18} color="#10b981" />
               ) : (
                 <FileText size={18} />
               )}
 
               <h3>
-                {resumeText
-                  ? "Resume Context Loaded"
-                  : "Optional Resume Context"}
+                {fetchingResume
+                  ? "Syncing Vault..."
+                  : resumeText
+                  ? "Vault Linked"
+                  : "No Vault Resume"}
               </h3>
             </div>
 
-            <label className="cw-upload-btn">
-              {isUploading ? (
-                <Loader2 size={16} className="spin" />
-              ) : (
-                <UploadCloud size={16} />
-              )}
-
-              {isUploading ? "Uploading..." : "Upload Resume"}
-
-              <input
-                type="file"
-                hidden
-                accept=".pdf"
-                onChange={handleResumeUpload}
-              />
-            </label>
-            {resumeText && (
-              <p className="resume-status-subtext">AI will use your resume for tailoring questions.</p>
+            {resumeText ? (
+              <div className="resume-status-wrapper">
+                <p className="resume-status-subtext" style={{margin:'10px 0', color: '#e4e4e7'}}>
+                  <strong>Synced:</strong> {resumeName}
+                </p>
+                <p className="resume-status-subtext" style={{fontSize: '0.8rem', marginBottom: '15px'}}>
+                  AI will dynamically tailor the questions towards your background.
+                </p>
+                <button 
+                  className="chip-btn" 
+                  style={{justifyContent: 'center', width: '100%', fontSize: '0.85rem'}} 
+                  onClick={() => navigate('/profile')}
+                >
+                  Manage in Profile
+                </button>
+              </div>
+            ) : !fetchingResume && (
+              <div className="resume-status-wrapper text-center">
+                <p className="resume-status-subtext" style={{marginBottom: '15px'}}>
+                  Upload your resume in the Global Vault to sync across services!
+                </p>
+                <button 
+                  className="chip-btn" 
+                  style={{justifyContent: 'center', width: '100%', fontSize: '0.85rem'}} 
+                  onClick={() => navigate('/profile')}
+                >
+                  Configure Vault
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -255,6 +268,36 @@ const Interview = () => {
                   >
                     {type.icon}
                     {type.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="section-label">DIFFICULTY LEVEL</div>
+
+              <div className="chips-row">
+                {["Easy", "Medium", "Hard"].map((diff) => (
+                  <button
+                    key={diff}
+                    type="button"
+                    onClick={() => handleSelect("difficulty", diff)}
+                    className={`chip-btn ${formData.difficulty === diff ? "active" : ""}`}
+                  >
+                    {diff}
+                  </button>
+                ))}
+              </div>
+
+              <div className="section-label">SESSION LENGTH (QUESTIONS)</div>
+
+              <div className="chips-row">
+                {[3, 5, 7, 10].map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => handleSelect("questionCount", num)}
+                    className={`chip-btn ${formData.questionCount === num ? "active" : ""}`}
+                  >
+                    {num} Qs
                   </button>
                 ))}
               </div>

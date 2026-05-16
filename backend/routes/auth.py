@@ -11,46 +11,62 @@ auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route("/signup", methods=["POST"])
 def signup():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Missing JSON body"}), 400
 
-    data = request.json
+        email = data.get("email")
+        password = data.get("password")
+        
+        if not email or not password:
+            return jsonify({"error": "Email and password are required"}), 400
+            
+        name = data.get("name", email.split("@")[0])
 
-    email = data["email"]
-    password = data["password"]
-    name = data.get("name", email.split("@")[0])
+        if get_user_by_email(email):
+            return jsonify({"error": "User already exists"}), 409
 
-    if get_user_by_email(email):
-        return jsonify({"error": "User exists"}), 409
+        create_user(name, email, password)
 
-    create_user(name, email, password)
+        return jsonify({"message": "User created successfully"}), 201
 
-    return jsonify({"message": "User created"})
+    except Exception as e:
+        print("Signup Error:", str(e))
+        return jsonify({"error": str(e)}), 500
 
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Missing JSON body"}), 400
 
-    data = request.json
+        email = data.get("email")
+        password = data.get("password")
 
-    email = data["email"]
-    password = data["password"]
+        user = get_user_by_email(email)
 
-    user = get_user_by_email(email)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
 
-    if not user:
-        return jsonify({"error": "User not found"}), 404
+        if not check_password_hash(user["password"], password):
+            return jsonify({"error": "Invalid password"}), 401
 
-    if not check_password_hash(user["password"], password):
-        return jsonify({"error": "Invalid password"}), 401
-
-    token = jwt.encode({
-        "email": email,
-        "exp": datetime.now(timezone.utc) + timedelta(hours=24)
-    }, Config.SECRET_KEY)
-
-    return jsonify({
-        "token": token,
-        "user": {
+        token = jwt.encode({
             "email": email,
-            "name": user["name"]
-        }
-    })
+            "exp": datetime.now(timezone.utc) + timedelta(hours=24)
+        }, Config.SECRET_KEY)
+
+        return jsonify({
+            "token": token,
+            "user": {
+                "email": email,
+                "name": user.get("name", email.split("@")[0]),
+                "onboarding_completed": user.get("onboarding_completed", False)
+            }
+        })
+    except Exception as e:
+        print("Login Error:", str(e))
+        return jsonify({"error": str(e)}), 500

@@ -17,7 +17,9 @@ import {
   BrainCircuit,
   Zap,
   Layout,
-  MessageSquare
+  MessageSquare,
+  Search,
+  Filter
 } from 'lucide-react';
 import './CodingDojo.css';
 
@@ -31,6 +33,16 @@ const CodingDojo = () => {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
   const [activeTab, setActiveTab] = useState('description');
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterDifficulty, setFilterDifficulty] = useState('All');
+
+  const filteredChallenges = challenges.filter(c => {
+    const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDifficulty = filterDifficulty === 'All' || c.difficulty === filterDifficulty;
+    return matchesSearch && matchesDifficulty;
+  });
+
 
   // Fetch initial challenge list
   useEffect(() => {
@@ -85,13 +97,43 @@ const CodingDojo = () => {
       <div className="dojo-root selection-view fade-in">
         <div className="ambient-glow-dojo"></div>
         <div className="selection-header">
-           <div className="brand-pill-light"><BrainCircuit size={14}/> ML_CODING_DOJO</div>
+           <div className="brand-pill-light"><Code size={14}/> CODING_DOJO</div>
+
            <h1>Choose Your Challenge</h1>
            <p className="subtitle">Master advanced algorithms and machine learning fundamentals from scratch.</p>
         </div>
 
+        <div className="dojo-filters-container">
+          <div className="search-bar glass-panel">
+            <Search size={18} className="text-muted"/>
+            <input 
+              type="text" 
+              placeholder="Search challenges (e.g. Binary Search)..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
+          <div className="difficulty-filters glass-panel">
+            <Filter size={16} className="text-muted" style={{ marginRight: '8px' }}/>
+            {['All', 'Easy', 'Medium', 'Hard'].map(diff => (
+              <button 
+                key={diff} 
+                className={`diff-btn ${filterDifficulty === diff ? 'active' : ''}`}
+                onClick={() => setFilterDifficulty(diff)}
+              >
+                {diff}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="challenge-grid">
-          {challenges.map((challenge) => (
+          {filteredChallenges.length === 0 ? (
+            <div className="empty-state text-muted" style={{ padding: '40px', textAlign: 'center', gridColumn: '1/-1' }}>
+               No challenges found matching your criteria.
+            </div>
+          ) : filteredChallenges.map((challenge) => (
             <div 
               key={challenge.id} 
               className="challenge-card glass-panel-hover"

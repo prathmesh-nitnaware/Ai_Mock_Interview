@@ -7,7 +7,8 @@ def create_user(name, email, password):
         "name": name,
         "email": email,
         "password": generate_password_hash(password),
-        "role": "candidate"
+        "role": "candidate",
+        "onboarding_completed": False
     }
 
     users_collection.insert_one(user)

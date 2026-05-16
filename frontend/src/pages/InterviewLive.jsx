@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../services/api";
-import { Mic, MicOff, Zap, ChevronRight, Loader2, MessageSquare } from "lucide-react";
+import { Mic, MicOff, Zap, ChevronRight, Loader2, MessageSquare, Activity } from "lucide-react";
+import * as faceapi from '@vladmandic/face-api';
 import "./InterviewLive.css";
 
 const InterviewLive = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const MAX_QUESTIONS = 5;
-
   const sessionId = location.state?.session_id;
-  const config = location.state?.config || { role: "General", intensity: MAX_QUESTIONS };
+  const config = location.state?.config || { role: "General", intensity: 5 };
+  const MAX_QUESTIONS = parseInt(config.intensity) || 5;
   const initialQuestion = location.state?.question || { title: "Initializing...", description: "Preparing environment..." };
 
   const [question, setQuestion] = useState(initialQuestion);
@@ -23,6 +23,10 @@ const InterviewLive = () => {
   const [aiFeedback, setAiFeedback] = useState(null);
   const [isAiSpeaking, setIsAiSpeaking] = useState(false);
 
+  // Face API State
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+  const [nervousnessScore, setNervousnessScore] = useState(0);
+
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -31,12 +35,45 @@ const InterviewLive = () => {
     if (!sessionId) { navigate("/interview"); return; }
     setupSpeechRecognition();
     startCamera();
+    loadFaceModels();
     if (question?.description) speakText(question.description);
     return () => {
       window.speechSynthesis.cancel();
       if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
     };
   }, []);
+
+  const loadFaceModels = async () => {
+    try {
+      await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+      await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+      setModelsLoaded(true);
+    } catch (err) {
+      console.error("Error loading face API models:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (!modelsLoaded || !videoRef.current) return;
+    
+    const intervalId = setInterval(async () => {
+      if (videoRef.current && videoRef.current.readyState === 4) {
+        const detections = await faceapi.detectSingleFace(
+          videoRef.current, 
+          new faceapi.TinyFaceDetectorOptions()
+        ).withFaceExpressions();
+        
+        if (detections) {
+          const exprs = detections.expressions;
+          // Combine fearful, sad, and surprised as proxy for nervousness (max 100)
+          const score = Math.min(100, (exprs.fearful * 0.5 + exprs.sad * 0.2 + exprs.surprised * 0.3) * 100);
+          setNervousnessScore(Math.round(score));
+        }
+      }
+    }, 1000);
+    
+    return () => clearInterval(intervalId);
+  }, [modelsLoaded, videoRef]);
 
   const setupSpeechRecognition = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -81,7 +118,8 @@ const InterviewLive = () => {
       const response = await api.client.post("/api/interview/submit", {
         session_id: sessionId,
         answer: userAnswer,
-        question_title: question.title
+        question_title: question.title,
+        nervousness_score: nervousnessScore
       });
       
       const feedback = response.data.review;
@@ -91,7 +129,7 @@ const InterviewLive = () => {
         question: question.title, 
         answer: userAnswer, 
         feedback: feedback,
-        metrics: { wpm: 0, filler_words: 0 } // Default metrics to prevent report crashes
+        metrics: { wpm: 0, filler_words: 0, nervousness: nervousnessScore } // Default metrics to prevent report crashes
       }]);
 
       if (feedback.feedback) speakText(feedback.feedback);
@@ -178,7 +216,14 @@ const InterviewLive = () => {
 
       <div className="floating-cam glass-card">
         <video ref={videoRef} autoPlay muted playsInline className="self-video" />
-        <div className="cam-overlay">LIVE_CANDIDATE</div>
+        <div className="cam-overlay">
+          LIVE_CANDIDATE
+          <div className="nervousness-tracker">
+            <Activity size={14} className={nervousnessScore > 50 ? "text-red" : "text-green"} />
+            <span>Stress: {nervousnessScore}%</span>
+            {!modelsLoaded && <span className="loading-models"> (Loading AI...)</span>}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
 import ResumeUpload from '../pages/ResumeUpload';
 import ResumeResult from '../pages/ResumeResult'; 
+import Onboarding from '../pages/Onboarding'; 
 
 // Interview Flow
 import Interview from '../pages/Interview'; 
@@ -36,6 +37,7 @@ const AppRoutes = () => {
       <Route element={<ProtectedRoute />}>
         
         {/* Immersive/Fullscreen Routes */}
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/interview/session" element={<InterviewSession />} />
         <Route path="/interview/live" element={<InterviewLive />} />
         

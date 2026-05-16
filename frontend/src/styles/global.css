@@ -4,9 +4,9 @@
    ========================================= */
 :root {
   /* Brand Palette (The "Glow") */
-  --primary: #818cf8;       /* Indigo */
-  --primary-hover: #6366f1; /* Darker Indigo */
-  --accent-blue: #3b82f6;   
+  --primary: #818cf8;       /* indigo */
+  --primary-hover: #6366f1; /* Darker indigo */
+  --accent-red: #3b82f6;   
   
   /* Semantic Colors */
   --success: #10b981;

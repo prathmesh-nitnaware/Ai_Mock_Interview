@@ -8,9 +8,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const API_URL = window.location.hostname === "localhost" 
+  const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
     ? "http://localhost:5000" 
     : "https://prep-ai-backend-z5rk.onrender.com";
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -54,7 +55,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('token', data.token);
         setLoading(false);
-        return { success: true };
+        return { success: true, user: data.user };
       } else {
         setLoading(false);
         return { success: false, message: data.error || "Login failed" };
@@ -92,7 +93,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    navigate('/login');
+    navigate('/');
   };
 
   // Added updateUserData to the value object

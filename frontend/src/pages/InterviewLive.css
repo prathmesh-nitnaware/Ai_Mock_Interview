@@ -148,3 +148,28 @@
     border-radius: 12px;
     transform: scaleX(-1);
 }
+
+.nervousness-tracker {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text-red { color: #ef4444; }
+.text-green { color: #10b981; }
+
+.loading-models {
+    font-size: 0.75rem;
+    color: #a1a1aa;
+    font-style: italic;
+}

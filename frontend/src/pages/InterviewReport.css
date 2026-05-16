@@ -266,18 +266,30 @@
     letter-spacing: 1px;
 }
 
-/* --- Print Styles --- */
+/* --- Print & Report Styles --- */
+.print-only-report {
+    display: none;
+}
+
 @media print {
-    .report-root { background: white; color: black; padding: 0; }
-    .report-nav-header { display: none; }
-    .hero-glow { display: none; }
-    .report-hero, .metric-card-horizontal, .timeline-card {
-        border: 1px solid #eee;
+    body { background: white; }
+    .report-root { background: white; color: black; padding: 0; min-height: auto; }
+    
+    /* Hide the UI Dashboard Elements */
+    .report-nav-header,
+    .hero-glow,
+    .report-hero,
+    .metrics-horizontal-grid,
+    .no-print {
+        display: none !important;
+    }
+    
+    /* Show ONLY the Print Section */
+    .print-only-report {
+        display: block !important;
         background: white;
         color: black;
-        box-shadow: none;
     }
-    .ai-insight { background: #f8f9ff; border-color: #818cf8; }
 }
 
 /* Animations */

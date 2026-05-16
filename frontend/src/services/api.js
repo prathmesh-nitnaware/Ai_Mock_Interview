@@ -4,10 +4,8 @@ import axios from "axios";
  * BASE URL SWITCHER
  * Swaps between local development and production Render deployment.
  */
-const API_URL =
-  window.location.hostname === "localhost"
-    ? "http://localhost:5000"
-    : "https://prep-ai-backend-z5rk.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 /**
  * AXIOS CLIENT CONFIGURATION

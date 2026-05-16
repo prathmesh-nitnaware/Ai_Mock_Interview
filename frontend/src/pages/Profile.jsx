@@ -17,6 +17,11 @@ import {
   Upload,
   CheckCircle,
   Loader2,
+  Github,
+  Linkedin,
+  Globe,
+  Trash2,
+  RefreshCw
 } from "lucide-react";
 import "./Profile.css";
 
@@ -30,36 +35,44 @@ const Profile = () => {
 
   const [formData, setFormData] = useState({
     name: user?.name || "Prathmesh Nitnaware",
-    email: user?.email || "prathmesh.nitnaware@gmail.com",
-    role: user?.role || "ML Engineer",
-    bio: "Pursuing B.Tech in Computer Engineering. Focused on full-stack development, machine learning, and computer vision.",
+    email: user?.email || "",
+    role: user?.role || "Software Engineer",
+    bio: user?.bio || "Passionate about full-stack development and algorithms.",
+    github: user?.github || "",
+    linkedin: user?.linkedin || "",
+    website: user?.website || "",
   });
 
-  // UNIFIED FETCHING LOGIC: Syncs with MongoDB History
+  // UNIFIED FETCHING LOGIC: Syncs with MongoDB History and Resume Vault
   useEffect(() => {
-    const fetchSyncStats = async () => {
+    const fetchProfileData = async () => {
       if (!user) return;
       try {
-        const res = await api.client.get("/api/interview/history");
-        const historyData = res.data || [];
+        // Fetch Interview Stats
+        const statsRes = await api.client.get("/api/interview/history");
+        const historyData = statsRes.data || [];
 
         if (historyData.length > 0) {
           const total = historyData.length;
           const avg = Math.round(
-            historyData.reduce(
-              (acc, curr) => acc + (curr.overall_score || 0),
-              0,
-            ) / total,
+            historyData.reduce((acc, curr) => acc + (curr.overall_score || 0), 0) / total,
           );
           setStats({ interviews: total, avgScore: avg });
         }
+
+        // Fetch Vault Resume
+        const resumeRes = await api.client.get("/api/profile/resume/get");
+        if (resumeRes.data && resumeRes.data.resume_filename) {
+          setResumeName(resumeRes.data.resume_filename);
+        }
       } catch (err) {
-        console.error("Profile Stats Sync Error:", err);
+        // Safe to ignore if no resume or history
+        console.error("Profile Sync Warning:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchSyncStats();
+    fetchProfileData();
   }, [user]);
 
   // RESUME UPLOAD LOGIC: Stores in MongoDB for reuse in Mock Interview/ATS
@@ -84,15 +97,25 @@ const Profile = () => {
     }
   };
 
+  const handleResumeDelete = async () => {
+    try {
+      if(!window.confirm("Are you sure you want to delete your synced resume?")) return;
+      await api.client.delete("/api/profile/resume/delete");
+      setResumeName(null);
+    } catch (err) {
+      alert("Failed to delete resume.");
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Logic for profile update would go here
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await api.client.put("/api/profile/update", formData);
       setIsEditing(false);
     } catch (err) {
       console.error("Failed to save profile", err);
+      alert("Failed to update profile.");
     } finally {
       setLoading(false);
     }
@@ -243,6 +266,52 @@ const Profile = () => {
                   disabled={!isEditing}
                 />
               </div>
+
+              {/* SOCIAL LINKS */}
+              <div className="form-group-glass">
+                <label>
+                  <Github size={12} /> GITHUB URL
+                </label>
+                <input
+                  className={`input-glass ${!isEditing ? "locked" : ""}`}
+                  value={formData.github}
+                  onChange={(e) =>
+                    setFormData({ ...formData, github: e.target.value })
+                  }
+                  placeholder="https://github.com/username"
+                  disabled={!isEditing}
+                />
+              </div>
+
+              <div className="form-group-glass">
+                <label>
+                  <Linkedin size={12} /> LINKEDIN URL
+                </label>
+                <input
+                  className={`input-glass ${!isEditing ? "locked" : ""}`}
+                  value={formData.linkedin}
+                  onChange={(e) =>
+                    setFormData({ ...formData, linkedin: e.target.value })
+                  }
+                  placeholder="https://linkedin.com/in/username"
+                  disabled={!isEditing}
+                />
+              </div>
+
+              <div className="form-group-glass">
+                <label>
+                  <Globe size={12} /> PERSONAL WEBSITE
+                </label>
+                <input
+                  className={`input-glass ${!isEditing ? "locked" : ""}`}
+                  value={formData.website}
+                  onChange={(e) =>
+                    setFormData({ ...formData, website: e.target.value })
+                  }
+                  placeholder="https://yourwebsite.com"
+                  disabled={!isEditing}
+                />
+              </div>
             </form>
           </div>
 
@@ -265,20 +334,33 @@ const Profile = () => {
                   </div>
                 </div>
 
-                <label className="rv-upload-trigger" title="Upload New Resume">
-                  {isUploading ? (
-                    <Loader2 className="spin" size={20} />
-                  ) : (
-                    <Upload size={20} />
+                <div className="rv-actions" style={{ display: 'flex', gap: '10px' }}>
+                  {resumeName && (
+                    <button 
+                      className="rv-delete-btn" 
+                      onClick={handleResumeDelete}
+                      title="Remove Resume"
+                      style={{ background: 'rgba(239, 68, 68, 0.1)', border: 'none', padding: '10px', borderRadius: '10px', cursor: 'pointer', color: '#ef4444' }}
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   )}
-                  <input
-                    type="file"
-                    hidden
-                    accept=".pdf"
-                    onChange={handleResumeUpload}
-                    disabled={isUploading}
-                  />
-                </label>
+
+                  <label className="rv-upload-trigger" title={resumeName ? "Replace Resume" : "Upload New Resume"} style={{ background: resumeName ? 'rgba(255,255,255,0.05)' : '#6366f1', padding: '10px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                    {isUploading ? (
+                      <Loader2 className="spin" size={18} />
+                    ) : (
+                      resumeName ? <RefreshCw size={18} /> : <Upload size={18} />
+                    )}
+                    <input
+                      type="file"
+                      hidden
+                      accept=".pdf"
+                      onChange={handleResumeUpload}
+                      disabled={isUploading}
+                    />
+                  </label>
+                </div>
               </div>
 
               {resumeName && (

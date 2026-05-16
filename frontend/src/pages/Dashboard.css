@@ -21,15 +21,14 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* 90% Scale Fix */
+/* 90% Scale Fix - Replaced with sleek fluid typography & layout */
 .dashboard-content {
-  max-width: 1300px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 40px;
   position: relative;
   z-index: 2;
-  transform: scale(0.9);
-  transform-origin: top center;
+  transition: all 0.5s ease-in-out;
 }
 
 /* Background Effects */
@@ -62,11 +61,15 @@
 }
 
 .welcome-title {
-  font-size: 3.5rem;
-  font-weight: 800;
+  font-size: 4.5rem;
+  font-weight: 900;
   letter-spacing: -2px;
   margin: 10px 0;
   text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.5));
 }
 
 .brand-pill-light {
@@ -74,14 +77,31 @@
   align-items: center;
   gap: 8px;
   background: rgba(255, 255, 255, 0.05);
-  padding: 6px 16px;
+  padding: 8px 20px;
   border-radius: 100px;
-  border: 1px solid var(--border-light);
-  font-size: 0.75rem;
-  letter-spacing: 1px;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 2px;
   color: var(--indigo-primary);
   text-transform: uppercase;
   transition: 0.3s;
+  box-shadow: 0px 0px 20px rgba(99, 102, 241, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-pill-light::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: sweep 3s infinite;
+}
+
+@keyframes sweep {
+  0% { left: -100%; }
+  100% { left: 200%; }
 }
 
 /* Stats */
@@ -111,26 +131,45 @@
 }
 
 .action-link-card {
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-light);
   border-radius: 20px;
-  padding: 30px;
+  padding: 40px 30px;
   text-decoration: none;
-  backdrop-filter: blur(10px);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  backdrop-filter: blur(16px);
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-link-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 20px;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+
+.action-link-card:hover::before {
+  opacity: 1;
 }
 
 .action-link-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 20px rgba(99, 102, 241, 0.1);
 }
 
 .primary-action {
   border-color: var(--indigo-primary);
-  box-shadow: 0 20px 40px var(--indigo-glow);
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, rgba(0,0,0,0) 100%);
 }
 
 .icon-box {
@@ -217,7 +256,8 @@
   gap: 6px;
   color: var(--indigo-primary);
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  text-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
 }
 
 .hc-del-btn {

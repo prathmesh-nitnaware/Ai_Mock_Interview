@@ -385,3 +385,80 @@
 }
 
 @keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* FILTERS */
+.dojo-filters-container {
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.search-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(10, 10, 12, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 100%;
+    margin-left: 12px;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.search-input::placeholder {
+    color: #52525b;
+}
+
+.difficulty-filters {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: rgba(10, 10, 12, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    gap: 8px;
+}
+
+.diff-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #a1a1aa;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.diff-btn:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.diff-btn.active {
+    color: white;
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px;
+    background: rgba(10, 10, 12, 0.6);
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+}

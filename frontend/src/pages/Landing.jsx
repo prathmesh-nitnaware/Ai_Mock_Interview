@@ -96,8 +96,8 @@ const Landing = () => {
 
           {/* Feature 02 */}
           <div className="feature-card fade-in-up delay-600">
-            <div className="fc-icon-wrapper bg-purple-glow">
-              <FileText size={24} className="text-purple" />
+            <div className="fc-icon-wrapper bg-blue-glow">
+              <FileText size={24} className="text-blue" />
             </div>
             <h3 className="feature-heading">Smart ATS Scorer</h3>
             <p className="feature-desc">

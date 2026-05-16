@@ -10,5 +10,7 @@ db = client[Config.DB_NAME]
 
 users_collection = db["users"]
 interviews_collection = db["interviews"]
+resumes_collection = db["resumes"]
+coding_collection = db["coding_submissions"]
 
 print(f"MongoDB connected successfully to {Config.DB_NAME}")

@@ -1,0 +1,71 @@
+/* =========================================
+   ONBOARDING CSS
+   Glassmorphism Setup Screen
+   ========================================= */
+
+.onboarding-root {
+    min-height: 100vh;
+    background-color: #050505;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+.onboarding-container {
+    width: 100%;
+    max-width: 600px;
+    z-index: 10;
+    padding: 3rem;
+}
+
+.glass-panel-inner {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.glass-panel-inner:focus-within {
+    border-color: rgba(129, 140, 248, 0.4);
+    background: rgba(129, 140, 248, 0.05);
+}
+
+.question-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #e4e4e7;
+}
+
+.input-glass {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.input-glass:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+}
+
+.input-glass::placeholder {
+    color: #666;
+}
+
+@media (max-width: 600px) {
+    .onboarding-container {
+        padding: 2rem 1.5rem;
+    }
+}

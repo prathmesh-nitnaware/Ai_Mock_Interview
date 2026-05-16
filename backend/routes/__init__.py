@@ -2,7 +2,9 @@ from .auth import auth_bp
 from .dashboard import dashboard_bp
 from .interview import interview_bp
 from .resume_score import resume_bp 
-from .coding import coding_bp # Added for Coding Dojo
+from .coding import coding_bp
+from .profile import profile_bp
+from .chatbot import chatbot_bp
 
 def register_routes(app):
     # Auth -> /api/auth/...
@@ -19,3 +21,9 @@ def register_routes(app):
 
     # Coding Dojo -> /api/coding/...
     app.register_blueprint(coding_bp, url_prefix="/api/coding")
+
+    # User Profile -> /api/profile/...
+    app.register_blueprint(profile_bp, url_prefix="/api/profile")
+
+    # Support Chatbot
+    app.register_blueprint(chatbot_bp, url_prefix="/api/chatbot")

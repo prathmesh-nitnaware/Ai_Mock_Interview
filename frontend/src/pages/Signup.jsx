@@ -49,8 +49,8 @@ const Signup = () => {
       const result = await signup(signupPayload);
       
       if (result && result.success) {
-        // Redirect to dashboard on successful account initialization
-        navigate('/dashboard'); 
+        // Redirect to onboarding on successful account initialization
+        navigate('/onboarding'); 
       } else {
         setError(result?.message || "Failed to create account. Please try again.");
       }

@@ -25,7 +25,7 @@ const InputField = ({
         
         <input
           id={name}
-          className="neon-input" // This now matches the CSS below
+          className={`neon-input ${icon ? 'has-icon' : ''}`}
           type={type}
           name={name}
           value={value}

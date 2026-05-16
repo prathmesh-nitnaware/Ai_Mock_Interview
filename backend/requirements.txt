@@ -6,6 +6,8 @@ gunicorn
 dnspython
 pyjwt
 werkzeug
-google-generativeai
+google-genai
 pymupdf
 ollama
+flask-sock
+requests

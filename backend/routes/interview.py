@@ -1,25 +1,28 @@
 import os
 import json
-import ollama
 from datetime import datetime
 from bson import ObjectId
 from flask import Blueprint, request, jsonify
 from utils.auth_helpers import token_required
+from utils.ai_provider import ai_service
 from extensions import interviews_collection
 from config import Config
 
 interview_bp = Blueprint("interview", __name__)
-client = ollama.Client(host=Config.OLLAMA_HOST)
 
 # ============================
 # Helper: Generate Question
 # ============================
-def generate_question(role, experience, focus, resume_context=""):
+def generate_question(role, experience, focus, difficulty="Medium", resume_context=""):
     prompt = f"""
     You are an expert technical interviewer. Generate ONE interview question.
-    Role: {role} | Experience: {experience} | Focus: {focus}
+    Role: {role} | Experience: {experience} | Focus: {focus} | Difficulty: {difficulty}
     Resume Context: {resume_context[:500]}
-    Return ONLY valid JSON:
+    
+    CRITICAL INSTRUCTION:
+    If Focus is "Technical", the question MUST NOT always be a coding exercise. You should alternate between asking conceptual/theoretical questions (e.g. explain how X works, system design concepts, trade-offs) and actual coding questions. Make sure it matches the {difficulty} difficulty level.
+    
+    Return ONLY valid JSON with this exact structure:
     {{
     "title": "Question Title",
     "description": "The actual interview question text",
@@ -27,17 +30,16 @@ def generate_question(role, experience, focus, resume_context=""):
     "output_format": "text or code"
     }}
     """
-    try:
-        response = client.chat(model=Config.OLLAMA_MODEL, messages=[{"role": "user", "content": prompt}])
-        content = response["message"]["content"]
-        start, end = content.find("{"), content.rfind("}")
-        return json.loads(content[start:end+1])
-    except:
-        return {
-            "title": "Technical Background",
-            "description": f"Explain your experience working with projects related to {role}.",
-            "input_format": "text", "output_format": "text"
-        }
+    result = ai_service.ask_json(prompt)
+    if result:
+        return result
+    
+    # Fallback
+    return {
+        "title": "Technical Background",
+        "description": f"Explain your experience working with projects related to {role}.",
+        "input_format": "text", "output_format": "text"
+    }
 
 # ============================
 # Helper: Analyze Answer
@@ -45,20 +47,19 @@ def generate_question(role, experience, focus, resume_context=""):
 def analyze_answer(question, answer):
     prompt = f"""
     Analyze this interview response. Question: {question} | Answer: {answer}
-    Return ONLY valid JSON:
+    Return ONLY valid JSON with this exact structure:
     {{
         "clarity_score": 1-10,
         "confidence_score": 1-10,
         "feedback": "Concise 1-2 sentence feedback"
     }}
     """
-    try:
-        response = client.chat(model=Config.OLLAMA_MODEL, messages=[{"role": "user", "content": prompt}])
-        content = response["message"]["content"]
-        start, end = content.find("{"), content.rfind("}")
-        return json.loads(content[start:end+1])
-    except:
-        return {"clarity_score": 5, "confidence_score": 5, "feedback": "Good effort."}
+    result = ai_service.ask_json(prompt)
+    if result:
+        return result
+        
+    return {"clarity_score": 5, "confidence_score": 5, "feedback": "Good effort."}
+
 
 # ============================
 # Routes
@@ -74,13 +75,14 @@ def initiate_session(current_user):
             "role": data.get("role", "Software Engineer"),
             "experience": data.get("experience", "0-2 years"),
             "focus": data.get("focus", "Technical"),
+            "difficulty": data.get("difficulty", "Medium"),
             "created_at": datetime.utcnow(),
             "questions": [],
             "answers": [],
             "status": "active"
         }
         # Generate first question
-        question = generate_question(session['role'], session['experience'], session['focus'], data.get("resume_context", ""))
+        question = generate_question(session['role'], session['experience'], session['focus'], session['difficulty'], data.get("resume_context", ""))
         session["questions"].append(question)
         
         result = interviews_collection.insert_one(session)
@@ -115,7 +117,7 @@ def next_question(current_user):
         session_id = data.get("session_id")
         session = interviews_collection.find_one({"_id": ObjectId(session_id)})
         
-        question = generate_question(session['role'], session['experience'], session['focus'])
+        question = generate_question(session['role'], session['experience'], session['focus'], session.get('difficulty', 'Medium'))
         interviews_collection.update_one(
             {"_id": ObjectId(session_id)},
             {"$push": {"questions": question}}

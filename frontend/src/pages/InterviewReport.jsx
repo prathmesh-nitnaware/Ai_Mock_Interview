@@ -10,6 +10,7 @@ import {
   Activity,
   Award,
   MicOff,
+  FileText,
 } from "lucide-react";
 import "./InterviewReport.css";
 
@@ -135,7 +136,7 @@ const InterviewReport = () => {
             max={10}
           />
           <MetricCard
-            icon={<CheckCircle className="text-purple" />}
+            icon={<CheckCircle className="text-blue" />}
             label="CONFIDENCE"
             value={avgConfidence}
             max={10}
@@ -155,25 +156,49 @@ const InterviewReport = () => {
         </div>
 
         {/* FEEDBACK SECTION */}
-        <div className="breakdown-section">
-          <h2 className="section-heading">AI SESSION FEEDBACK</h2>
-          <div className="timeline-list">
-            {history.map((item, idx) => (
-              <div key={idx} className="timeline-card glass-card">
-                <div className="session-mark">0{idx + 1}</div>
-                <div className="session-content">
-                  <h3 className="question-text">{item.question}</h3>
-                  <div className="ai-insight">
-                    <span className="insight-label">AI ANALYSIS</span>
-                    <p>
-                      {item.feedback?.feedback ||
-                        "Technical response was structured well."}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+        <div className="breakdown-section no-print" style={{ marginTop: '40px' }}>
+          <h2 className="section-heading">COMPLETE REPORT</h2>
+          <div className="glass-card" style={{ padding: '60px 40px', textAlign: 'center' }}>
+            <FileText size={48} className="text-indigo" style={{ margin: '0 auto 20px auto', display: 'block', opacity: 0.8 }} />
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Detailed Session Feedback</h3>
+            <p style={{ color: '#a1a1aa', marginBottom: '30px', maxWidth: '500px', margin: '0 auto 30px auto' }}>
+              Your individual responses, AI feedback, and suggested improvements have been compiled into a secure, downloadable PDF report.
+            </p>
+            <button className="btn-hero-primary" onClick={() => window.print()} style={{ margin: '0 auto', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+              <Download size={20} />
+              DOWNLOAD FULL REPORT PDF
+            </button>
           </div>
+        </div>
+
+        {/* PRINT ONLY SECTION */}
+        <div className="print-only-report">
+          <h1 style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
+            Interview Session Report
+          </h1>
+          <p style={{ marginBottom: '30px', fontSize: '14px', color: '#555' }}>Role: {config.role || 'General'}</p>
+          
+          {history.map((item, idx) => (
+            <div key={idx} style={{ marginBottom: '40px', pageBreakInside: 'avoid' }}>
+              <h2 style={{ fontSize: '18px', color: '#111', marginBottom: '10px' }}>
+                Q{idx + 1}: {item.question}
+              </h2>
+              
+              <div style={{ padding: '10px 15px', backgroundColor: '#f9fafb', borderLeft: '4px solid #d1d5db', marginBottom: '15px' }}>
+                <strong style={{ display: 'block', fontSize: '12px', color: '#6b7280', marginBottom: '5px' }}>YOUR ANSWER:</strong>
+                <p style={{ fontSize: '14px', color: '#374151', margin: 0 }}>
+                  {item.answer || "No verbal response detected."}
+                </p>
+              </div>
+
+              <div style={{ padding: '10px 15px', backgroundColor: '#eff6ff', borderLeft: '4px solid #6366f1' }}>
+                <strong style={{ display: 'block', fontSize: '12px', color: '#4f46e5', marginBottom: '5px' }}>AI FEEDBACK:</strong>
+                <p style={{ fontSize: '14px', color: '#1e3a8a', margin: 0 }}>
+                  {item.feedback?.feedback || "Technical response was structured well."}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -9,3 +9,4 @@ class Config:
     DB_NAME = os.getenv("DB_NAME", "prepai")
     OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
     OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3:8b")
+    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")

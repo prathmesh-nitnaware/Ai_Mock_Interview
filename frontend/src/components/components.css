@@ -88,6 +88,18 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
 }
 
 .neon-input {
@@ -112,6 +124,10 @@
   font-size: 1rem !important;
   font-family: inherit;
   transition: all 0.3s ease;
+}
+
+.neon-input.has-icon {
+  padding-left: 44px !important;
 }
 
 /* Fix for the white box during Chrome/Edge Autofill */

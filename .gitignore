@@ -1,28 +1,79 @@
 # --- .gitignore ---
-# This file tells Git what to ignore.
+# This file tells Git what to ignore in the monorepo.
 
-# Virtual Environment
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+frontend/.env
+
+# =========================
+# Dependencies
+# =========================
+# Node
+node_modules/
+frontend/node_modules/
+
+# Python Virtual Environments
 .venv/
 venv/
 env/
-.env
+backend/.venv/
+.Python
 
-# Python cache
+# =========================
+# Python Artifacts & Cache
+# =========================
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Database file
+# =========================
+# Build Outputs
+# =========================
+dist/
+frontend/dist/
+build/
+.vite/
+
+# =========================
+# Database & Persistent Data
+# =========================
 *.db
 *.sqlite
 *.sqlite3
+mongodb_data/
 
-# OS files
+# =========================
+# Logs
+# =========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# OS & IDE Files
+# =========================
 .DS_Store
-
-# IDE files
+Thumbs.db
 .vscode/
 .idea/
 
+# =========================
 # Test/Sample files
+# =========================
 ml/audio/test_audio.wav
 ml/nlp/test_resume.pdf

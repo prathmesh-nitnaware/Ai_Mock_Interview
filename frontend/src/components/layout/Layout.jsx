@@ -12,6 +12,7 @@ import {
   X
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import Chatbot from '../Chatbot';
 import '../../styles/layout.css'; 
 
 const Layout = () => {
@@ -24,19 +25,25 @@ const Layout = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
   };
 
   const navLinks = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'ATS Optimizer', path: '/resume/upload', icon: <FileText size={20} /> },
     { name: 'Mock Interview', path: '/interview/setup', icon: <Mic size={20} /> },
-    { name: 'Coding Dojo', path: '/coding/setup', icon: <Terminal size={20} /> },
+    { name: 'Coding Dojo', path: '/coding/dojo', icon: <Terminal size={20} /> },
+
     { name: 'Profile', path: '/profile', icon: <User size={20} /> },
   ];
 
   return (
     <div className="app-layout">
+      {/* --- LIVE ANIMATED BACKGROUND --- */}
+      <div className="global-live-bg">
+        <div className="g-blob g-blob-1"></div>
+        <div className="g-blob g-blob-2"></div>
+        <div className="g-blob g-blob-3"></div>
+      </div>
       
       {/* --- TOP HEADER --- */}
       <header className="glass-header">
@@ -100,6 +107,7 @@ const Layout = () => {
         )}
 
         <Outlet />
+        <Chatbot />
 
       </main>
 
