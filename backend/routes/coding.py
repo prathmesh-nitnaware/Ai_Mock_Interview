@@ -34,6 +34,8 @@ def submit_challenge(current_user):
         data = request.json
         challenge_id = data.get("challenge_id")
         code = data.get("code")
+        language = data.get("language", "python")
+        action = data.get("action", "submit")
         
         challenge = next((c for c in CHALLENGES if c["id"] == challenge_id), None)
         if not challenge:
@@ -41,11 +43,11 @@ def submit_challenge(current_user):
             
         prompt = f"""
         Role: AI Technical Reviewer
-        Goal: Analyze this user's solution for the challenge: '{challenge['title']}'.
+        Goal: Analyze this user's solution in {language.capitalize()} for the challenge: '{challenge['title']}'.
         
         Challenge Description: {challenge['description']}
         User Code:
-        ```python
+        ```{language}
         {code}
         ```
         
@@ -64,19 +66,62 @@ def submit_challenge(current_user):
         if not result:
             return jsonify({"error": "AI failed to evaluate code"}), 500
             
-        from extensions import coding_collection
-        submission_doc = {
-            "user_id": current_user["_id"],
-            "challenge_id": challenge_id,
-            "code": code,
-            "success": result.get("success", False),
-            "clarity_score": result.get("clarity_score", 0),
-            "confidence_score": result.get("confidence_score", 0),
-            "feedback": result.get("feedback", ""),
-            "created_at": datetime.utcnow()
-        }
-        coding_collection.insert_one(submission_doc)
+        if action == "submit":
+            from extensions import coding_collection
+            submission_doc = {
+                "user_id": current_user["_id"],
+                "challenge_id": challenge_id,
+                "code": code,
+                "success": result.get("success", False),
+                "clarity_score": result.get("clarity_score", 0),
+                "confidence_score": result.get("confidence_score", 0),
+                "feedback": result.get("feedback", ""),
+                "created_at": datetime.utcnow()
+            }
+            coding_collection.insert_one(submission_doc)
             
         return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@coding_bp.route("/leaderboard", methods=["GET"])
+@token_required
+def get_leaderboard(current_user):
+    """Fetches the top 20 users by coding score."""
+    from extensions import coding_collection
+    
+    try:
+        pipeline = [
+            {"$match": {"success": True}},
+            {"$group": {
+                "_id": {
+                    "user_id": "$user_id",
+                    "challenge_id": "$challenge_id"
+                }
+            }},
+            {"$group": {
+                "_id": "$_id.user_id",
+                "challenges_solved": {"$sum": 1}
+            }},
+            {"$addFields": {"score": {"$multiply": ["$challenges_solved", 500]}}},
+            {"$lookup": {
+                "from": "users",
+                "localField": "_id",
+                "foreignField": "_id",
+                "as": "user_info"
+            }},
+            {"$unwind": "$user_info"},
+            {"$project": {
+                "name": "$user_info.name",
+                "challenges_solved": 1,
+                "score": 1,
+                "_id": 0
+            }},
+            {"$sort": {"score": -1}},
+            {"$limit": 20}
+        ]
+        
+        leaderboard = list(coding_collection.aggregate(pipeline))
+        return jsonify(leaderboard), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

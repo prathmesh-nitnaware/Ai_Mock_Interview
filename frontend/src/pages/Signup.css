@@ -256,3 +256,43 @@
     
     .password-grid { grid-template-columns: 1fr; }
 }
+
+/* Password Feedback */
+.password-feedback {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.feedback-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #a1a1aa;
+  transition: all 0.3s ease;
+}
+
+.feedback-item.met {
+  color: #10b981;
+}
+
+.feedback-item svg {
+  opacity: 0.5;
+}
+
+.feedback-item.met svg {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .password-feedback {
+    grid-template-columns: 1fr;
+  }
+}

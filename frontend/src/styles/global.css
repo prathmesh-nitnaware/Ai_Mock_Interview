@@ -48,6 +48,7 @@
 body {
   font-family: var(--font-main);
   background-color: var(--bg-dark);
+  zoom: 0.9;
   color: var(--text-main);
   line-height: 1.6;
   overflow-x: hidden;

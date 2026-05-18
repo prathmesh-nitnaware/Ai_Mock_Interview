@@ -1,10 +1,12 @@
 import os
+import certifi
 from pymongo import MongoClient
 from config import Config
 
 mongo_uri = Config.MONGO_URI
 
-client = MongoClient(mongo_uri)
+# Use certifi to provide Mozilla's CA Bundle
+client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
 
 db = client[Config.DB_NAME]
 

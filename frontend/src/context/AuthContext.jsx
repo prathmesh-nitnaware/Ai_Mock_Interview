@@ -78,7 +78,8 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (response.ok) {
-        return await login(signupData.email, signupData.password);
+        setLoading(false);
+        return { success: true, message: data.message };
       } else {
         setLoading(false);
         return { success: false, message: data.error || "Signup failed" };

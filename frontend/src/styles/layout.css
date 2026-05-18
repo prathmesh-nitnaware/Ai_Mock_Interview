@@ -242,10 +242,10 @@
 
 .global-live-bg {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: -10vh;
+    left: -10vw;
+    width: 120vw;
+    height: 120vh;
     z-index: 0;
     overflow: hidden;
     pointer-events: none;

@@ -9,8 +9,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def twoSum(nums, target):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [2,7,11,15], target = 9",
+        "sample_output": "[0,1]"
     },
     {
         "id": "dsa_2",
@@ -22,8 +22,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def reverseString(s):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = [\"h\",\"e\",\"l\",\"l\",\"o\"]",
+        "sample_output": "[\"o\",\"l\",\"l\",\"e\",\"h\"]"
     },
     {
         "id": "dsa_3",
@@ -35,8 +35,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def isPalindrome(s):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = \"A man, a plan, a canal: Panama\"",
+        "sample_output": "true"
     },
     {
         "id": "dsa_4",
@@ -48,8 +48,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def isAnagram(s, t):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = \"anagram\", t = \"nagaram\"",
+        "sample_output": "true"
     },
     {
         "id": "dsa_5",
@@ -61,8 +61,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def containsDuplicate(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [1,2,3,1]",
+        "sample_output": "true"
     },
     {
         "id": "dsa_6",
@@ -74,8 +74,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def maxSubArray(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [-2,1,-3,4,-1,2,1,-5,4]",
+        "sample_output": "6"
     },
     {
         "id": "dsa_7",
@@ -87,8 +87,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def merge(nums1, m, nums2, n):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3",
+        "sample_output": "[1,2,2,3,5,6]"
     },
     {
         "id": "dsa_8",
@@ -100,8 +100,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def climbStairs(n):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "n = 2",
+        "sample_output": "2"
     },
     {
         "id": "dsa_9",
@@ -113,8 +113,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def missingNumber(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [3,0,1]",
+        "sample_output": "2"
     },
     {
         "id": "dsa_10",
@@ -126,8 +126,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def search(nums, target):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [-1,0,3,5,9,12], target = 9",
+        "sample_output": "4"
     },
     {
         "id": "dsa_11",
@@ -139,8 +139,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def twoSum(nums, target):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [2,7,11,15], target = 9",
+        "sample_output": "[0,1]"
     },
     {
         "id": "dsa_12",
@@ -152,8 +152,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def reverseString(s):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = [\"h\",\"e\",\"l\",\"l\",\"o\"]",
+        "sample_output": "[\"o\",\"l\",\"l\",\"e\",\"h\"]"
     },
     {
         "id": "dsa_13",
@@ -165,8 +165,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def isPalindrome(s):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = \"A man, a plan, a canal: Panama\"",
+        "sample_output": "true"
     },
     {
         "id": "dsa_14",
@@ -178,8 +178,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def isAnagram(s, t):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = \"anagram\", t = \"nagaram\"",
+        "sample_output": "true"
     },
     {
         "id": "dsa_15",
@@ -191,8 +191,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def containsDuplicate(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [1,2,3,1]",
+        "sample_output": "true"
     },
     {
         "id": "dsa_16",
@@ -204,8 +204,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def maxSubArray(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [-2,1,-3,4,-1,2,1,-5,4]",
+        "sample_output": "6"
     },
     {
         "id": "dsa_17",
@@ -217,8 +217,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def merge(nums1, m, nums2, n):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3",
+        "sample_output": "[1,2,2,3,5,6]"
     },
     {
         "id": "dsa_18",
@@ -230,8 +230,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def climbStairs(n):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "n = 2",
+        "sample_output": "2"
     },
     {
         "id": "dsa_19",
@@ -243,8 +243,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def missingNumber(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [3,0,1]",
+        "sample_output": "2"
     },
     {
         "id": "dsa_20",
@@ -256,8 +256,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def search(nums, target):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [-1,0,3,5,9,12], target = 9",
+        "sample_output": "4"
     },
     {
         "id": "dsa_21",
@@ -269,8 +269,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def threeSum(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [-1,0,1,2,-1,-4]",
+        "sample_output": "[[-1,-1,2],[-1,0,1]]"
     },
     {
         "id": "dsa_22",
@@ -282,8 +282,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def lengthOfLongestSubstring(s):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = \"abcabcbb\"",
+        "sample_output": "3"
     },
     {
         "id": "dsa_23",
@@ -295,8 +295,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def maxArea(height):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "height = [1,8,6,2,5,4,8,3,7]",
+        "sample_output": "49"
     },
     {
         "id": "dsa_24",
@@ -308,8 +308,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def isValidSudoku(board):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "board = [[\"5\",\"3\",\".\"], ...]",
+        "sample_output": "true"
     },
     {
         "id": "dsa_25",
@@ -321,8 +321,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def exist(board, word):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"",
+        "sample_output": "true"
     },
     {
         "id": "dsa_26",
@@ -334,8 +334,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def canFinish(numCourses, prerequisites):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "numCourses = 2, prerequisites = [[1,0]]",
+        "sample_output": "true"
     },
     {
         "id": "dsa_27",
@@ -347,8 +347,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def coinChange(coins, amount):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "coins = [1,2,5], amount = 11",
+        "sample_output": "3"
     },
     {
         "id": "dsa_28",
@@ -360,8 +360,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def lengthOfLIS(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [10,9,2,5,3,7,101,18]",
+        "sample_output": "4"
     },
     {
         "id": "dsa_29",
@@ -373,8 +373,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def nextPermutation(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [1,2,3]",
+        "sample_output": "[1,3,2]"
     },
     {
         "id": "dsa_30",
@@ -386,8 +386,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def orangesRotting(grid):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "grid = [[2,1,1],[1,1,0],[0,1,1]]",
+        "sample_output": "4"
     },
     {
         "id": "dsa_31",
@@ -399,8 +399,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def threeSum(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [-1,0,1,2,-1,-4]",
+        "sample_output": "[[-1,-1,2],[-1,0,1]]"
     },
     {
         "id": "dsa_32",
@@ -412,8 +412,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def lengthOfLongestSubstring(s):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = \"abcabcbb\"",
+        "sample_output": "3"
     },
     {
         "id": "dsa_33",
@@ -425,8 +425,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def maxArea(height):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "height = [1,8,6,2,5,4,8,3,7]",
+        "sample_output": "49"
     },
     {
         "id": "dsa_34",
@@ -438,8 +438,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def isValidSudoku(board):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "board = [[\"5\",\"3\",\".\"], ...]",
+        "sample_output": "true"
     },
     {
         "id": "dsa_35",
@@ -451,8 +451,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def exist(board, word):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"",
+        "sample_output": "true"
     },
     {
         "id": "dsa_36",
@@ -464,8 +464,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def canFinish(numCourses, prerequisites):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "numCourses = 2, prerequisites = [[1,0]]",
+        "sample_output": "true"
     },
     {
         "id": "dsa_37",
@@ -477,8 +477,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def coinChange(coins, amount):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "coins = [1,2,5], amount = 11",
+        "sample_output": "3"
     },
     {
         "id": "dsa_38",
@@ -490,8 +490,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def lengthOfLIS(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [10,9,2,5,3,7,101,18]",
+        "sample_output": "4"
     },
     {
         "id": "dsa_39",
@@ -503,8 +503,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def nextPermutation(nums):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [1,2,3]",
+        "sample_output": "[1,3,2]"
     },
     {
         "id": "dsa_40",
@@ -516,8 +516,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def orangesRotting(grid):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "grid = [[2,1,1],[1,1,0],[0,1,1]]",
+        "sample_output": "4"
     },
     {
         "id": "dsa_41",
@@ -529,8 +529,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def findMedianSortedArrays(nums1, nums2):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums1 = [1,3], nums2 = [2]",
+        "sample_output": "2.0"
     },
     {
         "id": "dsa_42",
@@ -542,8 +542,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def mergeKLists(lists):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "lists = [[1,4,5],[1,3,4],[2,6]]",
+        "sample_output": "[1,1,2,3,4,4,5,6]"
     },
     {
         "id": "dsa_43",
@@ -555,8 +555,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def trap(height):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "height = [0,1,0,2,1,0,1,3,2,1,2,1]",
+        "sample_output": "6"
     },
     {
         "id": "dsa_44",
@@ -568,8 +568,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def solveNQueens(n):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "n = 4",
+        "sample_output": "[[ \".Q..\", \"...Q\", \"Q...\", \"..Q.\" ], ... ]"
     },
     {
         "id": "dsa_45",
@@ -581,8 +581,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def ladderLength(beginWord, endWord, wordList):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "beginWord = \"hit\", endWord = \"cog\", wordList = [\"hot\",\"dot\",\"dog\",\"lot\",\"log\",\"cog\"]",
+        "sample_output": "5"
     },
     {
         "id": "dsa_46",
@@ -594,8 +594,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def isMatch(s, p):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = \"aa\", p = \"a*\"",
+        "sample_output": "true"
     },
     {
         "id": "dsa_47",
@@ -607,8 +607,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def longestValidParentheses(s):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "s = \")()())\"",
+        "sample_output": "4"
     },
     {
         "id": "dsa_48",
@@ -620,8 +620,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def minDistance(word1, word2):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "word1 = \"horse\", word2 = \"ros\"",
+        "sample_output": "3"
     },
     {
         "id": "dsa_49",
@@ -633,8 +633,8 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def maxSlidingWindow(nums, k):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "nums = [1,3,-1,-3,5,3,6,7], k = 3",
+        "sample_output": "[3,3,5,5,6,7]"
     },
     {
         "id": "dsa_50",
@@ -646,7 +646,7 @@ CHALLENGES = [
             "Standard memory limits apply."
         ],
         "starter_code": "def alienOrder(words):\n    pass",
-        "sample_input": "...",
-        "sample_output": "..."
+        "sample_input": "words = [\"wrt\",\"wrf\",\"er\",\"ett\",\"rftt\"]",
+        "sample_output": "\"wertf\""
     }
 ]

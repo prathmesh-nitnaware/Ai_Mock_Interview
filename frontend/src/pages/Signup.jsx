@@ -32,6 +32,18 @@ const Signup = () => {
       setError("All fields are required.");
       return;
     }
+    
+    // Password Strength Validation
+    const hasUpperCase = /[A-Z]/.test(formData.password);
+    const hasLowerCase = /[a-z]/.test(formData.password);
+    const hasNumbers = /\d/.test(formData.password);
+    const isLongEnough = formData.password.length >= 8;
+    
+    if (!hasUpperCase || !hasLowerCase || !hasNumbers || !isLongEnough) {
+      setError("Password does not meet all requirements.");
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -49,8 +61,11 @@ const Signup = () => {
       const result = await signup(signupPayload);
       
       if (result && result.success) {
-        // Redirect to onboarding on successful account initialization
-        navigate('/onboarding'); 
+        // Show success message and hide form
+        setError(null);
+        setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+        alert(result.message || "Account created! Please check your email to verify your account.");
+        navigate('/login');
       } else {
         setError(result?.message || "Failed to create account. Please try again.");
       }
@@ -161,6 +176,27 @@ const Signup = () => {
                     />
                 </div>
               </div>
+
+              {/* Password Feedback */}
+              {formData.password.length > 0 && (
+                <div className="password-feedback fade-in">
+                  <div className={`feedback-item ${formData.password.length >= 8 ? 'met' : ''}`}>
+                    <CheckCircle2 size={14} /> <span>At least 8 characters</span>
+                  </div>
+                  <div className={`feedback-item ${/[A-Z]/.test(formData.password) ? 'met' : ''}`}>
+                    <CheckCircle2 size={14} /> <span>One uppercase letter</span>
+                  </div>
+                  <div className={`feedback-item ${/[a-z]/.test(formData.password) ? 'met' : ''}`}>
+                    <CheckCircle2 size={14} /> <span>One lowercase letter</span>
+                  </div>
+                  <div className={`feedback-item ${/\d/.test(formData.password) ? 'met' : ''}`}>
+                    <CheckCircle2 size={14} /> <span>One number</span>
+                  </div>
+                  <div className={`feedback-item ${formData.password === formData.confirmPassword && formData.confirmPassword.length > 0 ? 'met' : ''}`}>
+                    <CheckCircle2 size={14} /> <span>Passwords match</span>
+                  </div>
+                </div>
+              )}
 
               <Button 
                 type="submit" 
