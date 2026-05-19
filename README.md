@@ -1,73 +1,103 @@
-# 💎 PrepAI: The Paradigm of Multimodal Interview Intelligence
+# 💎 PrepAI: Immersive Multimodal Technical Interview Intelligence
 
 <div align="center">
   <img src="readme_banner.png" alt="PrepAI Banner" width="100%" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
 
-  <h3>"The only technical interview simulator you will ever need."</h3>
+  <h3>"Bridging technical competency and behavioral biometrics in a singular, state-of-the-art diagnostic environment."</h3>
 
   <p align="center">
-    <img src="https://img.shields.io/badge/AI--Orchestrator-Enterprise--Grade-blueviolet?style=for-the-badge&logo=openai" alt="AI">
+    <img src="https://img.shields.io/badge/AI--Orchestrator-Google--Gemini-blueviolet?style=for-the-badge&logo=google" alt="Google Gemini AI">
+    <img src="https://img.shields.io/badge/Computer--Vision-Face--API.js-E4405F?style=for-the-badge&logo=opencv" alt="Face-API.js">
+    <img src="https://img.shields.io/badge/Voice--Engine-HTML5--Web--Speech-yellow?style=for-the-badge&logo=googlechrome" alt="Web Speech API">
     <img src="https://img.shields.io/badge/Database-MongoDB-47A248?style=for-the-badge&logo=mongodb" alt="Database">
     <img src="https://img.shields.io/badge/Backend-Flask--Hyperdrive-333333?style=for-the-badge&logo=flask" alt="Backend">
-    <img src="https://img.shields.io/badge/Frontend-React--18--Atomic-61DAFB?style=for-the-badge&logo=react" alt="Frontend">
   </p>
 
   <p align="center">
-    <b>Revolutionizing Professional Readiness through Neural Networks, Computer Vision, and Predictive Analytics.</b>
+    <b>Empowering candidates to prepare for intense hiring loops while providing administrators with a unified control room to monitor progression at scale.</b>
   </p>
 </div>
 
 ---
 
-## 🌌 The Vision
-**PrepAI** isn't just an app; it's a **behavioral laboratory**. Traditionally, interview prep is static and one-dimensional. PrepAI shatters this limitation by creating a **synchronous feedback loop** between your technical output, your biological signals (gaze, posture), and world-class AI reasoning.
+## 🌐 Production Live Link
+You can access the production-ready live deployment of PrepAI here:
 
-Whether you're a Junior dev or a Senior Architect, PrepAI scales its cognitive complexity to match yours, ensuring you are battle-tested for the world's most rigorous technical screens.
-
----
-
-## 🚀 Core Functionalities (The "Master" List)
-
-### 🎙️ 1. Dynamic Scenario Stimulator (Mock Interviews)
-*   **Adaptive Heuristics**: Generates questions based on a real-time analysis of your resume text synced with your target job role.
-*   **Cognitive Persistence**: Every session is tracked. The AI remembers your past answers within a session to generate complex follow-up questions.
-*   **Performance Profiling**: Instant feedback on Clarity, Confidence, and Technical Depth with actionable improvements.
-
-### 💻 2. The Coding Dojo (Neural IDE)
-*   **Algorithmic Mastery**: Over 50+ curated challenges ranging from O(n) basics to Hard Dynamic Programming.
-*   **Monaco Engine Synergy**: The same core powering VS Code, providing a professional-grade editor with syntax highlighting and auto-indentation.
-*   **Automated Quality Review**: Instead of simple unit tests, an AI Reviewer analyzes code for **time/space complexity**, **edge cases**, and **clean code principles (SOLID/DRY)**.
-
-### 📝 3. Resume Intelligence & ATS Counter-Measures
-*   **Semantic ATS Scoring**: A predictive model that rates your resume against specific job descriptions.
-*   **Deep-Dive Analysis**: Evaluates your resume to identify Core Strengths, Critical Weaknesses, and Missing Keywords to beat ATS bots.
-*   **Global Resume Vault**: Upload your resume to your dashboard once, and securely use it across all AI modules globally.
-
-### 👁️ 4. Behavioral Biometrics (CV Analysis)
-*   **Gaze Stability Monitoring**: Detects if you are reading from off-screen notes or maintaining digital eye contact.
-*   **Posture & Presence Analytics**: Monitors slouching, shoulder alignment, and involuntary movements.
-
-### 🔐 5. Smart Onboarding & Profile Tracking
-*   **Frictionless Onboarding**: Tailors the platform to your education, current job, and target role the second you sign up.
-*   **Progression Tracking**: Automatically saves your interview transcripts and scores in MongoDB for historical tracking.
+> [!TIP]
+> **🚀 Live Web Application**: [**https://prepai-interview.onrender.com**](https://prepai-interview.onrender.com) _(Note: Render free tier services may take 1-2 minutes to spin up from a cold sleep on first load)._
 
 ---
 
-## 🛠️ The Advanced Tech Stack (Deep Dive)
+## 🌌 Core Vision & Platform Design
+**PrepAI** bridges the gap between mechanical evaluation and dynamic coaching. By integrating advanced **Gemini AI models**, real-time behavioral diagnostics, an interactive **Monaco Editor**, and structured resume parsing, it delivers a high-fidelity environment modeled after elite technical screens. 
 
-### 🧠 Distributed Intelligence
-- **AI Core Orchestrator**: A hybrid decision-gate system that primarily routes requests to **Ollama (Llama 3)** for low-latency local inference.
-- **Hierarchical Prompt Engineering**: Utilizes few-shot prompting and system-instruction layering to ensure JSON-strict outputs and persona consistency.
+The application is built on a custom **glassmorphic dark design system**, optimizing visual focus, reducing fatigue, and creating an immersive experience for candidates and administrators alike.
 
-### ⚡ Reactive Frontend & State
-- **React 18 Architecture**: Leveraging Atomic Design Principles for a modular, reusable component library.
-- **Vite Ecosystem**: HMR (Hot Module Replacement) enabled for high-speed development and ultra-optimized production bundles.
-- **Executive Light Design**: A premium, minimalist UI system using high-contrast glassmorphism and subtle Framer Motion micro-animations.
+---
 
-### 🛡️ Enterprise Backend & Security
-- **Flask Micro-Services**: Blueprint-based routing to ensure modularity and horizontal scalability.
-- **JWT Protection Tiers**: Secure authentication using industry-standard tokenization for session persistence.
-- **MongoDB Interoperability**: Utilizing BSON for heterogeneous data storage, including Base64 PDF blobs and session transcripts.
+## 🚀 Advanced Tech Stack & Dynamic SDK Integrations
+
+### 👁️ 1. Face-API.js (Computer Vision & Stress Diagnostics)
+To evaluate candidate posture and stress under high-intensity interview situations, the platform implements **`@vladmandic/face-api`** on the client side:
+*   **Weight Preloading**: Upon starting a live mock session, face-api preloads pre-trained weights from `/models` for the **`TinyFaceDetector`** (for lightning-fast face bounding-box identification) and **`FaceExpressionNet`** (for real-time micro-expression analysis).
+*   **Dynamic Expression Polling**: Sets up a 1000ms frame scanning interval on the active camera video feed.
+*   **Stress / Nervousness Index**: Uses mathematical vectors mapping specific emotions to calculate real-time nervousness levels:
+    $$\text{Stress Score (\%)} = \min\left(100, \left(\text{Fearful} \times 0.5 + \text{Sad} \times 0.2 + \text{Surprised} \times 0.3\right) \times 100\right)$$
+*   This score is updated live on the overlay camera screen and sent to the Flask server at `/api/interview/submit` to compile candidate behavioral report data.
+
+### 🎙️ 2. Real-Time Voice Synthesis & Transcribing (HTML5 Web Speech)
+PrepAI handles dynamic scenario voice operations directly inside the browser using native **Web Speech APIs**, reducing server-side payload overhead:
+*   **Interactive Narrator (Text-to-Speech)**: Uses the **`SpeechSynthesis`** API and custom **`SpeechSynthesisUtterance`** configs to read question prompts, technical constraints, and follow-up prompts out loud. An visual indicator ring pulsates in sync with `onstart` and `onend` events.
+*   **Live Audio Recognition (Speech-to-Text)**: Leverages **`webkitSpeechRecognition`** / **`SpeechRecognition`** in continuous mode, converting microphone inputs into real-time transcripts.
+
+### 🧠 3. Generative Orchestration Core (Google Gemini & Ollama)
+*   **Gemini Pro / Llama 3 Router**: Flexible AI gateway. Primarily routes complex parsing, coding analysis, and evaluation steps to the Google Gemini API (or falls back to Ollama's local `llama3:8b` weights).
+*   **JSON-Strict Parsing**: Utilizes strict system instructions and few-shot formatting rules to guarantee error-free, standard REST outputs.
+
+---
+
+## 🚀 Key Modules & Feature Sets
+
+### 👨‍💻 1. Candidate Features & Activities
+
+*   🎙️ **Dynamic Scenario Simulator (Mock Interviews)**:
+    *   **Context-Aware AI Interviewer**: Generates highly tailored questions based on your specific job role, target industry, and uploaded resume contents.
+    *   **Conversational Persistence**: The AI remembers your responses, asking challenging, deep-dive follow-up questions to test your architectural limits.
+    *   **Comprehensive Scorecards**: Instant breakdowns of your Clarity, Technical Accuracy, and Confidence with actionable improvement recommendations.
+*   💻 **The Neural Coding Dojo (Algorithmic IDE)**:
+    *   **Professional IDE**: Integrated Monaco Editor supporting full syntax highlighting, autocompletion, and multiple programming languages (Python, Javascript, Java, C++).
+    *   **Vast Problem Catalog**: Includes multiple challenges from O(n) algorithmic essentials to complex dynamic programming.
+    *   **Deep AI Code Review**: Instantly analyzes code submissions, pointing out time/space complexity (Big-O), potential edge cases, logic bugs, and SOLID/DRY violations.
+*   📝 **ATS Resume Scorer & Global Vault**:
+    *   **Semantic Scoring Model**: Compares your resume structure and phrasing against specific target descriptions.
+    *   **ATS Diagnostics**: Identifies critical keyword gaps, missing technical skills, core formatting issues, and recommendations to bypass filters.
+    *   **Global Resume Sync**: Upload a resume once, and it propagates instantly to guide custom questions generated in mock interviews.
+*   🧭 **Smart Onboarding & Unified Dashboard**:
+    *   **Tailored Roadmap**: A brief, three-question personalized onboarding flow mapping out your level, education, and target stack.
+    *   **Interactive Analytics**: Visually track your mock interview history, code challenge completions, and progression trends.
+    *   **AI Chatbot Companion**: A floating conversational helper present on your dashboard to provide immediate system tips and technical guidance.
+
+---
+
+### 🛡️ 2. Administrator Features & Dashboard
+
+PrepAI includes a completely separate, highly secure, and visually striking **Administrator Panel** designed to oversee the ecosystem's usage metrics:
+
+*   🔒 **Strict Role Protection**: Access-guarded routes ensure candidate accounts cannot reach administration endpoints.
+*   📊 **Single-Page Visual Control Room**:
+    *   **Active Registration Metrics**: Displays a single, premium total member tracker card.
+    *   **7-Day Growth Trend**: Full-width SVG area chart tracking daily member growth and candidate registration trends over the past week.
+    *   **Candidates Preview**: A concise grid preview showing the 5 most recent registrations.
+    *   **"See More" Pagination**: Quick redirection pathway to the exhaustive candidate logs database.
+*   📂 **Searchable Candidate Register (`/admin/users`)**:
+    *   **Complete Log Search**: Allows admins to search the full directory of candidate profiles by Name or Email address.
+    *   **Detailed Analytics Columns**: Tracks candidate Email IDs, solved dojo problems, average mock interview scores, total interviews completed, and onboarding status.
+*   👁️ **Deep-Dive Activity Popup**:
+    *   Clicking a candidate's name from either directory triggers a comprehensive dashboard overlay panel.
+    *   📈 **Mock Score Progression Chart**: An SVG line chart rendering that specific user's score history chronologically across interviews.
+    *   ⚡ **7-Day Engagement Chart**: An SVG weekly bar chart mapping daily activity count frequencies (interviews, code submissions, resumes uploaded) for that candidate.
+    *   🕒 **Live Activity Feed**: A structured timeline logging every technical activity, challenge submitted, or resume uploaded with precise timestamps.
+*   🧩 **Tailored Navigation Focus**: Sidebar menus, user profiles, and floating chatbots are automatically hidden when an admin logs in to ensure the dashboard remains fully dedicated to system analytics. A secure **Sign Out** button is permanently anchored to the sticky top header.
 
 ---
 
@@ -77,17 +107,17 @@ Whether you're a Junior dev or a Senior Architect, PrepAI scales its cognitive c
 Prep_AI/
 ├── frontend/               # The Reactive Visual Interface (React/Vite)
 │   ├── src/
-│   │   ├── components/     # Atomic UI Elements (Glassmorphic Forms, Buttons)
+│   │   ├── components/     # Atomic UI Elements (Glassmorphic Forms, ProtectedRoute)
 │   │   ├── context/        # Global State Management (AuthContext)
-│   │   ├── pages/          # Full-Page View Controllers (Dashboard, Onboarding, Dojo)
+│   │   ├── pages/          # Full-Page View Controllers (Dashboard, Onboarding, Dojo, AdminDashboard)
 │   │   └── services/       # Centralized API Orchestration Layer (Axios)
 │   └── package.json
 ├── backend/                # The Neural Operations Core (Flask)
-│   ├── routes/             # Blueprint-based API Endpoints
+│   ├── routes/             # Blueprint-based API Endpoints (auth, admin, interview, dojo)
 │   ├── utils/              # Providers (AI, CV, Auth, Parser)
-│   ├── models/             # Schema-less Data Definitions (Users, Interivews)
+│   ├── models/             # Schema-less Data Definitions
 │   ├── scripts/            # Infrastructure Management (init_db.py)
-│   ├── main.py             # System Gateway & WebSocket Entry Point
+│   ├── main.py             # System Gateway & Entry Point
 │   └── requirements.txt    # Python Dependencies
 ├── ml/                     # Machine Learning Research Laboratory
 ├── package.json            # Root orchestrator (Concurrent runner)
@@ -96,94 +126,84 @@ Prep_AI/
 
 ---
 
-## 🔧 Step-by-Step Installation & Setup Guide
+## 🔧 Step-by-Step Installation & Local Setup
 
-To run PrepAI on your local machine, you will need **Node.js**, **Python 3.10+**, **MongoDB**, and **Ollama**. Follow these instructions precisely.
+To run the PrepAI ecosystem locally, follow this guide precisely:
 
-### Step 1: Prerequisites Check
-1. Install [Node.js](https://nodejs.org/en) (v18 or higher recommended).
-2. Install [Python](https://www.python.org/downloads/) (3.10 or higher).
-3. Install [Ollama](https://ollama.com/) (Required for local AI features).
+### Step 1: Clone & Check Prerequisites
+Make sure you have the following installed on your machine:
+*   [Node.js](https://nodejs.org/en) (v18 or higher)
+*   [Python](https://www.python.org/downloads/) (v3.10 or higher)
+*   [MongoDB](https://www.mongodb.com/try/download/community) (Local server or MongoDB Atlas cluster connection string)
 
-### Step 2: Download AI Models
-PrepAI uses Meta's Llama 3 model for robust, local AI processing. Open your terminal and run:
-```bash
-ollama run llama3:8b
+### Step 2: Database & API Key Configuration
+Create a `.env` file inside the `backend/` directory and configure the environment:
+```env
+# Database Configuration
+MONGO_URI=mongodb://localhost:27017/prepai   # Or your MongoDB Atlas connection string
+DB_NAME=prepai
+
+# Security Token (JWT)
+SECRET_KEY=your_super_secret_jwt_key
+
+# Distributed AI Core (Use gemini or ollama)
+AI_PROVIDER=gemini
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# Local AI (Optional fallback)
+OLLAMA_HOST=http://127.0.0.1:11434
+OLLAMA_MODEL=llama3:8b
+
+# Port Configuration
+PORT=5000
 ```
-*(Note: The model is ~4.7GB and will take a few minutes to download depending on your internet connection).*
 
-### Step 3: Database Configuration (MongoDB)
-1. You can either use a [MongoDB Atlas](https://www.mongodb.com/atlas) cloud cluster or a local MongoDB installation.
-2. In the `backend/` directory, create a `.env` file (if one does not exist) or edit the existing one.
-3. Configure your connection string:
-   ```env
-   # Database Configuration
-   MONGO_URI=mongodb+srv://<your_username>:<your_password>@cluster0.mongodb.net/?retryWrites=true&w=majority
-   DB_NAME=prepai
-   
-   # Security
-   SECRET_KEY=your_super_secret_jwt_key
-   
-   # AI Configuration
-   AI_PROVIDER=ollama
-   OLLAMA_MODEL=llama3:8b
-   OLLAMA_HOST=http://127.0.0.1:11434
-   
-   # Port Configuration
-   PORT=5000
-   ```
-
-### Step 4: Install Dependencies
-PrepAI utilizes a Monorepo structure. You can install all dependencies from the root directory with a single command:
+### Step 3: Fast Install (Root Directory)
+PrepAI is configured as a Monorepo. Install all npm modules, set up the backend Python virtual environment (`.venv`), and fetch python dependencies with a single command from the **root directory**:
 ```bash
 npm run install-all
 ```
-*(This command will automatically install the React frontend packages, create a Python virtual environment in the backend, and install all Python requirements).*
 
-### Step 5: Initialize the Database
-Before running the app, you need to configure your MongoDB collections and indexes (ensures emails are unique, etc.):
+### Step 4: Initialize MongoDB Collections
+Before starting the servers, configure indexes and import the admin user account credentials.
+Set up default credentials (**email**: `admin@gmail.com` | **password**: `admin123`) using the initialization script:
 ```bash
 # Navigate to the backend directory
 cd backend
 
-# Activate your virtual environment
+# Activate Virtual Environment
 # Windows:
 .venv\Scripts\activate
 # Mac/Linux:
 source .venv/bin/activate
 
-# Run the initialization script
+# Initialize collections
 python scripts/init_db.py
 ```
 *You should see a "Database initialization completed successfully!" message.*
 
 ---
 
-## 🚀 How to Run the Project
+## 🚀 How to Run the Project Locally
 
-You can boot up the entire stack—both the React Frontend and the Flask Backend—with a single command from the **root directory (`Prep_AI/`)**:
+You can launch both the backend server and the frontend interface concurrently with a single command from the **root directory (`Prep_AI/`)**:
 
 ```bash
 npm run dev
 ```
 
-### What happens when you run this?
-- **Backend**: Launches the Flask/WebSocket development server on `http://localhost:5000`.
-- **Frontend**: Launches the Vite development server on `http://localhost:5173`.
-- The terminal will display logs for both simultaneously.
+### Server Allocation
+*   **Vite Frontend Development Server**: Runs on [**http://localhost:5173**](http://localhost:5173)
+*   **Flask Backend API Server**: Runs on [**http://localhost:5000**](http://localhost:5000)
 
-### Accessing the App
-Open your browser and navigate to: **http://localhost:5173**
-
-1. Create a new account.
-2. Complete the onboarding questionnaire.
-3. Upload your Resume to the Global Vault on the Dashboard.
-4. Try out an AI Mock Interview or analyze your Resume ATS score!
+Open your browser and navigate to **http://localhost:5173**. Log in as a Candidate to experience technical training, or log in using the credentials below to access the Admin Panel:
+*   **Admin Email**: `admin@gmail.com`
+*   **Admin Password**: `admin123`
 
 ---
 
-## 🏆 THE IMPACT
-**PrepAI** isn't just a tool; it's a career accelerator. By bridging the gap between high-pressure behavioral analysis and technical accuracy, we provide candidates with the same tools used by elite hiring firms. 
+## 🏆 THE IMPACT & ROADMAP
+PrepAI is engineered to empower job seekers by bringing high-fidelity diagnostic tools right to their browsers. By evaluating confidence alongside raw technical competency, we provide candidates with the insights they need to conquer competitive hiring loops and succeed in their careers.
 
 **Prepare for the best. Be the better.**
 
