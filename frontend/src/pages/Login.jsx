@@ -32,7 +32,9 @@ const Login = () => {
     const result = await login(formData.email, formData.password);
     
     if (result.success) {
-      if (result.user && result.user.onboarding_completed === false) {
+      if (result.user && result.user.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else if (result.user && result.user.onboarding_completed === false) {
         navigate('/onboarding', { replace: true });
       } else {
         navigate(from, { replace: true });
