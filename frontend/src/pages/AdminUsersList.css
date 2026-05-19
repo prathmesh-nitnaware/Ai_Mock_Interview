@@ -1,0 +1,228 @@
+/* ============================================================
+   ADMINUSERSLIST.CSS — PrepAI Admin Full Users Directory
+   Premium glassmorphic styling, responsive layout, dark aesthetic
+   ============================================================ */
+
+.admin-users-page {
+  background: transparent;
+  min-height: 100vh;
+  position: relative;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+}
+
+.admin-users-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- BACK BUTTON NAVIGATION --- */
+.back-navigation {
+  margin-bottom: 1.5rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.back-link:hover {
+  color: var(--accent);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* --- HEADER --- */
+.admin-users-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.admin-users-title {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  margin: 0.5rem 0;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.admin-users-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* --- DIRECTORY SECTION --- */
+.users-directory-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--card-radius);
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.table-controls-header-directory {
+  margin-bottom: 1.5rem;
+}
+
+.directory-search-bar-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.directory-search-bar-wrapper .search-wrapper {
+  max-width: 100%;
+}
+
+.directory-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+/* Badge styles */
+.problems-solved-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(236, 72, 153, 0.1);
+  color: #f472b6;
+  border: 1px solid rgba(236, 72, 153, 0.2);
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.mock-score-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+.sessions-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* --- POPUP MODAL ENGAGEMENT GRAPHS --- */
+.modal-graphs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-graph-card {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-graph-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding-bottom: 0.5rem;
+}
+
+.mg-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mg-body.bar-layout {
+  align-items: flex-end;
+}
+
+.mg-empty {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.mg-axis-scores {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+/* SVG activity bars styles */
+.activity-bars-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  width: 100%;
+  height: 80px;
+  padding-top: 10px;
+}
+
+.user-activity-bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: calc(100% / 7);
+}
+
+.bar-wrapper {
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+}
+
+.bar-fill {
+  width: 12px;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, #ec4899, #8b5cf6);
+  box-shadow: 0 0 8px rgba(236, 72, 153, 0.3);
+  transition: height 0.5s ease;
+}
+
+.bar-day-lbl {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  font-weight: 700;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1024px) {
+  .modal-graphs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-users-content {
+    padding: 1.5rem 1rem;
+  }
+}

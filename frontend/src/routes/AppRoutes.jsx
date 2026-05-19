@@ -18,6 +18,7 @@ import ResumeUpload from '../pages/ResumeUpload';
 import ResumeResult from '../pages/ResumeResult'; 
 import Onboarding from '../pages/Onboarding'; 
 import AdminDashboard from '../pages/AdminDashboard'; 
+import AdminUsersList from '../pages/AdminUsersList';
 
 // Interview Flow
 import Interview from '../pages/Interview'; 
@@ -67,6 +68,7 @@ const AppRoutes = () => {
           
           {/* Admin Panel */}
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsersList />} />
           
         </Route>
       </Route>

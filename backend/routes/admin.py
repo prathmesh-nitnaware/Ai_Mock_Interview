@@ -56,7 +56,36 @@ def get_users(current_user):
         users_cursor = users_collection.find({}, {"password": 0})
         users = []
         for user in users_cursor:
-            user["_id"] = str(user["_id"])
+            user_id = str(user["_id"])
+            # Only include candidate users
+            if user.get("role") == "admin":
+                continue
+                
+            # Count coding problems solved
+            coding_submissions = list(coding_collection.find({
+                "$or": [
+                    {"user_id": user_id},
+                    {"user_id": ObjectId(user_id)}
+                ]
+            }))
+            problems_solved = sum(1 for c in coding_submissions if c.get("success", False))
+            
+            # Count interviews and calculate average score
+            interviews = list(interviews_collection.find({
+                "$or": [
+                    {"user_id": user_id},
+                    {"user_id": ObjectId(user_id)}
+                ]
+            }))
+            interviews_count = len(interviews)
+            avg_score = 0
+            if interviews_count > 0:
+                avg_score = sum(int(i.get("overall_score") or 0) for i in interviews) / interviews_count
+                
+            user["_id"] = user_id
+            user["problems_solved"] = problems_solved
+            user["interviews_count"] = interviews_count
+            user["average_score"] = round(avg_score, 1)
             users.append(user)
             
         return jsonify({"users": users}), 200
@@ -129,6 +158,52 @@ def get_user_activity(current_user, user_id):
         # Sort timeline by date descending
         timeline.sort(key=lambda x: x["date"], reverse=True)
         
+        # Calculate daily activity logs in the last 7 days
+        today = datetime.now(timezone.utc)
+        activity_days = []
+        for idx in range(6, -1, -1):
+            d = today - timedelta(days=idx)
+            activity_days.append({
+                "date": d.strftime("%a"),
+                "full_date": d.strftime("%Y-%m-%d"),
+                "count": 0
+            })
+            
+        seven_days_ago = today - timedelta(days=7)
+        
+        # Chronological list of interview scores
+        scores_list = []
+        sorted_interviews = sorted(interviews, key=lambda x: x.get("created_at") or x["_id"].generation_time)
+        for i in sorted_interviews:
+            scores_list.append({
+                "role": i.get("role", "Developer"),
+                "score": int(i.get("overall_score") or 0)
+            })
+            
+        # Count 7 days activities
+        for act in interviews + coding:
+            dt = act.get("created_at") or act["_id"].generation_time
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            if dt >= seven_days_ago:
+                dt_str = dt.strftime("%Y-%m-%d")
+                for day in activity_days:
+                    if day["full_date"] == dt_str:
+                        day["count"] += 1
+                        
+        if user.get("resume_filename"):
+            resume_dt = user.get("resume_updated_at") or user["_id"].generation_time
+            if resume_dt.tzinfo is None:
+                resume_dt = resume_dt.replace(tzinfo=timezone.utc)
+            if resume_dt >= seven_days_ago:
+                dt_str = resume_dt.strftime("%Y-%m-%d")
+                for day in activity_days:
+                    if day["full_date"] == dt_str:
+                        day["count"] += 1
+
+        for day in activity_days:
+            del day["full_date"]
+
         return jsonify({
             "user": {
                 "name": user.get("name"),
@@ -145,7 +220,9 @@ def get_user_activity(current_user, user_id):
                 "has_resume": bool(user.get("resume_filename")),
                 "resume_name": user.get("resume_filename", "")
             },
-            "timeline": timeline
+            "timeline": timeline,
+            "scores_chart": scores_list,
+            "activity_chart": activity_days
         }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
