@@ -12,9 +12,6 @@ admin_bp = Blueprint("admin", __name__)
 def get_analytics(current_user):
     try:
         total_users = users_collection.count_documents({})
-        total_interviews = interviews_collection.count_documents({})
-        total_coding = coding_collection.count_documents({})
-        total_resumes = users_collection.count_documents({"resume_data": {"$exists": True}})
         
         # Generate last 7 days list
         today = datetime.now(timezone.utc)
@@ -24,9 +21,7 @@ def get_analytics(current_user):
             days.append({
                 "date": d.strftime("%a"), # e.g. "Mon"
                 "full_date": d.strftime("%Y-%m-%d"),
-                "users": 0,
-                "interviews": 0,
-                "coding": 0
+                "users": 0
             })
             
         seven_days_ago = today - timedelta(days=7)
@@ -43,45 +38,13 @@ def get_analytics(current_user):
                     if day["full_date"] == dt_str:
                         day["users"] += 1
                         
-        # Aggregate 7 days interviews
-        interviews = list(interviews_collection.find({}))
-        for i in interviews:
-            dt = i.get("created_at") or i["_id"].generation_time
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
-            if dt >= seven_days_ago:
-                dt_str = dt.strftime("%Y-%m-%d")
-                for day in days:
-                    if day["full_date"] == dt_str:
-                        day["interviews"] += 1
-                        
-        # Aggregate 7 days coding
-        coding = list(coding_collection.find({}))
-        for c in coding:
-            dt = c.get("created_at") or c["_id"].generation_time
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
-            if dt >= seven_days_ago:
-                dt_str = dt.strftime("%Y-%m-%d")
-                for day in days:
-                    if day["full_date"] == dt_str:
-                        day["coding"] += 1
-                        
         # Clean full_date from output
         for day in days:
             del day["full_date"]
 
         return jsonify({
             "total_users": total_users,
-            "total_interviews": total_interviews,
-            "total_coding_submissions": total_coding,
-            "total_resumes": total_resumes,
-            "chart_data": days,
-            "engagement": {
-                "interviews": total_interviews,
-                "scans": total_resumes,
-                "coding": total_coding
-            }
+            "chart_data": days
         }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

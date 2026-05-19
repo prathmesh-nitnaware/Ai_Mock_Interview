@@ -23,17 +23,19 @@ const Layout = () => {
 
   const isActive = (path) => location.pathname.startsWith(path);
 
-  const navLinks = [
-    { name: 'Dashboard',     path: '/dashboard',      icon: <LayoutDashboard size={18} /> },
-    { name: 'ATS Optimizer', path: '/resume/upload',  icon: <FileText size={18} /> },
-    { name: 'Mock Interview', path: '/interview/setup', icon: <Mic size={18} /> },
-    { name: 'Coding Dojo',   path: '/coding/dojo',    icon: <Terminal size={18} /> },
-    { name: 'Profile',       path: '/profile',        icon: <User size={18} /> },
-  ];
+  const navLinks = user?.role === 'admin' 
+    ? [
+        { name: 'Admin Panel', path: '/admin', icon: <Shield size={18} /> },
+        { name: 'Profile',     path: '/profile', icon: <User size={18} /> },
+      ]
+    : [
+        { name: 'Dashboard',     path: '/dashboard',      icon: <LayoutDashboard size={18} /> },
+        { name: 'ATS Optimizer', path: '/resume/upload',  icon: <FileText size={18} /> },
+        { name: 'Mock Interview', path: '/interview/setup', icon: <Mic size={18} /> },
+        { name: 'Coding Dojo',   path: '/coding/dojo',    icon: <Terminal size={18} /> },
+        { name: 'Profile',       path: '/profile',        icon: <User size={18} /> },
+      ];
 
-  if (user?.role === 'admin') {
-    navLinks.push({ name: 'Admin Panel', path: '/admin', icon: <Shield size={18} /> });
-  }
 
 
   return (

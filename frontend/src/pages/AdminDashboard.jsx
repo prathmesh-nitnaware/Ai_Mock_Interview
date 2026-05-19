@@ -5,22 +5,20 @@ import { api } from '../services/api';
 import { 
   Shield, 
   Users, 
-  Mic, 
-  Terminal, 
   Search, 
   Sparkles, 
   AlertCircle,
   Mail,
   CheckCircle,
   HelpCircle,
-  FileText,
   TrendingUp,
-  Activity,
   X,
   Clock,
-  Briefcase,
   Trophy,
-  Compass
+  Compass,
+  Mic,
+  Terminal,
+  FileText
 } from 'lucide-react';
 import './AdminDashboard.css';
 
@@ -32,15 +30,7 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const [analytics, setAnalytics] = useState({
     total_users: 0,
-    total_interviews: 0,
-    total_coding_submissions: 0,
-    total_resumes: 0,
-    chart_data: [],
-    engagement: {
-      interviews: 0,
-      scans: 0,
-      coding: 0
-    }
+    chart_data: []
   });
   const [usersList, setUsersList] = useState([]);
   
@@ -137,7 +127,7 @@ const AdminDashboard = () => {
   // Helper for computing line coordinates for the SVG charts
   const renderLineChartPath = (data, key) => {
     if (!data || data.length === 0) return '';
-    const width = 500;
+    const width = 800;
     const height = 150;
     const maxVal = Math.max(...data.map(d => d[key]), 1) * 1.2;
     const points = data.map((d, i) => {
@@ -150,7 +140,7 @@ const AdminDashboard = () => {
 
   const renderAreaChartPath = (data, key) => {
     if (!data || data.length === 0) return '';
-    const width = 500;
+    const width = 800;
     const height = 150;
     const linePath = renderLineChartPath(data, key);
     return `${linePath} L ${width},${height} L 0,${height} Z`;
@@ -168,9 +158,7 @@ const AdminDashboard = () => {
               <div className="sk-block" style={{ width: 340, height: 50, borderRadius: 8 }}></div>
             </div>
           </div>
-          <div className="admin-stats-grid" style={{ marginBottom: 40 }}>
-            <div className="sk-card" style={{ height: 120 }}></div>
-            <div className="sk-card" style={{ height: 120 }}></div>
+          <div className="admin-stats-grid-single" style={{ marginBottom: 40 }}>
             <div className="sk-card" style={{ height: 120 }}></div>
           </div>
           <div className="sk-card" style={{ height: 350 }}></div>
@@ -178,15 +166,6 @@ const AdminDashboard = () => {
       </div>
     );
   }
-
-  // Calculate engagement percentages for styling horizontal indicators
-  const totalEngagement = Math.max(
-    analytics.engagement.interviews + analytics.engagement.scans + analytics.engagement.coding, 
-    1
-  );
-  const interviewEngagementPct = Math.round((analytics.engagement.interviews / totalEngagement) * 100);
-  const scanEngagementPct = Math.round((analytics.engagement.scans / totalEngagement) * 100);
-  const codingEngagementPct = Math.round((analytics.engagement.coding / totalEngagement) * 100);
 
   return (
     <div className="admin-page fade-in">
@@ -203,69 +182,39 @@ const AdminDashboard = () => {
               <span>PrepAI Headquarters</span>
             </div>
             <h1 className="admin-welcome-title">ADMIN PANEL</h1>
-            <p className="admin-subtitle text-muted font-sans">Single-page control room for user tracking, dynamic activity reports, and engagement metrics.</p>
+            <p className="admin-subtitle text-muted font-sans">Single-page control room for registered users, onboarding progress, and dynamic user activity tracking.</p>
           </div>
         </section>
 
-        {/* --- SYSTEM METRICS (4 Columns) --- */}
-        <section className="admin-stats-grid-four">
-          <div className="admin-stat-card">
+        {/* --- SYSTEM METRICS (Single Total Users Metric Card) --- */}
+        <section className="admin-stats-grid-single">
+          <div className="admin-stat-card-single">
             <div className="admin-stat-icon-box users-accent">
-              <Users size={20} />
+              <Users size={24} />
             </div>
             <div className="admin-stat-details">
-              <span className="admin-stat-label">Total Users</span>
+              <span className="admin-stat-label">Registered Members</span>
               <span className="admin-stat-value">{analytics.total_users}</span>
             </div>
           </div>
-
-          <div className="admin-stat-card">
-            <div className="admin-stat-icon-box interview-accent">
-              <Mic size={20} />
-            </div>
-            <div className="admin-stat-details">
-              <span className="admin-stat-label">Mock Sessions</span>
-              <span className="admin-stat-value">{analytics.total_interviews}</span>
-            </div>
-          </div>
-
-          <div className="admin-stat-card">
-            <div className="admin-stat-icon-box coding-accent">
-              <Terminal size={20} />
-            </div>
-            <div className="admin-stat-details">
-              <span className="admin-stat-label">Code Dojo Runs</span>
-              <span className="admin-stat-value">{analytics.total_coding_submissions}</span>
-            </div>
-          </div>
-
-          <div className="admin-stat-card">
-            <div className="admin-stat-icon-box scan-accent">
-              <FileText size={20} />
-            </div>
-            <div className="admin-stat-details">
-              <span className="admin-stat-label">Resumes Synced</span>
-              <span className="admin-stat-value">{analytics.total_resumes}</span>
-            </div>
-          </div>
         </section>
 
-        {/* --- DATA & GRAPHS ROW --- */}
-        <section className="admin-charts-section">
+        {/* --- DATA & GRAPHS ROW (Wide User Growth Chart) --- */}
+        <section className="admin-charts-section-wide">
           
           {/* Active Platform Growth over the last 7 days */}
           <div className="chart-card glass-card">
             <div className="chart-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <TrendingUp size={18} className="chart-icon" />
-                <h3 className="chart-title">7-Day Engagement Trend</h3>
+                <h3 className="chart-title">7-Day Member Growth Trend</h3>
               </div>
-              <span className="chart-legend-label">Daily Events Logged</span>
+              <span className="chart-legend-label">Daily Signups Logged</span>
             </div>
             <div className="chart-body">
               {analytics.chart_data && analytics.chart_data.length > 0 ? (
                 <div style={{ position: 'relative', width: '100%', height: '180px' }}>
-                  <svg viewBox="0 0 500 150" width="100%" height="150" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+                  <svg viewBox="0 0 800 150" width="100%" height="150" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
                     <defs>
                       <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.3"/>
@@ -273,15 +222,15 @@ const AdminDashboard = () => {
                       </linearGradient>
                     </defs>
                     {/* SVG gridlines */}
-                    <line x1="0" y1="0" x2="500" y2="0" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                    <line x1="0" y1="50" x2="500" y2="50" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                    <line x1="0" y1="100" x2="500" y2="100" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                    <line x1="0" y1="150" x2="500" y2="150" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                    <line x1="0" y1="0" x2="800" y2="0" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                    <line x1="0" y1="50" x2="800" y2="50" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                    <line x1="0" y1="100" x2="800" y2="100" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                    <line x1="0" y1="150" x2="800" y2="150" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
                     
                     {/* Area path */}
-                    <path d={renderAreaChartPath(analytics.chart_data, 'interviews')} fill="url(#chartGradient)" />
+                    <path d={renderAreaChartPath(analytics.chart_data, 'users')} fill="url(#chartGradient)" />
                     {/* Line path */}
-                    <path d={renderLineChartPath(analytics.chart_data, 'interviews')} fill="none" stroke="var(--accent)" strokeWidth="2.5" />
+                    <path d={renderLineChartPath(analytics.chart_data, 'users')} fill="none" stroke="var(--accent)" strokeWidth="2.5" />
                   </svg>
                   {/* SVG axis details */}
                   <div className="chart-axis-labels">
@@ -291,53 +240,8 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               ) : (
-                <div className="empty-chart">Insufficient tracking logs.</div>
+                <div className="empty-chart">Insufficient signup activity.</div>
               )}
-            </div>
-          </div>
-
-          {/* Module Popularity breakdown */}
-          <div className="chart-card glass-card">
-            <div className="chart-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Activity size={18} style={{ color: '#ec4899' }} />
-                <h3 className="chart-title">Module Share breakdown</h3>
-              </div>
-              <span className="chart-legend-label">Popularity Share</span>
-            </div>
-            
-            <div className="engagement-bars-wrapper">
-              
-              <div className="eb-item">
-                <div className="eb-header">
-                  <span>Mock Interviews</span>
-                  <span className="eb-val">{analytics.engagement.interviews} ({interviewEngagementPct}%)</span>
-                </div>
-                <div className="eb-track">
-                  <div className="eb-fill bg-interview" style={{ width: `${interviewEngagementPct}%` }}></div>
-                </div>
-              </div>
-
-              <div className="eb-item">
-                <div className="eb-header">
-                  <span>ATS Resume Scans</span>
-                  <span className="eb-val">{analytics.engagement.scans} ({scanEngagementPct}%)</span>
-                </div>
-                <div className="eb-track">
-                  <div className="eb-fill bg-scans" style={{ width: `${scanEngagementPct}%` }}></div>
-                </div>
-              </div>
-
-              <div className="eb-item">
-                <div className="eb-header">
-                  <span>Coding Dojo Runs</span>
-                  <span className="eb-val">{analytics.engagement.coding} ({codingEngagementPct}%)</span>
-                </div>
-                <div className="eb-track">
-                  <div className="eb-fill bg-coding" style={{ width: `${codingEngagementPct}%` }}></div>
-                </div>
-              </div>
-
             </div>
           </div>
 
@@ -356,7 +260,7 @@ const AdminDashboard = () => {
           
           <div className="table-controls-header">
             <h3 style={{ fontSize: '1rem', fontWeight: 800, letterSpacing: '0.5px' }}>Registered Candidates</h3>
-            <span className="text-muted" style={{ fontSize: '0.8rem' }}>Click name to inspect user activity & engagement</span>
+            <span className="text-muted" style={{ fontSize: '0.8rem' }}>Click name to inspect user activity details</span>
           </div>
 
           <div className="table-controls">

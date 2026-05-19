@@ -43,28 +43,28 @@
   color: var(--text-secondary);
 }
 
-/* --- STATS GRID (4 Columns) --- */
-.admin-stats-grid-four {
+/* --- STATS GRID (Single Total Users Card) --- */
+.admin-stats-grid-single {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 2.5rem;
+  grid-template-columns: 1fr;
+  margin-bottom: 2rem;
 }
 
-.admin-stat-card {
+.admin-stat-card-single {
   background: var(--bg-card);
   border: 1px solid var(--border-default);
   border-radius: var(--card-radius);
-  padding: 1.5rem;
+  padding: 1.75rem 2rem;
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
   position: relative;
   overflow: hidden;
+  max-width: 320px;
   transition: all 0.3s var(--ease-out);
 }
 
-.admin-stat-card::before {
+.admin-stat-card-single::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -74,45 +74,29 @@
   transition: opacity 0.3s;
 }
 
-.admin-stat-card:hover {
+.admin-stat-card-single:hover {
   background: var(--bg-card-hover);
   border-color: var(--accent-border);
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-md);
 }
 
-.admin-stat-card:hover::before {
+.admin-stat-card-single:hover::before {
   opacity: 1;
 }
 
 .admin-stat-icon-box {
-  padding: 0.75rem;
+  padding: 0.85rem;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Colors for stats icons */
 .users-accent {
   background: rgba(99, 102, 241, 0.1);
   border: 1px solid rgba(99, 102, 241, 0.2);
   color: #818cf8;
-}
-.interview-accent {
-  background: rgba(168, 85, 247, 0.1);
-  border: 1px solid rgba(168, 85, 247, 0.2);
-  color: #c084fc;
-}
-.coding-accent {
-  background: rgba(236, 72, 153, 0.1);
-  border: 1px solid rgba(236, 72, 153, 0.2);
-  color: #f472b6;
-}
-.scan-accent {
-  background: rgba(45, 212, 191, 0.1);
-  border: 1px solid rgba(45, 212, 191, 0.2);
-  color: #2dd4bf;
 }
 
 .admin-stat-details {
@@ -121,7 +105,7 @@
 }
 
 .admin-stat-label {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--text-tertiary);
@@ -130,22 +114,19 @@
 }
 
 .admin-stat-value {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 800;
   color: var(--text-primary);
   line-height: 1.1;
 }
 
-/* --- CHARTS GRID SECTION --- */
-.admin-charts-section {
-  display: grid;
-  grid-template-columns: 3.2fr 2.8fr;
-  gap: 1.5rem;
+/* --- CHARTS GRID SECTION (Wide graph) --- */
+.admin-charts-section-wide {
   margin-bottom: 2.5rem;
 }
 
 .chart-card {
-  padding: 1.5rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -188,7 +169,7 @@
 }
 
 .chart-axis-labels span {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: var(--text-tertiary);
   font-weight: 600;
 }
@@ -199,62 +180,6 @@
   padding: 3rem 0;
   color: var(--text-tertiary);
   font-size: 0.85rem;
-}
-
-/* --- MODULE ENGAGEMENT BARS --- */
-.engagement-bars-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-}
-
-.eb-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.eb-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.eb-header span:first-child {
-  color: var(--text-secondary);
-}
-
-.eb-val {
-  color: var(--text-primary);
-}
-
-.eb-track {
-  height: 6px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 100px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.eb-fill {
-  height: 100%;
-  border-radius: 100px;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.bg-interview {
-  background: linear-gradient(90deg, #c084fc, #a855f7);
-  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
-}
-.bg-scans {
-  background: linear-gradient(90deg, #2dd4bf, #0d9488);
-  box-shadow: 0 0 10px rgba(45, 212, 191, 0.4);
-}
-.bg-coding {
-  background: linear-gradient(90deg, #f472b6, #ec4899);
-  box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
 }
 
 /* --- USERS TABLE CONTROLS --- */
@@ -752,12 +677,6 @@
 
 /* --- RESPONSIVE --- */
 @media (max-width: 1024px) {
-  .admin-stats-grid-four {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .admin-charts-section {
-    grid-template-columns: 1fr;
-  }
   .table-controls {
     flex-direction: column;
     align-items: stretch;
@@ -781,9 +700,6 @@
 }
 
 @media (max-width: 600px) {
-  .admin-stats-grid-four {
-    grid-template-columns: 1fr;
-  }
   .admin-content {
     padding: 1.5rem 1rem;
   }
