@@ -9,7 +9,7 @@ import './Signup.css';
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { signup, loading } = useAuth();
+  const { signup, submitting } = useAuth();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -202,10 +202,10 @@ const Signup = () => {
                 type="submit" 
                 variant="primary" 
                 className="btn-glow-submit w-full mt-6" 
-                isLoading={loading}
-                disabled={loading}
+                isLoading={submitting}
+                disabled={submitting}
               >
-                {loading ? "INITIALIZING..." : <> Initialize Account <ArrowRight size={16} /> </>}
+                {submitting ? "INITIALIZING..." : <> Initialize Account <ArrowRight size={16} /> </>}
               </Button>
             </form>
 

@@ -94,9 +94,55 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="neon-spinner-large"></div>
-        <p className="loading-text">INITIALIZING WORKSPACE...</p>
+      <div className="dashboard-page fade-in">
+        <div className="noise-bg"></div>
+        <div className="ambient-glow"></div>
+        <div className="dashboard-content">
+
+          {/* Header Skeleton */}
+          <div className="profile-header-section">
+            <div className="sk-col">
+              <div className="sk-block sk-pill" style={{ width: 120, marginBottom: 14 }}></div>
+              <div className="sk-block" style={{ width: 280, height: 56, borderRadius: 8, marginBottom: 12 }}></div>
+              <div className="sk-block" style={{ width: 200, height: 18, borderRadius: 6 }}></div>
+            </div>
+            <div className="sk-stats-row">
+              <div className="sk-stat">
+                <div className="sk-block sk-stat-val"></div>
+                <div className="sk-block sk-stat-label"></div>
+              </div>
+              <div className="sk-stat">
+                <div className="sk-block sk-stat-val"></div>
+                <div className="sk-block sk-stat-label"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Cards Skeleton */}
+          <div className="main-actions-grid" style={{ marginBottom: 60 }}>
+            <div className="sk-card sk-card-primary" style={{ height: 160 }}></div>
+            <div className="sk-card" style={{ height: 160 }}></div>
+            <div className="sk-card" style={{ height: 160 }}></div>
+          </div>
+
+          {/* History Skeleton */}
+          <div style={{ marginBottom: 20 }}>
+            <div className="sk-block sk-label" style={{ width: 160, marginBottom: 20 }}></div>
+          </div>
+          <div className="history-grid-compact">
+            <div className="sk-history-card">
+              <div className="sk-block sk-hc-top"></div>
+              <div className="sk-block sk-hc-role"></div>
+              <div className="sk-block sk-hc-footer"></div>
+            </div>
+            <div className="sk-history-card">
+              <div className="sk-block sk-hc-top"></div>
+              <div className="sk-block sk-hc-role"></div>
+              <div className="sk-block sk-hc-footer"></div>
+            </div>
+          </div>
+
+        </div>
       </div>
     );
   }

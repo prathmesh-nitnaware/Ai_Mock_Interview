@@ -203,3 +203,186 @@
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* -----------------------------------------
+   5. SKELETON LOADING SYSTEM
+   ----------------------------------------- */
+
+/* Shimmer keyframe */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+/* Base skeleton block — every skeleton element uses this */
+.sk-block {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 6px;
+}
+
+/* Skeleton page wrapper — same bg as real page */
+.skeleton-page {
+  background-color: #0a0a0a;
+  min-height: 100vh;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.skeleton-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+/* Header row */
+.sk-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 60px;
+}
+
+.sk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Pill badge */
+.sk-pill {
+  width: 120px;
+  height: 28px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+}
+
+/* Big heading title */
+.sk-title {
+  width: 280px;
+  height: 56px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+/* Subtitle line */
+.sk-subtitle {
+  width: 200px;
+  height: 18px;
+  border-radius: 6px;
+}
+
+/* Stats column pair */
+.sk-stats-row {
+  display: flex;
+  gap: 40px;
+}
+
+.sk-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.sk-stat-val {
+  width: 80px;
+  height: 52px;
+  border-radius: 6px;
+}
+
+.sk-stat-label {
+  width: 60px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+/* Action cards */
+.sk-cards-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 60px;
+}
+
+.sk-card {
+  height: 160px;
+  border-radius: 20px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.07) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sk-card-primary {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* Section label */
+.sk-label {
+  width: 160px;
+  height: 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.sk-section-label {
+  margin-bottom: 20px;
+}
+
+/* History cards */
+.sk-history-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.sk-history-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sk-hc-top {
+  width: 100%;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.sk-hc-role {
+  width: 60%;
+  height: 22px;
+  border-radius: 6px;
+}
+
+.sk-hc-footer {
+  width: 100%;
+  height: 14px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+/* Loading text under spinner (kept for AuthContext initial load) */
+.loading-text {
+  margin-top: 1.5rem;
+  color: #555;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: monospace;
+}

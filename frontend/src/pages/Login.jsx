@@ -10,7 +10,7 @@ import './Login.css';
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState(null);
-  const { login, loading } = useAuth();
+  const { login, submitting } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -135,10 +135,10 @@ const Login = () => {
                 type="submit" 
                 variant="primary" 
                 className="btn-glow-submit w-full mt-4" 
-                isLoading={loading}
-                disabled={loading}
+                isLoading={submitting}
+                disabled={submitting}
               >
-                {loading ? "Authenticating..." : <> Secure Sign In <ArrowRight size={18} /> </>}
+                {submitting ? "Authenticating..." : <> Secure Sign In <ArrowRight size={18} /> </>}
               </Button>
             </form>
 

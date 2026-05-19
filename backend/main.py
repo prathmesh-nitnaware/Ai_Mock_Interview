@@ -11,7 +11,7 @@ ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
-    "https://prep-ai-smoky-five.vercel.app",
+    "https://prep-ai-smoky-five.vercel.app",  # Production Vercel frontend
 ]
 
 def create_app():
