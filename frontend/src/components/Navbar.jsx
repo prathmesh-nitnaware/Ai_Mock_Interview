@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
-import { Menu, X, Sparkles, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sparkles } from 'lucide-react';
 import "./components.css";
 
 const Navbar = () => {
   const { user } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -38,15 +36,6 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <div className="nav-links desktop-only">
-            <button
-              className="theme-toggle-btn"
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            >
-              {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-            </button>
-
             {!isDashboard && (
               <>
                 <Link to="/login"  className="nav-link">Sign In</Link>
@@ -69,13 +58,6 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
-          <button
-            className="mobile-link"
-            onClick={toggleTheme}
-            style={{ background:'none', border:'none', cursor:'pointer', textAlign:'left', fontFamily:'inherit' }}
-          >
-            {theme === 'dark' ? '☀️  Light Mode' : '🌙  Dark Mode'}
-          </button>
           {!isDashboard && (
             <>
               <Link to="/login"  className="mobile-link">Sign In</Link>

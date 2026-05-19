@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Terminal, Mic, FileText, Sparkles, ChevronRight, Sun, Moon, Zap, Target, BarChart3 } from 'lucide-react';
+import { ArrowRight, Terminal, Mic, FileText, Sparkles, ChevronRight, Zap, Target, BarChart3 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import './Landing.css';
 
 const Landing = () => {
   const { API_URL } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [text, setText] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
   const [serverStatus, setServerStatus] = useState('waking');
@@ -58,9 +56,6 @@ const Landing = () => {
           PREP AI
         </div>
         <div className="nav-links">
-          <button className="landing-theme-btn" onClick={toggleTheme} aria-label="Toggle theme">
-            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
           <Link to="/login" className="nav-link-login">Sign In</Link>
           <Link to="/signup" className="nav-btn-primary">Get Started →</Link>
         </div>

@@ -9,18 +9,14 @@ import {
   LogOut,
   Sparkles,
   Menu,
-  X,
-  Sun,
-  Moon
+  X
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import Chatbot from '../Chatbot';
 import '../../styles/layout.css';
 
 const Layout = () => {
   const { logout, user } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -33,10 +29,6 @@ const Layout = () => {
     { name: 'Coding Dojo',   path: '/coding/dojo',    icon: <Terminal size={18} /> },
     { name: 'Profile',       path: '/profile',        icon: <User size={18} /> },
   ];
-
-  const initials = user?.name
-    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2)
-    : 'U';
 
   return (
     <div className="app-layout">
@@ -67,20 +59,6 @@ const Layout = () => {
         </div>
 
         <div className="header-right">
-          {/* Theme Toggle */}
-          <button
-            className="theme-toggle-btn"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          >
-            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-
-          {/* User Avatar */}
-          <div className="avatar-circle" title={user?.name}>
-            {initials}
-          </div>
         </div>
       </header>
 
