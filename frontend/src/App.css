@@ -1,24 +1,9 @@
-/* =========================================
-   APP.CSS
-   Global App Structure
-   ========================================= */
-
+/* App.css — root wrapper */
 .app-root {
   min-height: 100vh;
   position: relative;
   display: flex;
   flex-direction: column;
-  
-  /* 1. BACKGROUND: Cool Light Gray */
-  /* Replaces var(--bg-dark) */
-  background-color: var(--color-bg-light); 
-  
-  /* 2. TEXT: Charcoal Gray */
-  /* Replaces white text for better readability on light backgrounds */
-  color: var(--color-text-main);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
 }
-
-/* NOTE: The "Grain Texture" (::before) and "Spotlight" (::after) 
-   have been removed. The new professional theme relies on 
-   clean white space and sharp contrast, not noise.
-*/

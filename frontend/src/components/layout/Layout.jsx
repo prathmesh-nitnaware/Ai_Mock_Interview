@@ -1,81 +1,97 @@
 import React, { useState } from 'react';
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Mic, 
-  Terminal, 
-  User, 
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  FileText,
+  Mic,
+  Terminal,
+  User,
   LogOut,
   Sparkles,
   Menu,
-  X
+  X,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import Chatbot from '../Chatbot';
-import '../../styles/layout.css'; 
+import '../../styles/layout.css';
 
 const Layout = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
-  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path) => location.pathname.startsWith(path);
 
-  const handleLogout = () => {
-    logout();
-  };
-
   const navLinks = [
-    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'ATS Optimizer', path: '/resume/upload', icon: <FileText size={20} /> },
-    { name: 'Mock Interview', path: '/interview/setup', icon: <Mic size={20} /> },
-    { name: 'Coding Dojo', path: '/coding/dojo', icon: <Terminal size={20} /> },
-
-    { name: 'Profile', path: '/profile', icon: <User size={20} /> },
+    { name: 'Dashboard',     path: '/dashboard',      icon: <LayoutDashboard size={18} /> },
+    { name: 'ATS Optimizer', path: '/resume/upload',  icon: <FileText size={18} /> },
+    { name: 'Mock Interview', path: '/interview/setup', icon: <Mic size={18} /> },
+    { name: 'Coding Dojo',   path: '/coding/dojo',    icon: <Terminal size={18} /> },
+    { name: 'Profile',       path: '/profile',        icon: <User size={18} /> },
   ];
+
+  const initials = user?.name
+    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2)
+    : 'U';
 
   return (
     <div className="app-layout">
-      {/* --- LIVE ANIMATED BACKGROUND --- */}
+      {/* Animated background blobs */}
       <div className="global-live-bg">
         <div className="g-blob g-blob-1"></div>
         <div className="g-blob g-blob-2"></div>
         <div className="g-blob g-blob-3"></div>
       </div>
-      
-      {/* --- TOP HEADER --- */}
-      <header className="glass-header">
 
+      {/* ── HEADER ───────────────────────────────────── */}
+      <header className="glass-header">
         <div className="header-left">
-          <button 
-            className="mobile-menu-btn" 
+          <button
+            className="mobile-menu-btn"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          
+
           <Link to="/dashboard" className="brand-logo">
-             <div className="brand-icon-glow">
-               <Sparkles size={16} />
-             </div>
-             <span>PREP AI</span>
+            <div className="brand-icon-glow">
+              <Sparkles size={15} />
+            </div>
+            <span>PREP AI</span>
           </Link>
         </div>
 
-        {/* REMOVED header-right completely */}
+        <div className="header-right">
+          {/* Theme Toggle */}
+          <button
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
 
+          {/* User Avatar */}
+          <div className="avatar-circle" title={user?.name}>
+            {initials}
+          </div>
+        </div>
       </header>
 
-      {/* --- SIDEBAR --- */}
+      {/* ── SIDEBAR ──────────────────────────────────── */}
       <aside className={`glass-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
-        
         <nav className="sidebar-nav">
+          <span className="sidebar-section-label">Navigation</span>
           {navLinks.map((link) => (
-            <Link 
+            <Link
               key={link.name}
-              to={link.path} 
+              to={link.path}
               className={`sidebar-link ${isActive(link.path) ? 'active' : ''}`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -86,31 +102,24 @@ const Layout = () => {
         </nav>
 
         <div className="sidebar-footer">
-          <button onClick={handleLogout} className="sidebar-link logout-btn">
-            <span className="link-icon">
-              <LogOut size={20} />
-            </span>
-            <span className="link-text">Secure Log Out</span>
+          <button onClick={logout} className="sidebar-link logout-btn">
+            <span className="link-icon"><LogOut size={18} /></span>
+            <span className="link-text">Sign Out</span>
           </button>
         </div>
-
       </aside>
 
-      {/* --- MAIN CONTENT --- */}
+      {/* ── MAIN CONTENT ─────────────────────────────── */}
       <main className="main-content-area">
-
         {isMobileMenuOpen && (
-          <div 
-            className="mobile-overlay" 
+          <div
+            className="mobile-overlay"
             onClick={() => setIsMobileMenuOpen(false)}
           />
         )}
-
         <Outlet />
         <Chatbot />
-
       </main>
-
     </div>
   );
 };

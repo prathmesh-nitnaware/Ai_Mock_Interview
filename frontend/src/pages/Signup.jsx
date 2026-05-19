@@ -4,8 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { User, Mail, Lock, ArrowRight, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import InputField from '../components/forms/InputField';
-import '../styles/theme.css'; 
-import './Signup.css'; 
+import './Login.css'; 
 
 const Signup = () => {
   const navigate = useNavigate();

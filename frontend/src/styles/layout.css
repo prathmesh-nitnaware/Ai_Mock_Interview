@@ -1,305 +1,304 @@
-/* =========================================
-   LAYOUT.CSS
-   Glassmorphism Shell (Header & Sidebar)
-   ========================================= */
+/* ============================================================
+   LAYOUT.CSS — App Shell: Header + Sidebar
+   Fully theme-aware via CSS variables
+   ============================================================ */
 
 .app-layout {
-    min-height: 100vh;
-    background-color: #050505; /* Deep SaaS Black */
-    color: white;
-    font-family: 'Inter', system-ui, sans-serif;
-    display: flex;
-    flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  display: flex;
+  flex-direction: column;
 }
 
-/* -----------------------------------------
-   1. HEADER COMPONENT
-   ----------------------------------------- */
+/* ── HEADER ─────────────────────────────────────────────── */
 .glass-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    z-index: 100;
-    background: rgba(10, 10, 12, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 2rem;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 64px;
+  z-index: 200;
+  background: var(--header-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  gap: 1rem;
 }
 
-.header-left, .header-right {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 /* Brand */
 .brand-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: white;
-    font-weight: 800;
-    font-size: 1.15rem;
-    letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.3px;
 }
 
 .brand-icon-glow {
-    width: 32px;
-    height: 32px;
-    background: rgba(129, 140, 248, 0.1);
-    border: 1px solid rgba(129, 140, 248, 0.3);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #818cf8;
-    box-shadow: 0 0 15px rgba(129, 140, 248, 0.2);
+  width: 30px;
+  height: 30px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  box-shadow: var(--accent-glow);
+  flex-shrink: 0;
 }
 
-/* Avatar */
-.user-profile-trigger {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0;
+}
+.theme-toggle-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  transform: scale(1.05);
 }
 
-.user-name {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #e4e4e7;
-    transition: color 0.2s;
-}
-
-.user-profile-trigger:hover .user-name { color: white; }
-
-.avatar-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #818cf8, #3b82f6);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: white;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.user-profile-trigger:hover .avatar-circle {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(129, 140, 248, 0.4);
-}
-
+/* Mobile hamburger */
 .mobile-menu-btn {
-    display: none;
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 0;
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+}
+.mobile-menu-btn:hover { background: var(--bg-card-hover); }
+
+/* User Avatar */
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  border: 1.5px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: white;
+  flex-shrink: 0;
 }
 
-/* -----------------------------------------
-   2. SIDEBAR COMPONENT
-   ----------------------------------------- */
+/* ── SIDEBAR ─────────────────────────────────────────────── */
 .glass-sidebar {
-    position: fixed;
-    left: 0;
-    top: 70px; /* Sits exactly below Header */
-    bottom: 0;
-    width: 260px;
-    background: rgba(10, 10, 12, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 1rem;
-    z-index: 90;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: fixed;
+  left: 0;
+  top: 64px;
+  bottom: 0;
+  width: 240px;
+  background: var(--sidebar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 0.75rem;
+  z-index: 150;
+  transition: transform 0.3s var(--ease-out) !important;
 }
 
 .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
 }
 
 .sidebar-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    text-decoration: none;
-    color: #a1a1aa;
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.18s ease !important;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-main);
 }
 
 .sidebar-link:hover {
-    background: rgba(255, 255, 255, 0.03);
-    color: white;
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--border-default);
 }
 
 .sidebar-link.active {
-    background: rgba(129, 140, 248, 0.1);
-    color: #818cf8;
-    border: 1px solid rgba(129, 140, 248, 0.2);
-    box-shadow: inset 4px 0 0 #818cf8;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border-color: var(--accent-border);
+  font-weight: 600;
 }
 
+.sidebar-link.active .link-icon { color: var(--accent); }
+
 .link-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+.sidebar-link:hover .link-icon,
+.sidebar-link.active .link-icon { color: inherit; }
+
+/* Sidebar section label */
+.sidebar-section-label {
+  padding: 1.25rem 14px 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
 }
 
 .sidebar-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 1rem;
-    margin-top: auto;
+  border-top: 1px solid var(--border-default);
+  padding-top: 0.75rem;
+  margin-top: auto;
 }
 
-.logout-btn {
-    width: 100%;
-    background: transparent;
-    cursor: pointer;
-    text-align: left;
-}
-.logout-btn:hover { 
-    color: #ef4444; 
-    background: rgba(239, 68, 68, 0.05); 
+.logout-btn:hover {
+  color: var(--danger) !important;
+  background: var(--danger-subtle) !important;
+  border-color: transparent !important;
 }
 
-/* -----------------------------------------
-   3. MAIN CONTENT AREA
-   ----------------------------------------- */
+/* ── MAIN CONTENT ───────────────────────────────────────── */
 .main-content-area {
-    margin-left: 260px; /* Offset to not hide behind sidebar */
-    padding-top: 70px;  /* Offset to not hide behind header */
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+  margin-left: 240px;
+  padding-top: 64px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--bg-base);
 }
 
-/* -----------------------------------------
-   4. RESPONSIVE / MOBILE OVERRIDES
-   ----------------------------------------- */
-@media (max-width: 900px) {
-    .mobile-menu-btn { display: block; }
-    .hidden-mobile { display: none; }
-    .glass-header { padding: 0 1rem; }
-    
-    .main-content-area {
-        margin-left: 0; /* Remove sidebar offset on mobile */
-    }
-
-    /* Transform Sidebar into Mobile Slide-out Drawer */
-    .glass-sidebar {
-        transform: translateX(-100%);
-        background: rgba(10, 10, 12, 0.95);
-        border-right: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .glass-sidebar.mobile-open {
-        transform: translateX(0);
-        box-shadow: 20px 0 50px rgba(0,0,0,0.8);
-    }
-
-    .mobile-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        backdrop-filter: blur(2px);
-        z-index: 80; /* Below sidebar, above content */
-    }
-}
-
-/* -----------------------------------------
-   5. GLOBAL LIVE ANIMATED BACKGROUND
-   ----------------------------------------- */
-/* Master override to ensure the glowing background bleeds through page wrappers */
-.dashboard-root,
-.profile-root,
-.dojo-root,
-.interview-root {
-    background: transparent !important;
-}
-
+/* ── ANIMATED BACKGROUND BLOBS ──────────────────────────── */
 .global-live-bg {
-    position: fixed;
-    top: -10vh;
-    left: -10vw;
-    width: 120vw;
-    height: 120vh;
-    z-index: 0;
-    overflow: hidden;
-    pointer-events: none;
-    background-color: #050505;
+  position: fixed;
+  top: -10vh; left: -10vw;
+  width: 120vw; height: 120vh;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--bg-base);
 }
 
 .g-blob {
-    position: absolute;
-    filter: blur(90px);
-    border-radius: 50%;
-    opacity: 0.5;
-    animation: floatBlob 20s infinite alternate ease-in-out;
+  position: absolute;
+  filter: blur(100px);
+  border-radius: 50%;
+  animation: floatBlob 25s infinite alternate ease-in-out;
+  opacity: 0;
+  transition: opacity 0.5s ease !important;
 }
+
+[data-theme="dark"] .g-blob { opacity: 0.35; }
+[data-theme="light"] .g-blob { opacity: 0.12; }
 
 .g-blob-1 {
-    width: 600px;
-    height: 600px;
-    background: rgba(99, 102, 241, 0.4); /* indigo glow */
-    top: -10%;
-    left: -10%;
-    animation-duration: 25s;
+  width: 600px; height: 600px;
+  background: rgba(99,102,241,0.5);
+  top: -10%; left: -10%;
+  animation-duration: 25s;
 }
-
 .g-blob-2 {
-    width: 700px;
-    height: 700px;
-    background: rgba(59, 130, 246, 0.3); /* red glow */
-    bottom: -20%;
-    right: -10%;
-    animation-duration: 28s;
-    animation-direction: alternate-reverse;
+  width: 700px; height: 700px;
+  background: rgba(139,92,246,0.35);
+  bottom: -20%; right: -10%;
+  animation-duration: 30s;
+  animation-direction: alternate-reverse;
 }
-
 .g-blob-3 {
-    width: 500px;
-    height: 500px;
-    background: rgba(139, 92, 246, 0.3); /* red glow */
-    top: 40%;
-    left: 50%;
-    margin-left: -250px;
-    animation-duration: 32s;
+  width: 500px; height: 500px;
+  background: rgba(59,130,246,0.25);
+  top: 40%; left: 50%;
+  margin-left: -250px;
+  animation-duration: 35s;
 }
 
 @keyframes floatBlob {
-    0% {
-        transform: translate(0, 0) scale(1);
-    }
-    33% {
-        transform: translate(50px, -50px) scale(1.1);
-    }
-    66% {
-        transform: translate(-30px, 40px) scale(0.9);
-    }
-    100% {
-        transform: translate(20px, 20px) scale(1.05);
-    }
+  0%   { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(40px,-40px) scale(1.08); }
+  66%  { transform: translate(-30px,35px) scale(0.92); }
+  100% { transform: translate(20px,20px) scale(1.04); }
+}
+
+/* ── TRANSPARENT PAGE ROOTS ─────────────────────────────── */
+.dashboard-root, .profile-root,
+.dojo-root, .interview-root {
+  background: transparent !important;
+}
+
+/* ── MOBILE ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .mobile-menu-btn { display: flex; }
+
+  .main-content-area { margin-left: 0; }
+
+  .glass-sidebar {
+    transform: translateX(-100%);
+    width: 260px;
+    background: var(--bg-base);
+    box-shadow: none;
+  }
+  .glass-sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 8px 0 40px rgba(0,0,0,0.3);
+  }
+
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(3px);
+    z-index: 140;
+  }
 }

@@ -1,17 +1,15 @@
-/* =========================================
-   THEME.CSS
-   Global Components (Buttons, Cards, Text)
-   ========================================= */
+/* ============================================================
+   THEME.CSS — Shared component utilities (buttons, cards, text)
+   Uses CSS tokens from global.css for full theme support
+   ============================================================ */
 
-/* -----------------------------------------
-   1. TYPOGRAPHY UTILITIES
-   ----------------------------------------- */
+/* ── TYPOGRAPHY ─────────────────────────────────────────── */
 .text-editorial-h1 {
   font-family: var(--font-main);
   font-weight: 800;
-  letter-spacing: -1.5px; /* Slightly softer than before */
+  letter-spacing: -1.5px;
   line-height: 1.1;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .text-editorial-sub {
@@ -20,96 +18,75 @@
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-size: 0.85rem;
-  color: var(--primary); /* Now uses indigo */
+  color: var(--accent);
 }
 
-/* -----------------------------------------
-   2. BUTTON VARIANTS
-   ----------------------------------------- */
+/* ── BUTTON VARIANTS ────────────────────────────────────── */
 .btn-editorial {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 14px 28px;
-  font-size: 0.95rem;
+  padding: 11px 22px;
+  font-size: 0.9rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
   text-decoration: none;
-  border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-  transition: all 0.3s var(--ease-out-expo);
+  border: 1px solid var(--border-default);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  transition: all 0.2s ease !important;
   cursor: pointer;
-  border-radius: var(--btn-radius); /* Softer rounded edges */
+  border-radius: var(--btn-radius);
+  font-family: var(--font-main);
 }
-
 .btn-editorial:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+  background: var(--bg-card-hover);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
 }
-
 .btn-editorial.primary {
-  background: white;
-  color: black;
+  background: var(--accent);
+  color: white;
   border-color: transparent;
 }
-
 .btn-editorial.primary:hover:not(:disabled) {
-  background: #f0f0f0;
-  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.15); /* Soft glow */
+  background: var(--accent-hover);
+  box-shadow: 0 6px 20px rgba(99,102,241,0.3);
 }
+.btn-editorial:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.btn-editorial:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* -----------------------------------------
-   3. CARD VARIANTS (The Glass Upgrade)
-   ----------------------------------------- */
+/* ── CARD VARIANT ───────────────────────────────────────── */
 .card-editorial {
   background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  padding: 2.5rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-default);
+  padding: 2rem;
   border-radius: var(--card-radius);
-  transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s, border-color 0.3s;
-  position: relative;
-  overflow: hidden;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s, border-color 0.3s !important;
 }
-
 .card-editorial:hover {
-  border-color: rgba(255, 255, 255, 0.15);
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-color: var(--border-strong);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
 
-/* -----------------------------------------
-   4. ANIMATIONS & EFFECTS
-   ----------------------------------------- */
-.noise-bg {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+/* ── ICON WRAPPER ───────────────────────────────────────── */
+.icon-glow-circle-small {
+  width: 30px; height: 30px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
 }
 
-.fade-in-up {
-  animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-@keyframes fadeInUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
+/* ── SECTION SPACING ────────────────────────────────────── */
+.mb-2  { margin-bottom: 0.5rem; }
+.mb-4  { margin-bottom: 1rem; }
+.mb-6  { margin-bottom: 1.5rem; }
+.mt-4  { margin-top: 1rem; }
+.mt-6  { margin-top: 1.5rem; }
+.mt-8  { margin-top: 2rem; }

@@ -1,92 +1,260 @@
-/* =========================================
-   1. GLOBAL VARIABLES & THEME CONFIG
-   "Glass & Glow" SaaS Aesthetic
-   ========================================= */
-:root {
-  /* Brand Palette (The "Glow") */
-  --primary: #818cf8;       /* indigo */
-  --primary-hover: #6366f1; /* Darker indigo */
-  --accent-red: #3b82f6;   
-  
-  /* Semantic Colors */
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger:  #ef4444;
+/* ============================================================
+   GLOBAL.CSS — PrepAI Design System
+   Full CSS token system for Dark + Light themes
+   ============================================================ */
 
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── DARK THEME (default) ───────────────────────────────── */
+:root,
+[data-theme="dark"] {
   /* Backgrounds */
-  --bg-dark: #050505;       /* Deep SaaS Black */
-  --bg-card: rgba(15, 15, 18, 0.6); /* Default Glass Bg */
-  
-  /* Glassmorphism Settings */
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-focus: rgba(129, 140, 248, 0.4);
+  --bg-base:         #0a0a0b;
+  --bg-subtle:       #111113;
+  --bg-card:         rgba(255,255,255,0.03);
+  --bg-card-hover:   rgba(255,255,255,0.055);
+  --bg-elevated:     #18181b;
+  --bg-input:        rgba(255,255,255,0.04);
+  --bg-input-focus:  rgba(255,255,255,0.07);
 
-  /* Text Colors */
-  --text-main: #ffffff;
-  --text-muted: #a1a1aa;    /* Cool tech grey */
+  /* Borders */
+  --border-default:  rgba(255,255,255,0.08);
+  --border-strong:   rgba(255,255,255,0.14);
+  --border-focus:    rgba(99,102,241,0.5);
 
-  /* Effects & Geometry */
-  --shadow-glow: 0 10px 40px -10px rgba(129, 140, 248, 0.15);
-  --card-radius: 16px;      /* Softer corners for modern UI */
-  --btn-radius: 8px;
+  /* Text */
+  --text-primary:    #f4f4f5;
+  --text-secondary:  #a1a1aa;
+  --text-tertiary:   #71717a;
+  --text-inverse:    #0a0a0b;
 
-  /* Typography */
-  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Brand / Accent */
+  --accent:          #6366f1;
+  --accent-hover:    #4f46e5;
+  --accent-subtle:   rgba(99,102,241,0.12);
+  --accent-border:   rgba(99,102,241,0.3);
+  --accent-glow:     0 0 24px rgba(99,102,241,0.25);
+
+  /* Semantic */
+  --success:         #10b981;
+  --success-subtle:  rgba(16,185,129,0.1);
+  --warning:         #f59e0b;
+  --warning-subtle:  rgba(245,158,11,0.1);
+  --danger:          #ef4444;
+  --danger-subtle:   rgba(239,68,68,0.08);
+
+  /* Sidebar */
+  --sidebar-bg:      rgba(10,10,11,0.92);
+  --sidebar-border:  rgba(255,255,255,0.05);
+  --header-bg:       rgba(10,10,11,0.85);
+
+  /* Scrollbar */
+  --scrollbar-track: #0a0a0b;
+  --scrollbar-thumb: rgba(255,255,255,0.1);
+
+  /* Skeleton shimmer */
+  --sk-base:         rgba(255,255,255,0.04);
+  --sk-shine:        rgba(255,255,255,0.09);
+
+  /* Shadows */
+  --shadow-sm:       0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:       0 4px 20px rgba(0,0,0,0.5);
+  --shadow-lg:       0 20px 60px rgba(0,0,0,0.6);
+  --shadow-card:     0 0 0 1px var(--border-default), 0 4px 20px rgba(0,0,0,0.3);
+
+  /* Misc */
+  --card-radius:     14px;
+  --btn-radius:      9px;
+  --input-radius:    9px;
+  --ease-out:        cubic-bezier(0.16,1,0.3,1);
+  --font-main:       'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:       'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* =========================================
-   2. RESET & BASE STYLES
-   ========================================= */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ── LIGHT THEME ────────────────────────────────────────── */
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg-base:         #fafafa;
+  --bg-subtle:       #f4f4f5;
+  --bg-card:         #ffffff;
+  --bg-card-hover:   #f9f9fb;
+  --bg-elevated:     #ffffff;
+  --bg-input:        #ffffff;
+  --bg-input-focus:  #fafafa;
+
+  /* Borders */
+  --border-default:  rgba(0,0,0,0.08);
+  --border-strong:   rgba(0,0,0,0.14);
+  --border-focus:    rgba(99,102,241,0.5);
+
+  /* Text */
+  --text-primary:    #09090b;
+  --text-secondary:  #52525b;
+  --text-tertiary:   #a1a1aa;
+  --text-inverse:    #ffffff;
+
+  /* Brand / Accent */
+  --accent:          #6366f1;
+  --accent-hover:    #4f46e5;
+  --accent-subtle:   rgba(99,102,241,0.08);
+  --accent-border:   rgba(99,102,241,0.25);
+  --accent-glow:     0 0 24px rgba(99,102,241,0.15);
+
+  /* Semantic */
+  --success:         #059669;
+  --success-subtle:  rgba(5,150,105,0.08);
+  --warning:         #d97706;
+  --warning-subtle:  rgba(217,119,6,0.08);
+  --danger:          #dc2626;
+  --danger-subtle:   rgba(220,38,38,0.06);
+
+  /* Sidebar */
+  --sidebar-bg:      rgba(250,250,250,0.97);
+  --sidebar-border:  rgba(0,0,0,0.07);
+  --header-bg:       rgba(255,255,255,0.9);
+
+  /* Scrollbar */
+  --scrollbar-track: #f4f4f5;
+  --scrollbar-thumb: rgba(0,0,0,0.12);
+
+  /* Skeleton shimmer */
+  --sk-base:         rgba(0,0,0,0.05);
+  --sk-shine:        rgba(0,0,0,0.1);
+
+  /* Shadows */
+  --shadow-sm:       0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:       0 4px 16px rgba(0,0,0,0.1);
+  --shadow-lg:       0 20px 50px rgba(0,0,0,0.12);
+  --shadow-card:     0 0 0 1px var(--border-default), 0 2px 8px rgba(0,0,0,0.06);
 }
+
+/* ── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: var(--font-main);
-  background-color: var(--bg-dark);
-  zoom: 0.9;
-  color: var(--text-main);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Sleek Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+/* ── SCROLLBAR ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
 
-/* =========================================
-   3. UTILITY CLASSES
-   ========================================= */
+/* ── TYPOGRAPHY ─────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+a { color: var(--accent); text-decoration: none; }
+
+/* ── UTILITY CLASSES ────────────────────────────────────── */
 .page-container {
-  max-width: 1200px; /* Standard wide readable width */
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
   width: 100%;
-  /* Removed top-padding because Layout.css handles the offset now! */
   position: relative;
   z-index: 2;
 }
 
-/* Typography Utils */
-h1, h2, h3, h4, h5, h6 {
-  line-height: 1.2;
-  font-weight: 700;
-}
+.text-muted    { color: var(--text-secondary) !important; }
+.text-tertiary { color: var(--text-tertiary) !important; }
+.w-full        { width: 100%; }
+.flex-center   { display: flex; justify-content: center; align-items: center; }
+.text-mono     { font-family: var(--font-mono); }
 
-.flex-center {
-  display: flex;
-  justify-content: center;
+/* ── ANIMATIONS ─────────────────────────────────────────── */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeInUp 0.65s var(--ease-out) forwards;
+}
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+.fade-in { animation: fadeIn 0.5s ease forwards; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+
+/* ── NOISE TEXTURE ──────────────────────────────────────── */
+.noise-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-theme="light"] .noise-bg { opacity: 0.012; }
+
+/* ── BADGE / PILL ───────────────────────────────────────── */
+.badge-pill {
+  display: inline-flex;
   align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
 }
 
-.w-full { width: 100%; }
-.text-muted { color: var(--text-muted) !important; }
-.text-mono { font-family: var(--font-mono); }
+/* ── STATUS PILLS ───────────────────────────────────────── */
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-dot.success { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.status-dot.warning { background: var(--warning); box-shadow: 0 0 6px var(--warning); animation: pulse-dot 1.2s infinite; }
+.status-dot.danger  { background: var(--danger); }
+
+@keyframes pulse-dot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.4; transform:scale(0.8); }
+}
+
+/* ── CARD ───────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--card-radius);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.3s var(--ease-out);
+}
+.card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+/* ── THEME TRANSITION ───────────────────────────────────── */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+/* But DON'T transition transforms/animations */
+.fade-in-up, .fade-in, .g-blob { transition: none !important; }

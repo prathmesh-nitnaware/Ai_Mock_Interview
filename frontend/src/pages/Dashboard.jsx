@@ -182,10 +182,10 @@ const Dashboard = () => {
         {/* VAULT UPLOAD PROMPT (Only shows if no resume is synced) */}
         {!resumeName && (
           <section className="vault-prompt-section mb-6">
-            <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.5rem 2rem', border: '1px solid rgba(129, 140, 248, 0.3)', background: 'rgba(129, 140, 248, 0.05)' }}>
+            <div className="vault-prompt-card">
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'white', marginBottom: '0.25rem' }}>Sync Your Resume to the Vault</h3>
-                <p className="text-muted" style={{ fontSize: '0.9rem' }}>Upload your latest PDF resume to use it across Mock Interviews and ATS Scans automatically.</p>
+                <h3>Sync Your Resume to the Vault</h3>
+                <p>Upload your latest PDF resume to use it across Mock Interviews and ATS Scans automatically.</p>
               </div>
               <label className="btn-glow-primary" style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}>
                 {isUploading ? "UPLOADING..." : "UPLOAD RESUME"}
