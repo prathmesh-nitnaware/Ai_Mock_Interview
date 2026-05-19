@@ -224,6 +224,10 @@
   background: var(--bg-base);
 }
 
+.main-content-area.no-sidebar {
+  margin-left: 0 !important;
+}
+
 /* ── ANIMATED BACKGROUND BLOBS ──────────────────────────── */
 .global-live-bg {
   position: fixed;

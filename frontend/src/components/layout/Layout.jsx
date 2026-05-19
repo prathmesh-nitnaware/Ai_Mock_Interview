@@ -50,15 +50,17 @@ const Layout = () => {
       {/* ── HEADER ───────────────────────────────────── */}
       <header className="glass-header">
         <div className="header-left">
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          {user?.role !== 'admin' && (
+            <button
+              className="mobile-menu-btn"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          )}
 
-          <Link to="/dashboard" className="brand-logo">
+          <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'} className="brand-logo">
             <div className="brand-icon-glow">
               <Sparkles size={15} />
             </div>
@@ -67,36 +69,57 @@ const Layout = () => {
         </div>
 
         <div className="header-right">
+          {user?.role === 'admin' && (
+            <button 
+              onClick={logout} 
+              className="sidebar-link logout-btn" 
+              style={{ 
+                width: 'auto', 
+                border: '1px solid var(--border-default)', 
+                borderRadius: '8px', 
+                padding: '6px 14px', 
+                fontSize: '0.85rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <LogOut size={16} />
+              <span>Sign Out</span>
+            </button>
+          )}
         </div>
       </header>
 
       {/* ── SIDEBAR ──────────────────────────────────── */}
-      <aside className={`glass-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
-        <nav className="sidebar-nav">
-          <span className="sidebar-section-label">Navigation</span>
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={`sidebar-link ${isActive(link.path) ? 'active' : ''}`}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <span className="link-icon">{link.icon}</span>
-              <span className="link-text">{link.name}</span>
-            </Link>
-          ))}
-        </nav>
+      {user?.role !== 'admin' && (
+        <aside className={`glass-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+          <nav className="sidebar-nav">
+            <span className="sidebar-section-label">Navigation</span>
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`sidebar-link ${isActive(link.path) ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="link-icon">{link.icon}</span>
+                <span className="link-text">{link.name}</span>
+              </Link>
+            ))}
+          </nav>
 
-        <div className="sidebar-footer">
-          <button onClick={logout} className="sidebar-link logout-btn">
-            <span className="link-icon"><LogOut size={18} /></span>
-            <span className="link-text">Sign Out</span>
-          </button>
-        </div>
-      </aside>
+          <div className="sidebar-footer">
+            <button onClick={logout} className="sidebar-link logout-btn">
+              <span className="link-icon"><LogOut size={18} /></span>
+              <span className="link-text">Sign Out</span>
+            </button>
+          </div>
+        </aside>
+      )}
 
       {/* ── MAIN CONTENT ─────────────────────────────── */}
-      <main className="main-content-area">
+      <main className={`main-content-area ${user?.role === 'admin' ? 'no-sidebar' : ''}`}>
         {isMobileMenuOpen && (
           <div
             className="mobile-overlay"
@@ -104,7 +127,7 @@ const Layout = () => {
           />
         )}
         <Outlet />
-        <Chatbot />
+        {user?.role !== 'admin' && <Chatbot />}
       </main>
     </div>
   );
