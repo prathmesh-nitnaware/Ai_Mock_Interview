@@ -41,3 +41,41 @@ def token_required(f):
         return f(user, *args, **kwargs)
 
     return decorated
+
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if request.method == "OPTIONS":
+            return jsonify({"status": "ok"}), 200
+
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({"error": "Token missing"}), 401
+
+        try:
+            token = token.split(" ")[1] if " " in token else token
+            data = jwt.decode(
+                token,
+                SECRET_KEY,
+                algorithms=["HS256"]
+            )
+
+            user = users_collection.find_one({
+                "email": data["email"]
+            })
+
+            if not user:
+                return jsonify({"error": "User not found"}), 401
+
+            if user.get("role") != "admin":
+                return jsonify({"error": "Admin privileges required"}), 403
+
+        except Exception as e:
+            return jsonify({
+                "error": "Invalid token",
+                "details": str(e)
+            }), 401
+
+        return f(user, *args, **kwargs)
+
+    return decorated

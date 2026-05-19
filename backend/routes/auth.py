@@ -76,6 +76,7 @@ def login():
             "user": {
                 "email": email,
                 "name": user.get("name", email.split("@")[0]),
+                "role": user.get("role", "candidate"),
                 "onboarding_completed": user.get("onboarding_completed", False),
                 "is_verified": user.get("is_verified", False)
             }

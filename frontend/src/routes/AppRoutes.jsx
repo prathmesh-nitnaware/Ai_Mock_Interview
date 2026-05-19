@@ -17,6 +17,7 @@ import Profile from '../pages/Profile';
 import ResumeUpload from '../pages/ResumeUpload';
 import ResumeResult from '../pages/ResumeResult'; 
 import Onboarding from '../pages/Onboarding'; 
+import AdminDashboard from '../pages/AdminDashboard'; 
 
 // Interview Flow
 import Interview from '../pages/Interview'; 
@@ -63,6 +64,9 @@ const AppRoutes = () => {
           
           {/* Coding Dojo - HackerRank Style Implementation */}
           <Route path="/coding/dojo" element={<CodingDojo />} />
+          
+          {/* Admin Panel */}
+          <Route path="/admin" element={<AdminDashboard />} />
           
         </Route>
       </Route>

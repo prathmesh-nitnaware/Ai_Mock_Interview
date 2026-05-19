@@ -26,4 +26,9 @@ def register_routes(app):
     app.register_blueprint(profile_bp, url_prefix="/api/profile")
 
     # Support Chatbot
-    app.register_blueprint(chatbot_bp, url_prefix="/api/chatbot")
+    app.register_blueprint(chatbot_bp, url_prefix="/api/chatbot")
+
+    # Admin -> /api/admin/...
+    from .admin import admin_bp
+    app.register_blueprint(admin_bp, url_prefix="/api/admin")
+

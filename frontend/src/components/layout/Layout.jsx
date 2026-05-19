@@ -9,7 +9,8 @@ import {
   LogOut,
   Sparkles,
   Menu,
-  X
+  X,
+  Shield
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Chatbot from '../Chatbot';
@@ -29,6 +30,11 @@ const Layout = () => {
     { name: 'Coding Dojo',   path: '/coding/dojo',    icon: <Terminal size={18} /> },
     { name: 'Profile',       path: '/profile',        icon: <User size={18} /> },
   ];
+
+  if (user?.role === 'admin') {
+    navLinks.push({ name: 'Admin Panel', path: '/admin', icon: <Shield size={18} /> });
+  }
+
 
   return (
     <div className="app-layout">
