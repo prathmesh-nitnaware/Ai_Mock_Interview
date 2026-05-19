@@ -7,10 +7,9 @@
 
   <p align="center">
     <img src="https://img.shields.io/badge/AI--Orchestrator-Google--Gemini-blueviolet?style=for-the-badge&logo=google" alt="Google Gemini AI">
-    <img src="https://img.shields.io/badge/Computer--Vision-Face--API.js-E4405F?style=for-the-badge&logo=opencv" alt="Face-API.js">
+    <img src="https://img.shields.io/badge/Computer--Vision-MediaPipe--&--OpenCV-01A0E4?style=for-the-badge&logo=opencv" alt="OpenCV MediaPipe">
+    <img src="https://img.shields.io/badge/Acoustic--Analytics-Librosa--YIN-47A248?style=for-the-badge&logo=python" alt="Librosa YIN">
     <img src="https://img.shields.io/badge/Voice--Engine-HTML5--Web--Speech-yellow?style=for-the-badge&logo=googlechrome" alt="Web Speech API">
-    <img src="https://img.shields.io/badge/Database-MongoDB-47A248?style=for-the-badge&logo=mongodb" alt="Database">
-    <img src="https://img.shields.io/badge/Backend-Flask--Hyperdrive-333333?style=for-the-badge&logo=flask" alt="Backend">
   </p>
 
   <p align="center">
@@ -35,24 +34,58 @@ The application is built on a custom **glassmorphic dark design system**, optimi
 
 ---
 
-## 🚀 Advanced Tech Stack & Dynamic SDK Integrations
+## 🤖 Custom Machine Learning Laboratory (`/ml`)
 
-### 👁️ 1. Face-API.js (Computer Vision & Stress Diagnostics)
-To evaluate candidate posture and stress under high-intensity interview situations, the platform implements **`@vladmandic/face-api`** on the client side:
-*   **Weight Preloading**: Upon starting a live mock session, face-api preloads pre-trained weights from `/models` for the **`TinyFaceDetector`** (for lightning-fast face bounding-box identification) and **`FaceExpressionNet`** (for real-time micro-expression analysis).
-*   **Dynamic Expression Polling**: Sets up a 1000ms frame scanning interval on the active camera video feed.
-*   **Stress / Nervousness Index**: Uses mathematical vectors mapping specific emotions to calculate real-time nervousness levels:
-    $$\text{Stress Score (\%)} = \min\left(100, \left(\text{Fearful} \times 0.5 + \text{Sad} \times 0.2 + \text{Surprised} \times 0.3\right) \times 100\right)$$
-*   This score is updated live on the overlay camera screen and sent to the Flask server at `/api/interview/submit` to compile candidate behavioral report data.
+In addition to standard API interactions, PrepAI houses a dedicated local **Machine Learning & Signal Processing Laboratory** in the `/ml` directory, carrying out customized analysis of the candidate's physical presence, eye-movement integrity, and vocal acoustic patterns.
 
-### 🎙️ 2. Real-Time Voice Synthesis & Transcribing (HTML5 Web Speech)
-PrepAI handles dynamic scenario voice operations directly inside the browser using native **Web Speech APIs**, reducing server-side payload overhead:
-*   **Interactive Narrator (Text-to-Speech)**: Uses the **`SpeechSynthesis`** API and custom **`SpeechSynthesisUtterance`** configs to read question prompts, technical constraints, and follow-up prompts out loud. An visual indicator ring pulsates in sync with `onstart` and `onend` events.
-*   **Live Audio Recognition (Speech-to-Text)**: Leverages **`webkitSpeechRecognition`** / **`SpeechRecognition`** in continuous mode, converting microphone inputs into real-time transcripts.
+```mermaid
+graph TD
+    A[Raw Candidate Stream] --> B[Computer Vision Pipeline]
+    A --> C[Acoustic Processing Pipeline]
+    
+    B --> B1["MediaPipe Pose Tracking (Shoulder/Hip)"]
+    B --> B2["OpenCV solvePnP (3D Head Rotation)"]
+    B --> B3["EAR (Eye Aspect Ratio Blink tracking)"]
+    
+    C --> C1["Librosa RMS (Energy & Confidence)"]
+    C --> C2["YIN Algorithm (Voiced Pitch Jitter)"]
+    C --> C3["Split effects (Speech-to-Silence Fluency)"]
+```
 
-### 🧠 3. Generative Orchestration Core (Google Gemini & Ollama)
-*   **Gemini Pro / Llama 3 Router**: Flexible AI gateway. Primarily routes complex parsing, coding analysis, and evaluation steps to the Google Gemini API (or falls back to Ollama's local `llama3:8b` weights).
-*   **JSON-Strict Parsing**: Utilizes strict system instructions and few-shot formatting rules to guarantee error-free, standard REST outputs.
+### 👁️ 1. Computer Vision & Structural Posture Diagnostics (`/ml/cv`)
+
+*   🤸‍♂️ **Pose Detection & Posture Analytics (`posture_analysis.py`)**:
+    *   **Framework**: Driven by the **MediaPipe Pose** model (`mediapipe.solutions.pose`).
+    *   **Keypoint Tracking**: Maps spatial coordinates for `LEFT_SHOULDER`, `RIGHT_SHOULDER`, `LEFT_HIP`, and `RIGHT_HIP`.
+    *   **Visibility Threshold Gates**: Employs a strict `VISIBILITY_THRESHOLD = 0.4` filtering system, preventing false anomalies from being registered if the candidate turns away.
+    *   **Trigonometric Alignment Math**: Uses high-precision inverse tangent functions to calculate real-time angular slopes:
+        $$\theta_{\text{shoulder}} = \text{deg}\left(\arctan2\left(Y_{\text{right\_shoulder}} - Y_{\text{left\_shoulder}}, X_{\text{right\_shoulder}} - X_{\text{left\_shoulder}}\right)\right)$$
+    *   **Comfort & Slouch Evaluation**: Tracks deviation angles to detect continuous slouching, shoulder drop, or systemic fatigue.
+
+*   👓 **Attention Monitoring & Gaze Estimation (`eye_tracking.py`)**:
+    *   **3D Head Pose Mapping**: Implements **`cv2.solvePnP`** (Perspective-n-Point) using a standard 3D human face model aligned with 2D landmarks (nose tip, chin, eye corners, mouth corners) provided by the active MediaPipe Face Mesh coordinates.
+    *   **Gaze Integrity Protection**: Evaluates absolute rotation angles (pitch, yaw, roll). If angles deviate beyond a $15^\circ$ threshold, the platform logs a warning (identifying if the user is looking off-screen to read external notes).
+    *   **EAR (Eye Aspect Ratio) Blink Tracking**: Tracks eye aspect ratios to measure fatigue, mapping:
+        $$\text{EAR} = \frac{\|p_2 - p_{16}\| + \|p_3 - p_{15}\|}{2 \times \|p_1 - p_9\|}$$
+    *   **Talking Suppression Logic**: Includes a custom lip-openness detector to filter out fake blinks caused by facial movements while the candidate is actively speaking.
+
+---
+
+### 🎙️ 2. Acoustic Processing & Vocal Emotion Analytics (`/ml/audio`)
+
+*   📈 **Voice Action & Acoustic Analytics (`emotion_detector.py`)**:
+    *   **Framework**: Driven by **Librosa Audio Analysis Suite** and NumPy.
+    *   **Confidence Metrics (Vocal Energy)**: Analyzes root-mean-square (RMS) energy (`librosa.feature.rms`) from acoustic waveforms. Quiet, low-confidence ranges ($<0.01$) vs. high-energy signals ($>0.1$) are scaled dynamically.
+    *   **Nervousness Metrics (Voiced Pitch Jitter)**: Employs the highly sophisticated **YIN Algorithm** (`librosa.pyin`) to detect fundamental frequency ($f_0$) pitch on voiced frames.
+    *   **Standard Deviation Analytics**: Measures the standard deviation of pitches ($\sigma_{f_0}$). A high deviation coefficient indicates voice instability, stammering, or nervousness.
+    *   **Fluency Index (Speech-to-Silence Ratio)**: Uses silent-interval splits (`librosa.effects.split`) to evaluate conversational flow, tracking silence gaps and voice hesitation.
+
+---
+
+### 📝 3. NLP & Semantic Parsing Core (`/ml/nlp`)
+
+*   📄 **Resume Extraction Model (`resume_parser.py`)**: Translates messy binary PDF elements, tables, and paragraphs into semantic clean strings for context insertion.
+*   ✏️ **Answer Semantic Embeddings (`answer_evaluator.py`)**: Compares candidate transcripts against correct reference answers using vector similarity models to verify answer completeness and technical accuracy.
 
 ---
 
@@ -119,7 +152,7 @@ Prep_AI/
 │   ├── scripts/            # Infrastructure Management (init_db.py)
 │   ├── main.py             # System Gateway & Entry Point
 │   └── requirements.txt    # Python Dependencies
-├── ml/                     # Machine Learning Research Laboratory
+├── ml/                     # Machine Learning Research Laboratory (Pose, Gaze, Audio, NLP)
 ├── package.json            # Root orchestrator (Concurrent runner)
 └── PROJECT_STATE.md        # Technical architectural notes
 ```
