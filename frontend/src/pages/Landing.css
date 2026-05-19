@@ -311,3 +311,83 @@
     .hero-actions { flex-direction: column; width: 100%; max-width: 300px; }
     .btn-hero-primary, .btn-hero-secondary { width: 100%; justify-content: center; }
 }
+
+/* -----------------------------------------
+   SERVER STATUS INDICATOR
+   ----------------------------------------- */
+.server-status-bar {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 200;
+}
+
+.server-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  font-family: monospace;
+  backdrop-filter: blur(12px);
+  transition: all 0.4s ease;
+}
+
+/* Waking state — amber */
+.server-status-pill.waking {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+/* Online state — green */
+.server-status-pill.online {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+/* Offline state — red */
+.server-status-pill.offline {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+/* Pulsing dot */
+.status-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.server-status-pill.waking .status-pulse-dot {
+  background: #fbbf24;
+  box-shadow: 0 0 6px #fbbf24;
+  animation: pulse-amber 1.2s ease-in-out infinite;
+}
+
+.server-status-pill.online .status-pulse-dot {
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+.server-status-pill.offline .status-pulse-dot {
+  background: #f87171;
+  box-shadow: 0 0 6px #f87171;
+}
+
+@keyframes pulse-amber {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}

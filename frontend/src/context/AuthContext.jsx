@@ -129,13 +129,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!authLoading && children}
-      {authLoading && (
-        <div className="loading-screen fade-in">
-          <div className="neon-spinner-large"></div>
-          <p className="loading-text">Establishing Secure Link...</p>
-        </div>
-      )}
+      {children}
     </AuthContext.Provider>
   );
 };

@@ -1,13 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Terminal, Mic, FileText, Sparkles, ChevronRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import '../styles/theme.css'; 
 import './Landing.css';       
 
 const Landing = () => {
+  const { API_URL } = useAuth();
   const [text, setText] = useState('');
+  const [serverStatus, setServerStatus] = useState('waking'); // 'waking' | 'online' | 'offline'
   const fullText = "Master Your Career with PrepAI."; 
   
+  // Wake up the Render backend while the user reads the landing page,
+  // so it's ready by the time they click Login or Sign Up.
+  useEffect(() => {
+    const wakeBackend = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/health`, { method: 'GET' });
+        if (res.ok) {
+          setServerStatus('online');
+        } else {
+          setServerStatus('offline');
+        }
+      } catch (_) {
+        setServerStatus('offline');
+      }
+    };
+    wakeBackend();
+  }, [API_URL]);
+
   useEffect(() => {
     let index = 0;
     const speed = 80; 
@@ -130,6 +151,17 @@ const Landing = () => {
           <span>MICROSOFT</span>
         </div>
       </section>
+      {/* Server Status Indicator */}
+      <div className="server-status-bar">
+        <div className={`server-status-pill ${serverStatus}`}>
+          <span className="status-pulse-dot"></span>
+          <span className="status-text">
+            {serverStatus === 'waking' && 'SYSTEM WAKING...'}
+            {serverStatus === 'online' && 'SYSTEM ONLINE'}
+            {serverStatus === 'offline' && 'SYSTEM OFFLINE'}
+          </span>
+        </div>
+      </div>
 
     </div>
   );
