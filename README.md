@@ -1,42 +1,66 @@
 # 💎 PrepAI: Immersive Multimodal Technical Interview Intelligence
 
 <div align="center">
-  <img src="readme_banner.png" alt="PrepAI Banner" width="100%" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+  <img src="readme_banner.png" alt="PrepAI Banner" width="100%" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px;">
 
-  <h3>"Bridging technical competency and behavioral biometrics in a singular, state-of-the-art diagnostic environment."</h3>
+  <h3><i>"Bridging technical competency and behavioral biometrics in a singular, state-of-the-art diagnostic environment."</i></h3>
 
   <p align="center">
-    <img src="https://img.shields.io/badge/AI--Orchestrator-Google--Gemini-blueviolet?style=for-the-badge&logo=google" alt="Google Gemini AI">
-    <img src="https://img.shields.io/badge/Computer--Vision-MediaPipe--&--OpenCV-01A0E4?style=for-the-badge&logo=opencv" alt="OpenCV MediaPipe">
-    <img src="https://img.shields.io/badge/Acoustic--Analytics-Librosa--YIN-47A248?style=for-the-badge&logo=python" alt="Librosa YIN">
-    <img src="https://img.shields.io/badge/Voice--Engine-HTML5--Web--Speech-yellow?style=for-the-badge&logo=googlechrome" alt="Web Speech API">
+    <a href="https://github.com/prathmesh-nitnaware/Prep_AI">
+      <img src="https://img.shields.io/badge/Distributed_AI-Google_Gemini-blueviolet?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini Pro">
+    </a>
+    <a href="https://github.com/prathmesh-nitnaware/Prep_AI">
+      <img src="https://img.shields.io/badge/Computer_Vision-MediaPipe_&_OpenCV-01A0E4?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV & MediaPipe">
+    </a>
+    <a href="https://github.com/prathmesh-nitnaware/Prep_AI">
+      <img src="https://img.shields.io/badge/Acoustic_Processing-Librosa_Signal-47A248?style=for-the-badge&logo=python&logoColor=white" alt="Librosa Signal">
+    </a>
+  </p>
+  <p align="center">
+    <a href="https://github.com/prathmesh-nitnaware/Prep_AI">
+      <img src="https://img.shields.io/badge/Frontend-React_18_&_Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React Vite">
+    </a>
+    <a href="https://github.com/prathmesh-nitnaware/Prep_AI">
+      <img src="https://img.shields.io/badge/Database-MongoDB_Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB Atlas">
+    </a>
+    <a href="https://github.com/prathmesh-nitnaware/Prep_AI">
+      <img src="https://img.shields.io/badge/Backend-Flask_Microservices-333333?style=for-the-badge&logo=flask&logoColor=white" alt="Flask REST API">
+    </a>
   </p>
 
   <p align="center">
-    <b>Empowering candidates to prepare for intense hiring loops while providing administrators with a unified control room to monitor progression at scale.</b>
+    <b>Empowering candidates to conquer high-pressure technical screenings, and offering administrators a unified dashboard to monitor progression.</b>
   </p>
 </div>
 
 ---
 
-## 🌐 Production Live Link
-You can access the production-ready live deployment of PrepAI here:
+## 🌐 Production Deployment
 
-> [!TIP]
-> **🚀 Live Web Application**: [**https://prepai-interview.onrender.com**](https://prepai-interview.onrender.com) _(Note: Render free tier services may take 1-2 minutes to spin up from a cold sleep on first load)._
-
----
-
-## 🌌 Core Vision & Platform Design
-**PrepAI** bridges the gap between mechanical evaluation and dynamic coaching. By integrating advanced **Gemini AI models**, real-time behavioral diagnostics, an interactive **Monaco Editor**, and structured resume parsing, it delivers a high-fidelity environment modeled after elite technical screens. 
-
-The application is built on a custom **glassmorphic dark design system**, optimizing visual focus, reducing fatigue, and creating an immersive experience for candidates and administrators alike.
+> [!IMPORTANT]
+> **🚀 Live Web Application**: [**https://prepai-interview.onrender.com**](https://prepai-interview.onrender.com)
+>
+> _Note: Hosted on Render's cloud cluster. Please allow 1-2 minutes on the first load for the free tier web container to spin up from cold sleep state._
 
 ---
 
-## 🤖 Custom Machine Learning Laboratory (`/ml`)
+## 🌌 Platform Architecture & Comparative Advantage
 
-In addition to standard API interactions, PrepAI houses a dedicated local **Machine Learning & Signal Processing Laboratory** in the `/ml` directory, carrying out customized analysis of the candidate's physical presence, eye-movement integrity, and vocal acoustic patterns.
+Traditional interview preparation platforms are static and passive. **PrepAI** disrupts this model by introducing a **synchronous diagnostic loop** correlating technical, behavioral, and acoustic vectors in real-time.
+
+| Feature Category | Traditional Tools | PrepAI AI Hybrid |
+| :--- | :--- | :--- |
+| **Interviewer Presence** | Static Question List | **Google Gemini AI Agent** with contextual follow-up memory |
+| **Behavioral Feedback** | None | **MediaPipe / OpenCV** face posture & gaze metrics |
+| **Speech Analytics** | Standard Recording | **Librosa YIN** acoustic confidence & stress classification |
+| **Voice Interaction** | Text-only input | **HTML5 Speech Recognition** (Voice-to-Text) |
+| **Code Submissions** | Basic Compiler | **Neural Monaco IDE** with automated space/time complexity reviews |
+
+---
+
+## 🤖 The Custom Machine Learning Laboratory (`/ml`)
+
+PrepAI implements custom-trained pipelines directly in the **`/ml`** directory, processing candidate behavioral signals locally on frame-by-frame feeds:
 
 ```mermaid
 graph TD
@@ -52,40 +76,21 @@ graph TD
     C --> C3["Split effects (Speech-to-Silence Fluency)"]
 ```
 
-### 👁️ 1. Computer Vision & Structural Posture Diagnostics (`/ml/cv`)
+### 🤸‍♂️ 1. Pose Tracking & Posture Analytics (`/ml/cv/posture_analysis.py`)
+Uses the **MediaPipe Pose** solution to track spatial alignments:
+*   Maps spatial metrics for key joints (`LEFT_SHOULDER`, `RIGHT_SHOULDER`, `LEFT_HIP`, and `RIGHT_HIP`).
+*   Implements inverse tangent equations to check angular slopes:
+    $$\theta_{\text{shoulder}} = \text{deg}\left(\arctan2\left(Y_{\text{right}} - Y_{\text{left}}, X_{\text{right}} - X_{\text{left}}\right)\right)$$
+*   Detects if a candidate is slouching, exhibiting signs of discomfort, or shifting away from the focal frame during high-intensity scenarios.
 
-*   🤸‍♂️ **Pose Detection & Posture Analytics (`posture_analysis.py`)**:
-    *   **Framework**: Driven by the **MediaPipe Pose** model (`mediapipe.solutions.pose`).
-    *   **Keypoint Tracking**: Maps spatial coordinates for `LEFT_SHOULDER`, `RIGHT_SHOULDER`, `LEFT_HIP`, and `RIGHT_HIP`.
-    *   **Visibility Threshold Gates**: Employs a strict `VISIBILITY_THRESHOLD = 0.4` filtering system, preventing false anomalies from being registered if the candidate turns away.
-    *   **Trigonometric Alignment Math**: Uses high-precision inverse tangent functions to calculate real-time angular slopes:
-        $$\theta_{\text{shoulder}} = \text{deg}\left(\arctan2\left(Y_{\text{right\_shoulder}} - Y_{\text{left\_shoulder}}, X_{\text{right\_shoulder}} - X_{\text{left\_shoulder}}\right)\right)$$
-    *   **Comfort & Slouch Evaluation**: Tracks deviation angles to detect continuous slouching, shoulder drop, or systemic fatigue.
+### 👓 2. Gaze Integrity & Head Rotation (`/ml/cv/eye_tracking.py`)
+*   **3D Head Pose Mapping**: Implements **`cv2.solvePnP`** (Perspective-n-Point) to calculate 3D head rotation angles (Pitch, Yaw, Roll) based on MediaPipe coordinates mapped to standard 3D human facial vectors. Logs warnings if rotation exceeds a $15^\circ$ angle (detecting if candidates are looking away to read notes).
+*   **Eye Aspect Ratio (EAR) Blink Detection**: Integrates dynamic vertical-to-horizontal eye aspect equations to compute eye fatigue levels while suppressing blinks during vocal mouth movement (talking detector integration).
 
-*   👓 **Attention Monitoring & Gaze Estimation (`eye_tracking.py`)**:
-    *   **3D Head Pose Mapping**: Implements **`cv2.solvePnP`** (Perspective-n-Point) using a standard 3D human face model aligned with 2D landmarks (nose tip, chin, eye corners, mouth corners) provided by the active MediaPipe Face Mesh coordinates.
-    *   **Gaze Integrity Protection**: Evaluates absolute rotation angles (pitch, yaw, roll). If angles deviate beyond a $15^\circ$ threshold, the platform logs a warning (identifying if the user is looking off-screen to read external notes).
-    *   **EAR (Eye Aspect Ratio) Blink Tracking**: Tracks eye aspect ratios to measure fatigue, mapping:
-        $$\text{EAR} = \frac{\|p_2 - p_{16}\| + \|p_3 - p_{15}\|}{2 \times \|p_1 - p_9\|}$$
-    *   **Talking Suppression Logic**: Includes a custom lip-openness detector to filter out fake blinks caused by facial movements while the candidate is actively speaking.
-
----
-
-### 🎙️ 2. Acoustic Processing & Vocal Emotion Analytics (`/ml/audio`)
-
-*   📈 **Voice Action & Acoustic Analytics (`emotion_detector.py`)**:
-    *   **Framework**: Driven by **Librosa Audio Analysis Suite** and NumPy.
-    *   **Confidence Metrics (Vocal Energy)**: Analyzes root-mean-square (RMS) energy (`librosa.feature.rms`) from acoustic waveforms. Quiet, low-confidence ranges ($<0.01$) vs. high-energy signals ($>0.1$) are scaled dynamically.
-    *   **Nervousness Metrics (Voiced Pitch Jitter)**: Employs the highly sophisticated **YIN Algorithm** (`librosa.pyin`) to detect fundamental frequency ($f_0$) pitch on voiced frames.
-    *   **Standard Deviation Analytics**: Measures the standard deviation of pitches ($\sigma_{f_0}$). A high deviation coefficient indicates voice instability, stammering, or nervousness.
-    *   **Fluency Index (Speech-to-Silence Ratio)**: Uses silent-interval splits (`librosa.effects.split`) to evaluate conversational flow, tracking silence gaps and voice hesitation.
-
----
-
-### 📝 3. NLP & Semantic Parsing Core (`/ml/nlp`)
-
-*   📄 **Resume Extraction Model (`resume_parser.py`)**: Translates messy binary PDF elements, tables, and paragraphs into semantic clean strings for context insertion.
-*   ✏️ **Answer Semantic Embeddings (`answer_evaluator.py`)**: Compares candidate transcripts against correct reference answers using vector similarity models to verify answer completeness and technical accuracy.
+### 📈 3. Acoustic Processing & Vocal Emotion Analytics (`/ml/audio/emotion_detector.py`)
+*   **Confidence Metrics**: Analyzes root-mean-square (RMS) energy (`librosa.feature.rms`) from acoustic waveforms to measure voice volume.
+*   **Nervousness Jitter**: Runs the **YIN Pitch Algorithm** (`librosa.pyin`) over voiced speech. Pitch standard deviation ($\sigma_{f0}$) variation is measured to identify stress indicators.
+*   **Fluency Index**: Utilizes silent-interval splits (`librosa.effects.split`) to evaluate speech-to-pause ratios, identifying verbal hesitations.
 
 ---
 
@@ -96,14 +101,14 @@ graph TD
 *   🎙️ **Dynamic Scenario Simulator (Mock Interviews)**:
     *   **Context-Aware AI Interviewer**: Generates highly tailored questions based on your specific job role, target industry, and uploaded resume contents.
     *   **Conversational Persistence**: The AI remembers your responses, asking challenging, deep-dive follow-up questions to test your architectural limits.
+    *   **Speech Narration**: Immersive vocal readings of prompt cards using HTML5 Web Speech.
     *   **Comprehensive Scorecards**: Instant breakdowns of your Clarity, Technical Accuracy, and Confidence with actionable improvement recommendations.
 *   💻 **The Neural Coding Dojo (Algorithmic IDE)**:
     *   **Professional IDE**: Integrated Monaco Editor supporting full syntax highlighting, autocompletion, and multiple programming languages (Python, Javascript, Java, C++).
-    *   **Vast Problem Catalog**: Includes multiple challenges from O(n) algorithmic essentials to complex dynamic programming.
     *   **Deep AI Code Review**: Instantly analyzes code submissions, pointing out time/space complexity (Big-O), potential edge cases, logic bugs, and SOLID/DRY violations.
 *   📝 **ATS Resume Scorer & Global Vault**:
     *   **Semantic Scoring Model**: Compares your resume structure and phrasing against specific target descriptions.
-    *   **ATS Diagnostics**: Identifies critical keyword gaps, missing technical skills, core formatting issues, and recommendations to bypass filters.
+    *   **ATS Diagnostics**: Identifies critical keyword gaps, missing technical skills, and ATS bot counter-measures.
     *   **Global Resume Sync**: Upload a resume once, and it propagates instantly to guide custom questions generated in mock interviews.
 *   🧭 **Smart Onboarding & Unified Dashboard**:
     *   **Tailored Roadmap**: A brief, three-question personalized onboarding flow mapping out your level, education, and target stack.
@@ -150,7 +155,7 @@ Prep_AI/
 │   ├── utils/              # Providers (AI, CV, Auth, Parser)
 │   ├── models/             # Schema-less Data Definitions
 │   ├── scripts/            # Infrastructure Management (init_db.py)
-│   ├── main.py             # System Gateway & Entry Point
+│   ├── main.py             # Gateway Server Entry Point
 │   └── requirements.txt    # Python Dependencies
 ├── ml/                     # Machine Learning Research Laboratory (Pose, Gaze, Audio, NLP)
 ├── package.json            # Root orchestrator (Concurrent runner)
