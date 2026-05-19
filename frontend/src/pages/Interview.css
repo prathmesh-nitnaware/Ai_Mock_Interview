@@ -1,8 +1,15 @@
+/* ============================================================
+   INTERVIEW.CSS — Mock Interview Setup Page
+   Fully theme-aware via CSS tokens
+   ============================================================ */
+
 .interview-root {
   display: flex;
   align-items: center;
   min-height: 85vh;
   position: relative;
+  color: var(--text-primary);
+  font-family: var(--font-main);
 }
 
 .interview-split {
@@ -12,111 +19,137 @@
 }
 
 @media (max-width: 1000px) {
-  .interview-split {
-    flex-direction: column;
-  }
+  .interview-split { flex-direction: column; gap: 2rem; }
 }
 
-/* LEFT SIDE */
-
+/* ── LEFT SIDE ───────────────────────────────────────────── */
 .meta-badge {
-  font-family: monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
-  color: #818cf8;
+  color: var(--accent);
   margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 .meta-title {
-  font-size: 64px;
+  font-size: clamp(3rem, 5vw, 4.5rem);
   font-weight: 900;
   line-height: 1;
   margin-bottom: 20px;
+  letter-spacing: -2px;
+  color: var(--text-primary);
+}
 
-  background: linear-gradient(180deg,#fff,#aaa);
+/* Light mode: solid text color, no gradient bleed */
+[data-theme="light"] .meta-title {
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: var(--text-primary);
+}
+
+[data-theme="dark"] .meta-title {
+  background: linear-gradient(180deg, #fff, #aaa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .meta-desc {
-  color: #888;
+  color: var(--text-secondary);
   max-width: 400px;
   margin-bottom: 30px;
+  line-height: 1.65;
 }
 
-/* RIGHT */
-
+/* ── RIGHT: SETUP CARD ───────────────────────────────────── */
 .setup-card {
-  padding: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--card-radius);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  min-width: 360px;
+  flex: 1;
+  max-width: 480px;
 }
 
-/* CHIP BUTTONS */
+/* Section label */
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
+/* Chip buttons */
 .chips-row {
   display: flex;
-  gap: 12px;
-  margin-bottom: 25px;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .chip-btn {
-  padding: 12px 20px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.03);
-  color: #aaa;
+  padding: 10px 18px;
+  border-radius: 9px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-card);
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: var(--font-main);
+  transition: all 0.2s;
 }
-
 .chip-btn:hover {
-  background: rgba(255,255,255,0.08);
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
 }
-
 .chip-btn.active {
-  background: linear-gradient(135deg,#6366f1,#8b5cf6);
-  color: white;
-  border: none;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border-color: var(--accent-border);
+  font-weight: 600;
 }
 
-/* UPLOAD */
-
+/* Context widget (resume upload area) */
 .context-widget {
-  border: 1px dashed rgba(255,255,255,0.1);
-  padding: 20px;
-  border-radius: 12px;
+  border: 1.5px dashed var(--border-default);
+  padding: 1.25rem;
+  border-radius: 10px;
+  background: var(--bg-input);
+  transition: border-color 0.2s;
 }
-
 .context-widget.active {
-  border-color: #10b981;
+  border-color: var(--success);
+  background: var(--success-subtle);
 }
 
 .cw-upload-btn {
   display: inline-flex;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
   margin-top: 10px;
   cursor: pointer;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
 }
+.cw-upload-btn:hover { opacity: 0.75; }
 
-/* SECTIONS */
+/* Submit row */
+.submit-row { margin-top: 1.5rem; }
 
-.section-label {
-  font-size: 12px;
-  margin-bottom: 10px;
-  color: #777;
-}
-
-/* BUTTON */
-
-.submit-row {
-  margin-top: 20px;
-}
-
-/* ANIMATION */
-
-.spin {
-  animation: spin 1s linear infinite;
-}
-
+/* Spin animation */
+.spin { animation: spin 1s linear infinite; }
 @keyframes spin {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }

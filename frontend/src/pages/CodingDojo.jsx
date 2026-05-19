@@ -132,9 +132,20 @@ const CodingDojo = () => {
 
   if (loading) {
     return (
-      <div className="dojo-loading">
-        <div className="neon-spinner"></div>
-        <p>LOADING MULTIVERSE DOJO...</p>
+      <div className="dojo-skeleton">
+        {/* Header skeleton */}
+        <div className="dojo-sk-header">
+          <div className="sk-block dojo-sk-pill"></div>
+          <div className="sk-block dojo-sk-title"></div>
+          <div className="sk-block dojo-sk-sub"></div>
+          <div className="sk-block dojo-sk-toggle"></div>
+        </div>
+        {/* Challenge card skeletons */}
+        <div className="dojo-sk-grid">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="sk-block dojo-sk-card"></div>
+          ))}
+        </div>
       </div>
     );
   }

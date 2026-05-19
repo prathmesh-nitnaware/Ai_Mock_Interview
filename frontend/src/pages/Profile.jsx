@@ -123,8 +123,20 @@ const Profile = () => {
 
   if (loading)
     return (
-      <div className="loading-container">
-        <div className="loader-ring"></div>
+      <div className="profile-skeleton">
+        {/* Header skeleton */}
+        <div className="profile-sk-header">
+          <div className="sk-block sk-avatar"></div>
+          <div>
+            <div className="sk-block sk-name"></div>
+            <div className="sk-block sk-email"></div>
+          </div>
+        </div>
+        {/* Grid skeleton */}
+        <div className="profile-sk-grid">
+          <div className="sk-block sk-panel"></div>
+          <div className="sk-block sk-panel"></div>
+        </div>
       </div>
     );
 

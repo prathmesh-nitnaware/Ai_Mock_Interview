@@ -40,6 +40,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 /* Brand */
@@ -104,8 +105,9 @@
 
 /* User Avatar */
 .avatar-circle {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), #8b5cf6);
   border: 1.5px solid var(--border-default);
@@ -113,9 +115,11 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: white;
   flex-shrink: 0;
+  letter-spacing: 0.5px;
+  overflow: hidden;
 }
 
 /* ── SIDEBAR ─────────────────────────────────────────────── */
