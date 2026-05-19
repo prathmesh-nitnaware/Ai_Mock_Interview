@@ -40,7 +40,7 @@
 > [!IMPORTANT]
 > **🚀 Live Web Application (Frontend)**: [**https://prep-ai-smoky-five.vercel.app/**](https://prep-ai-smoky-five.vercel.app/)
 >
-> **⚡ Live Server Application (Backend)**: [**https://prepai-interview.onrender.com**](https://prepai-interview.onrender.com)
+> **⚡ Live Server Application (Backend)**: [**https://prep-ai-37pj.onrender.com**](https://prep-ai-37pj.onrender.com)
 >
 > _Note: The server application is hosted on Render's cloud cluster. Please allow 1-2 minutes on the first load for the free tier web container to spin up from cold sleep state._
 
@@ -135,7 +135,7 @@ PrepAI includes a completely separate, highly secure, and visually striking **Ad
 *   👁️ **Deep-Dive Activity Popup**:
     *   Clicking a candidate's name from either directory triggers a comprehensive dashboard overlay panel.
     *   📈 **Mock Score Progression Chart**: An SVG line chart rendering that specific user's score history chronologically across interviews.
-    *   ⚡ **7-Day Engagement Chart**: An SVG weekly bar chart mapping daily activity count frequencies (interviews, code submissions, resumes uploaded) for that candidate.
+    *   ⚡ **7-Day Engagement Chart**: To chart daily activity count frequencies (interviews, code submissions, resumes uploaded) for that candidate.
     *   🕒 **Live Activity Feed**: A structured timeline logging every technical activity, challenge submitted, or resume uploaded with precise timestamps.
 *   🧩 **Tailored Navigation Focus**: Sidebar menus, user profiles, and floating chatbots are automatically hidden when an admin logs in to ensure the dashboard remains fully dedicated to system analytics. A secure **Sign Out** button is permanently anchored to the sticky top header.
 
@@ -206,8 +206,18 @@ Make sure you have the following installed on your machine:
 *   [Node.js](https://nodejs.org/en) (v18 or higher)
 *   [Python](https://www.python.org/downloads/) (v3.10 or higher)
 *   [MongoDB](https://www.mongodb.com/try/download/community) (Local server or MongoDB Atlas cluster connection string)
+*   [Ollama](https://ollama.com/) (Optional, for running local offline models)
 
-### Step 2: Database & API Key Configuration
+### Step 2: Download Local AI Model (Optional Fallback)
+If you wish to host Llama3 models locally:
+1. Ensure Ollama is running on your machine.
+2. Open your terminal and run:
+   ```bash
+   ollama run llama3:8b
+   ```
+   *(This downloads Meta's Llama 3 8-Billion parameter model, which is ~4.7GB, to run full inference locally with zero API costs).*
+
+### Step 3: Database & API Key Configuration
 Create a `.env` file inside the `backend/` directory and configure the environment:
 ```env
 # Database Configuration
@@ -217,25 +227,23 @@ DB_NAME=prepai
 # Security Token (JWT)
 SECRET_KEY=your_super_secret_jwt_key
 
-# Distributed AI Core (Use gemini or ollama)
+# Distributed AI Core Configuration
+# Choose "gemini" for cloud APIs or "ollama" for offline local processing
 AI_PROVIDER=gemini
 GEMINI_API_KEY=your_gemini_api_key_here
 
-# Local AI (Optional fallback)
+# Local Ollama AI Settings (Fallback or Offline Mode)
 OLLAMA_HOST=http://127.0.0.1:11434
-OLLAMA_MODEL=llama3:8b
-
-# Port Configuration
-PORT=5000
+OLLAMA_MODEL=llama3:8b                        # Use Llama 3 8B model locally
 ```
 
-### Step 3: Fast Install (Root Directory)
+### Step 4: Fast Install (Root Directory)
 PrepAI is configured as a Monorepo. Install all npm modules, set up the backend Python virtual environment (`.venv`), and fetch python dependencies with a single command from the **root directory**:
 ```bash
 npm run install-all
 ```
 
-### Step 4: Initialize MongoDB Collections
+### Step 5: Initialize MongoDB Collections
 Before starting the servers, configure indexes and import the admin user account credentials.
 Set up default credentials (**email**: `admin@gmail.com` | **password**: `admin123`) using the initialization script:
 ```bash
