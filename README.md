@@ -35,12 +35,14 @@
 
 ---
 
-## 🌐 Production Deployment
+## 🌐 Production Deployments
 
 > [!IMPORTANT]
-> **🚀 Live Web Application**: [**https://prepai-interview.onrender.com**](https://prepai-interview.onrender.com)
+> **🚀 Live Web Application (Frontend)**: [**https://prep-ai-smoky-five.vercel.app/**](https://prep-ai-smoky-five.vercel.app/)
 >
-> _Note: Hosted on Render's cloud cluster. Please allow 1-2 minutes on the first load for the free tier web container to spin up from cold sleep state._
+> **⚡ Live Server Application (Backend)**: [**https://prepai-interview.onrender.com**](https://prepai-interview.onrender.com)
+>
+> _Note: The server application is hosted on Render's cloud cluster. Please allow 1-2 minutes on the first load for the free tier web container to spin up from cold sleep state._
 
 ---
 
@@ -143,23 +145,54 @@ PrepAI includes a completely separate, highly secure, and visually striking **Ad
 
 ```text
 Prep_AI/
-├── frontend/               # The Reactive Visual Interface (React/Vite)
+├── frontend/                     # The Reactive Visual Interface (React/Vite)
 │   ├── src/
-│   │   ├── components/     # Atomic UI Elements (Glassmorphic Forms, ProtectedRoute)
-│   │   ├── context/        # Global State Management (AuthContext)
-│   │   ├── pages/          # Full-Page View Controllers (Dashboard, Onboarding, Dojo, AdminDashboard)
-│   │   └── services/       # Centralized API Orchestration Layer (Axios)
-│   └── package.json
-├── backend/                # The Neural Operations Core (Flask)
-│   ├── routes/             # Blueprint-based API Endpoints (auth, admin, interview, dojo)
-│   ├── utils/              # Providers (AI, CV, Auth, Parser)
-│   ├── models/             # Schema-less Data Definitions
-│   ├── scripts/            # Infrastructure Management (init_db.py)
-│   ├── main.py             # Gateway Server Entry Point
-│   └── requirements.txt    # Python Dependencies
-├── ml/                     # Machine Learning Research Laboratory (Pose, Gaze, Audio, NLP)
-├── package.json            # Root orchestrator (Concurrent runner)
-└── PROJECT_STATE.md        # Technical architectural notes
+│   │   ├── components/           # Reusable Atomic UI Components
+│   │   │   ├── ProtectedRoute.jsx # Route guarding for authentication tiers
+│   │   │   └── Layout.jsx         # Custom frame layout handling admin vs user contexts
+│   │   ├── context/              # Centralized State Management
+│   │   │   └── AuthContext.jsx   # Session state, login credentials, and user data flow
+│   │   ├── pages/                # Page View Controllers
+│   │   │   ├── Dashboard.jsx     # User dashboard showing mock history & resume uploads
+│   │   │   ├── CodingDojo.jsx    # Algorithmic code editor workspace with Monaco engine
+│   │   │   ├── Onboarding.jsx    # Personalized 3-question profile builder
+│   │   │   ├── InterviewLive.jsx # Vocal simulation featuring Speech Synthesis and face-api.js
+│   │   │   ├── AdminDashboard.jsx# Admin visual headquarters with SVG growth trend charts
+│   │   │   └── AdminUsersList.jsx# Exhaustive searchable catalog of candidate records
+│   │   ├── routes/
+│   │   │   └── AppRoutes.jsx     # Global router linking pages and layout wrappers
+│   │   ├── services/
+│   │   │   └── api.js            # Unified central Axios client handling credentials and headers
+│   │   └── index.css             # Main styling system, layout constants, and variables
+│   └── package.json              # Frontend modules, Monaco editor, and Lucide react settings
+├── backend/                      # The Neural Operations Core (Flask)
+│   ├── routes/                   # Blueprint-based modular API Endpoints
+│   │   ├── auth.py               # User onboarding, verification, and session creation
+│   │   ├── interview.py          # Dynamic scenario simulators and transcription feedback
+│   │   ├── dojo.py               # Code evaluation engine and algorithmic constraints
+│   │   └── admin.py              # Candidate directories, chronologies, and metrics
+│   ├── utils/                    # Signal Processing & Parser Providers
+│   │   ├── ai_helpers.py         # Google Gemini / Llama 3 custom system orchestrations
+│   │   ├── audio_helpers.py      # Librosa root-mean-square energy and YIN pitch variation
+│   │   ├── cv_helpers.py         # Head posture alignment and gaze vector tracking
+│   │   └── auth_helpers.py       # JWT creation, decoding, and admin checks
+│   ├── models/                   # Database schemas
+│   │   └── database.py           # MongoDB aggregation queries and indexing definitions
+│   ├── scripts/                  # Operations & Database Setup
+│   │   └── init_db.py            # Collections bootstrapping and admin credential insertion
+│   ├── main.py                   # Central server gatekeeper and configuration
+│   └── requirements.txt          # Python requirements: Flask, PyMongo, Librosa, PyJWT
+├── ml/                           # Machine Learning Research Laboratory
+│   ├── cv/                       # Computer Vision modules
+│   │   ├── eye_tracking.py       # OpenCV Perspective-n-Point and EAR tracking
+│   │   └── posture_analysis.py   # MediaPipe joint landmark tilt calculators
+│   ├── audio/                    # Speech analysis
+│   │   └── emotion_detector.py   # Vocal energy RMS and fundamental frequency SD analytics
+│   └── nlp/                      # Natural Language Processing
+│       ├── resume_parser.py      # Semantic CV extractors
+│       └── answer_evaluator.py   # Response embeddings similarity calculators
+├── package.json                  # Root runner orchestrating concurrent frontend & backend booting
+└── PROJECT_STATE.md              # Global architectural states and milestone logs
 ```
 
 ---
