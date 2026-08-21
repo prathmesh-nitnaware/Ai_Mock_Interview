@@ -18,7 +18,12 @@ import {
   Terminal,
   FileText,
   ChevronRight,
-  Activity
+  Activity,
+  Cpu,
+  Zap,
+  DollarSign,
+  Layers,
+  RefreshCw
 } from 'lucide-react';
 import './AdminDashboard.css';
 
@@ -33,6 +38,11 @@ const AdminDashboard = () => {
     chart_data: []
   });
   const [usersList, setUsersList] = useState([]);
+  
+  // AI Metrics state (Phase 12)
+  const [aiPeriod, setAiPeriod] = useState('today');
+  const [aiMetrics, setAiMetrics] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   // Popup modal state
   const [selectedUser, setSelectedUser] = useState(null);
@@ -57,9 +67,12 @@ const AdminDashboard = () => {
       const analyticsRes = await api.client.get('/api/admin/analytics');
       setAnalytics(analyticsRes.data);
 
-      // Fetch users (already filters candidates only on optimized backend)
+      // Fetch users
       const usersRes = await api.client.get('/api/admin/users');
       setUsersList(usersRes.data.users || []);
+
+      // Fetch AI telemetry
+      await fetchAiMetrics(aiPeriod);
 
     } catch (err) {
       console.error('Failed to load admin data:', err);
@@ -67,6 +80,23 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchAiMetrics = async (period) => {
+    try {
+      setAiLoading(true);
+      const res = await api.client.get(`/api/admin/ai/metrics?period=${period}`);
+      setAiMetrics(res.data);
+    } catch (err) {
+      console.warn('Failed to load AI metrics:', err);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handlePeriodChange = (newPeriod) => {
+    setAiPeriod(newPeriod);
+    fetchAiMetrics(newPeriod);
   };
 
   useEffect(() => {
@@ -200,7 +230,6 @@ const AdminDashboard = () => {
   return (
     <div className="admin-page fade-in">
       <div className="noise-bg"></div>
-      <div className="ambient-glow"></div>
 
       <div className="admin-content">
         
@@ -232,7 +261,7 @@ const AdminDashboard = () => {
         {/* --- DATA & GRAPHS ROW (Wide User Growth Chart) --- */}
         <section className="admin-charts-section-wide">
           
-          <div className="chart-card glass-card">
+          <div className="chart-card">
             <div className="chart-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <TrendingUp size={18} className="chart-icon" />
@@ -246,17 +275,17 @@ const AdminDashboard = () => {
                   <svg viewBox="0 0 800 150" width="100%" height="150" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
                     <defs>
                       <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.3"/>
-                        <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.0"/>
+                        <stop offset="0%" stopColor="var(--color-admin)" stopOpacity="0.3"/>
+                        <stop offset="100%" stopColor="var(--color-admin)" stopOpacity="0.0"/>
                       </linearGradient>
                     </defs>
-                    <line x1="0" y1="0" x2="800" y2="0" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                    <line x1="0" y1="50" x2="800" y2="50" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                    <line x1="0" y1="100" x2="800" y2="100" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                    <line x1="0" y1="150" x2="800" y2="150" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                    <line x1="0" y1="0" x2="800" y2="0" stroke="var(--color-border)" strokeWidth="1" />
+                    <line x1="0" y1="50" x2="800" y2="50" stroke="var(--color-border)" strokeWidth="1" />
+                    <line x1="0" y1="100" x2="800" y2="100" stroke="var(--color-border)" strokeWidth="1" />
+                    <line x1="0" y1="150" x2="800" y2="150" stroke="var(--color-border)" strokeWidth="1" />
                     
                     <path d={renderAreaChartPath(analytics.chart_data, 'users')} fill="url(#chartGradient)" />
-                    <path d={renderLineChartPath(analytics.chart_data, 'users')} fill="none" stroke="var(--accent)" strokeWidth="2.5" />
+                    <path d={renderLineChartPath(analytics.chart_data, 'users')} fill="none" stroke="var(--color-admin)" strokeWidth="2.5" />
                   </svg>
                   <div className="chart-axis-labels">
                     {analytics.chart_data.map((day, idx) => (
@@ -272,18 +301,152 @@ const AdminDashboard = () => {
 
         </section>
 
+        {/* --- AI COST & TELEMETRY CONTROL CENTER (Phase 12) --- */}
+        <section className="ai-control-section">
+          <div className="ai-header-bar">
+            <div className="ai-header-title">
+              <Cpu size={20} style={{ color: 'var(--color-admin)' }} />
+              <h2>AI Cost & Telemetry Control Center</h2>
+              {aiMetrics && (
+                <span className="ai-data-status-pill">
+                  {aiMetrics.data_status || 'Measured'}
+                </span>
+              )}
+            </div>
+
+            <div className="ai-period-selector">
+              {['today', 'week', 'month', 'all'].map((p) => (
+                <button
+                  key={p}
+                  className={`ai-period-btn ${aiPeriod === p ? 'active' : ''}`}
+                  onClick={() => handlePeriodChange(p)}
+                >
+                  {p === 'today' ? 'Today' : p === 'week' ? '7 Days' : p === 'month' ? '30 Days' : 'All Time'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {aiMetrics ? (
+            <div>
+              {/* Cost Anomaly Alert Banner */}
+              {aiMetrics.anomalies && aiMetrics.anomalies.length > 0 && (
+                <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {aiMetrics.anomalies.map((anom, idx) => (
+                    <div key={idx} style={{ padding: '0.85rem 1rem', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.35)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <AlertCircle size={18} style={{ color: '#ef4444', flexShrink: 0 }} />
+                      <span style={{ fontSize: '0.85rem', color: '#fca5a5', fontWeight: 600 }}>{anom.message}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Stat Cards Grid */}
+              <div className="ai-stats-grid">
+                <div className="ai-stat-card">
+                  <span className="ai-stat-lbl">AI Invocations</span>
+                  <span className="ai-stat-val">{aiMetrics.total_calls || 0}</span>
+                  <span className="ai-stat-sub">Cache Hits: {aiMetrics.cache_hit_rate}%</span>
+                </div>
+
+                <div className="ai-stat-card">
+                  <span className="ai-stat-lbl">Total Tokens</span>
+                  <span className="ai-stat-val">{(aiMetrics.total_tokens || 0).toLocaleString()}</span>
+                  <span className="ai-stat-sub">In: {(aiMetrics.total_input_tokens || 0).toLocaleString()} | Out: {(aiMetrics.total_output_tokens || 0).toLocaleString()}</span>
+                </div>
+
+                <div className="ai-stat-card">
+                  <span className="ai-stat-lbl">Estimated Cost</span>
+                  <span className="ai-stat-val">${(aiMetrics.total_estimated_cost || 0).toFixed(4)}</span>
+                  <span className="ai-stat-sub">Avg/Interview: ${(aiMetrics.average_cost_per_interview || 0).toFixed(4)}</span>
+                </div>
+
+                <div className="ai-stat-card">
+                  <span className="ai-stat-lbl">Tokens / Interview</span>
+                  <span className="ai-stat-val">{(aiMetrics.average_tokens_per_interview || 0).toLocaleString()}</span>
+                  <span className="ai-stat-sub">In: {(aiMetrics.average_input_tokens_per_interview || 0).toLocaleString()} | Out: {(aiMetrics.average_output_tokens_per_interview || 0).toLocaleString()}</span>
+                </div>
+
+                <div className="ai-stat-card">
+                  <span className="ai-stat-lbl">AI Latency Profile</span>
+                  <span className="ai-stat-val">{aiMetrics.average_latency_ms || 0} ms</span>
+                  <span className="ai-stat-sub">p50: {aiMetrics.p50_latency_ms || 0}ms | p95: {aiMetrics.p95_latency_ms || 0}ms | p99: {aiMetrics.p99_latency_ms || 0}ms</span>
+                </div>
+
+                <div className="ai-stat-card">
+                  <span className="ai-stat-lbl">Reliability & Safety</span>
+                  <span className="ai-stat-val">{100 - (aiMetrics.fallback_rate || 0)}%</span>
+                  <span className="ai-stat-sub">Retries: {aiMetrics.retry_rate}% | Fallbacks: {aiMetrics.fallback_rate}% | Trunc: {aiMetrics.truncation_rate}%</span>
+                </div>
+              </div>
+
+              {/* Breakdowns Grid */}
+              <div className="ai-breakdown-grid">
+                {/* Request Type Breakdown & Output Ceilings */}
+                <div className="ai-breakdown-card">
+                  <h3>Output Ceilings & Token Utilization</h3>
+                  {aiMetrics.by_request_type && aiMetrics.by_request_type.length > 0 ? (
+                    aiMetrics.by_request_type.map((item, idx) => (
+                      <div key={idx} className="ai-breakdown-item">
+                        <div>
+                          <span className="ai-breakdown-name">{item.request_type}</span>
+                          <span className="text-muted" style={{ fontSize: '0.75rem', display: 'block' }}>
+                            Ceiling: {item.configured_ceiling} | Avg Out: {item.avg_output_tokens} | p95: {item.p95_output_tokens}
+                          </span>
+                        </div>
+                        <div className="ai-breakdown-stats">
+                          <span style={{ fontWeight: 700, color: item.ceiling_utilization_pct > 80 ? '#f59e0b' : 'var(--color-admin)' }}>
+                            {item.ceiling_utilization_pct}% Util
+                          </span>
+                          <span>${(item.cost || 0).toFixed(4)}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-muted" style={{ fontSize: '0.85rem' }}>No AI calls recorded for this period.</p>
+                  )}
+                </div>
+
+                {/* Prompt Versioning & Quality Breakdown */}
+                <div className="ai-breakdown-card">
+                  <h3>Prompt Versioning & Governance</h3>
+                  {aiMetrics.by_prompt_version && aiMetrics.by_prompt_version.length > 0 ? (
+                    aiMetrics.by_prompt_version.map((item, idx) => (
+                      <div key={idx} className="ai-breakdown-item">
+                        <div>
+                          <span className="ai-breakdown-name">{item.prompt_version}</span>
+                          <span className="text-muted" style={{ fontSize: '0.75rem', display: 'block' }}>{item.request_type}</span>
+                        </div>
+                        <div className="ai-breakdown-stats">
+                          <span>Avg: {item.avg_tokens} tok</span>
+                          <span>Failures: {item.validation_failures}</span>
+                          <span>{item.count} runs</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-muted" style={{ fontSize: '0.85rem' }}>No prompt version telemetry logged yet.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="text-muted" style={{ fontSize: '0.85rem' }}>Gathering AI telemetry data...</p>
+          )}
+        </section>
+
         {/* --- ERROR ALERT --- */}
         {error && (
-          <div className="glass-card mb-6" style={{ padding: '1.25rem', borderColor: 'var(--danger-border)', background: 'var(--danger-subtle)', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-            <AlertCircle size={20} style={{ color: 'var(--danger)' }} />
-            <p style={{ color: 'var(--danger)', fontSize: '0.9rem' }}>{error}</p>
+          <div className="mb-6" style={{ padding: '1.25rem', borderColor: 'var(--color-error)', background: 'var(--color-error-bg)', display: 'flex', gap: '0.75rem', alignItems: 'center', borderRadius: 'var(--radius-md)' }}>
+            <AlertCircle size={20} style={{ color: 'var(--color-error)' }} />
+            <p style={{ color: 'var(--color-error)', fontSize: '0.9rem' }}>{error}</p>
           </div>
         )}
 
         {/* --- USERS DIRECTORY PREVIEW (Max 5 Candidates) --- */}
-        <section className="users-table-section glass-card">
+        <section className="users-table-section">
           
-          <div className="table-controls-header" style={{ marginBottom: '1.5rem' }}>
+          <div className="table-controls-header">
             <h3 style={{ fontSize: '1rem', fontWeight: 800, letterSpacing: '0.5px' }}>Candidates Overview</h3>
             <span className="text-muted" style={{ fontSize: '0.8rem' }}>Displaying the 5 most recent registrations. Click a candidate name to view stats.</span>
           </div>
@@ -371,7 +534,7 @@ const AdminDashboard = () => {
           {/* --- SEE MORE LINK BUTTON --- */}
           {candidateUsers.length > 5 && (
             <div className="see-more-wrapper">
-              <Link to="/admin/users" className="btn-glow-primary see-more-btn">
+              <Link to="/admin/users" className="see-more-btn">
                 <span>See More Candidates</span>
                 <ChevronRight size={16} />
               </Link>
@@ -385,7 +548,7 @@ const AdminDashboard = () => {
       {/* --- ACTIVITY POPUP / ENGAGEMENT MODAL --- */}
       {selectedUser && (
         <div className="admin-modal-overlay fade-in">
-          <div className="admin-modal-card glass-card">
+          <div className="admin-modal-card">
             
             <div className="modal-header">
               <div className="modal-header-profile">
@@ -460,7 +623,7 @@ const AdminDashboard = () => {
 
                   </div>
 
-                  <div className="profile-completeness-row glass-card">
+                  <div className="profile-completeness-row">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <CheckCircle size={16} style={{ color: userActivity.user.onboarding_completed ? 'var(--success)' : 'var(--text-tertiary)' }} />
                       <span style={{ fontSize: '0.85rem' }}>
@@ -480,9 +643,9 @@ const AdminDashboard = () => {
                   <div className="modal-graphs-grid">
                     
                     {/* Score Progression graph */}
-                    <div className="modal-graph-card glass-card">
+                    <div className="modal-graph-card">
                       <h4 className="modal-graph-title">
-                        <TrendingUp size={14} style={{ color: 'var(--accent)' }} />
+                        <TrendingUp size={14} style={{ color: 'var(--color-admin)' }} />
                         <span>Mock Score Progression</span>
                       </h4>
                       <div className="mg-body">
@@ -491,12 +654,12 @@ const AdminDashboard = () => {
                             <svg viewBox="0 0 260 80" width="100%" height="80" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
                               <defs>
                                 <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.25"/>
-                                  <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.0"/>
+                                  <stop offset="0%" stopColor="var(--color-admin)" stopOpacity="0.25"/>
+                                  <stop offset="100%" stopColor="var(--color-admin)" stopOpacity="0.0"/>
                                 </linearGradient>
                               </defs>
                               <path d={renderScoreAreaPath(userActivity.scores_chart)} fill="url(#scoreGrad)" />
-                              <path d={renderScoreLinePath(userActivity.scores_chart)} fill="none" stroke="var(--accent)" strokeWidth="2" />
+                              <path d={renderScoreLinePath(userActivity.scores_chart)} fill="none" stroke="var(--color-admin)" strokeWidth="2" />
                             </svg>
                             <div className="mg-axis-scores">
                               <span>Initial</span>
@@ -510,9 +673,9 @@ const AdminDashboard = () => {
                     </div>
 
                     {/* Weekly Engagement Bars */}
-                    <div className="modal-graph-card glass-card">
+                    <div className="modal-graph-card">
                       <h4 className="modal-graph-title">
-                        <Activity size={14} style={{ color: '#ec4899' }} />
+                        <Activity size={14} style={{ color: 'var(--color-admin)' }} />
                         <span>7-Day Engagement</span>
                       </h4>
                       <div className="mg-body bar-layout">
@@ -559,7 +722,7 @@ const AdminDashboard = () => {
                         ))}
                       </div>
                     ) : (
-                      <div className="empty-timeline glass-card">
+                      <div className="empty-timeline">
                         <Compass size={24} className="text-muted" style={{ marginBottom: '0.5rem' }} />
                         <p className="text-muted" style={{ fontSize: '0.85rem' }}>No activity records found for this user.</p>
                       </div>
@@ -571,7 +734,7 @@ const AdminDashboard = () => {
             </div>
 
             <div className="modal-footer">
-              <button className="btn-glow-primary modal-close-action" onClick={() => setSelectedUser(null)}>
+              <button className="modal-close-action" onClick={() => setSelectedUser(null)}>
                 Dismiss Panel
               </button>
             </div>

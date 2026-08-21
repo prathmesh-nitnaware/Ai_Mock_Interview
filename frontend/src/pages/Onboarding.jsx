@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ArrowRight, Sparkles, GraduationCap, Briefcase, Target, Loader2 } from 'lucide-react';
-import Button from '../components/ui/Button';
+import { ArrowRight, Sparkles, GraduationCap, Briefcase, Target, Loader2, ArrowLeft } from 'lucide-react';
 import '../styles/theme.css';
 import './Onboarding.css';
 
@@ -16,11 +15,31 @@ const Onboarding = () => {
     target_job: ''
   });
   
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (error) setError(null);
+  };
+
+  const handleNext = () => {
+    if (step === 1 && !formData.education) {
+      setError("Please enter your education to continue.");
+      return;
+    }
+    if (step === 2 && !formData.current_job) {
+      setError("Please enter your current job to continue.");
+      return;
+    }
+    setError(null);
+    setStep(step + 1);
+  };
+
+  const handleBack = () => {
+    setError(null);
+    setStep(step - 1);
   };
 
   const handleSubmit = async (e) => {
@@ -65,87 +84,126 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="onboarding-root fade-in-up">
-      <div className="ambient-glow-brand"></div>
+    <div className="auth-root">
+      <div className="auth-bg-glow"></div>
       
-      <div className="onboarding-container glass-panel">
-        <div className="form-header text-center mb-8">
-          <div className="brand-pill-light mx-auto mb-4">
-             <Sparkles size={14} className="text-indigo-light" />
-             <span>PROFILE SETUP</span>
+      <div className="auth-card fade-in-up" style={{ minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+        
+        {/* Progress Indicator */}
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-6)' }}>
+          <div style={{ height: '4px', flex: 1, backgroundColor: step >= 1 ? 'var(--color-primary)' : 'var(--color-bg-surface-hover)', borderRadius: '2px', transition: 'background-color 0.3s ease' }} />
+          <div style={{ height: '4px', flex: 1, backgroundColor: step >= 2 ? 'var(--color-primary)' : 'var(--color-bg-surface-hover)', borderRadius: '2px', transition: 'background-color 0.3s ease' }} />
+          <div style={{ height: '4px', flex: 1, backgroundColor: step >= 3 ? 'var(--color-primary)' : 'var(--color-bg-surface-hover)', borderRadius: '2px', transition: 'background-color 0.3s ease' }} />
+        </div>
+
+        <div className="auth-header">
+          <div className="auth-logo">
+            <Sparkles size={24} />
           </div>
-          <h2>Welcome, {user?.name?.split(' ')[0] || 'Candidate'}!</h2>
-          <p className="text-muted mt-2">Before we drop you into the training environment, we need to calibrate your AI settings. Just 3 quick questions.</p>
+          <h1>Welcome, {user?.name?.split(' ')[0] || 'Candidate'}!</h1>
+          <p>Calibrate your AI settings before you begin.</p>
         </div>
 
         {error && (
-          <div className="error-pill shake-animation mb-6 text-center">
+          <div className="badge badge-error" style={{ width: '100%', marginBottom: 'var(--space-4)', padding: 'var(--space-2)' }}>
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="onboarding-form">
+        <form onSubmit={step === 3 ? handleSubmit : (e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           
-          <div className="question-block glass-panel-inner">
-            <label className="question-label">
-                <GraduationCap size={18} className="text-indigo" />
-                <span>1. What is your highest level of education?</span>
-            </label>
-            <input 
-                type="text" 
-                name="education"
-                value={formData.education}
-                onChange={handleChange}
-                placeholder="E.g. B.S. Computer Science, Self-Taught, Master's Degree"
-                className="input-glass mt-3 w-full"
-            />
-          </div>
+          {step === 1 && (
+            <div className="fade-in-up" style={{ flex: 1 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)', fontWeight: 'var(--font-weight-medium)' }}>
+                  <GraduationCap size={18} style={{ color: 'var(--color-primary)' }} />
+                  <span>1. What is your highest level of education?</span>
+              </label>
+              <input 
+                  type="text" 
+                  name="education"
+                  value={formData.education}
+                  onChange={handleChange}
+                  placeholder="E.g. B.S. Computer Science, Self-Taught"
+                  className="input"
+                  autoFocus
+              />
+            </div>
+          )}
 
-          <div className="question-block glass-panel-inner mt-6">
-            <label className="question-label">
-                <Briefcase size={18} className="text-success" />
-                <span>2. What is your current job role or status?</span>
-            </label>
-            <input 
-                type="text" 
-                name="current_job"
-                value={formData.current_job}
-                onChange={handleChange}
-                placeholder="E.g. College Student, Junior Developer, Unemployed"
-                className="input-glass mt-3 w-full"
-            />
-          </div>
+          {step === 2 && (
+            <div className="fade-in-up" style={{ flex: 1 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)', fontWeight: 'var(--font-weight-medium)' }}>
+                  <Briefcase size={18} style={{ color: 'var(--color-success)' }} />
+                  <span>2. What is your current job role or status?</span>
+              </label>
+              <input 
+                  type="text" 
+                  name="current_job"
+                  value={formData.current_job}
+                  onChange={handleChange}
+                  placeholder="E.g. Junior Developer, Unemployed"
+                  className="input"
+                  autoFocus
+              />
+            </div>
+          )}
 
-          <div className="question-block glass-panel-inner mt-6">
-            <label className="question-label">
-                <Target size={18} className="text-warning" />
-                <span>3. What target job role are you preparing for?</span>
-            </label>
-            <input 
-                type="text" 
-                name="target_job"
-                value={formData.target_job}
-                onChange={handleChange}
-                placeholder="E.g. Frontend Engineer, Product Manager"
-                className="input-glass mt-3 w-full"
-            />
-          </div>
+          {step === 3 && (
+            <div className="fade-in-up" style={{ flex: 1 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)', fontWeight: 'var(--font-weight-medium)' }}>
+                  <Target size={18} style={{ color: 'var(--color-warning)' }} />
+                  <span>3. What target job role are you preparing for?</span>
+              </label>
+              <input 
+                  type="text" 
+                  name="target_job"
+                  value={formData.target_job}
+                  onChange={handleChange}
+                  placeholder="E.g. Frontend Engineer, Product Manager"
+                  className="input"
+                  autoFocus
+              />
+            </div>
+          )}
 
-          <Button 
-            type="submit" 
-            variant="primary" 
-            className="btn-glow-submit w-full mt-8"
-            disabled={loading}
-          >
-            {loading ? (
-                <span className="flex items-center gap-2">
-                    <Loader2 className="animate-spin" size={16} /> SAVING...
-                </span>
-            ) : (
-                <>Complete Setup <ArrowRight size={18} className="ml-2"/></>
+          <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'auto', paddingTop: 'var(--space-6)' }}>
+            {step > 1 && (
+              <button 
+                type="button" 
+                onClick={handleBack}
+                className="btn btn-secondary"
+                style={{ flex: 1 }}
+              >
+                <ArrowLeft size={16} style={{ marginRight: '8px' }}/> Back
+              </button>
             )}
-          </Button>
-
+            
+            {step < 3 ? (
+              <button 
+                type="button" 
+                onClick={handleNext}
+                className="btn btn-primary"
+                style={{ flex: step === 1 ? '1' : '2' }}
+              >
+                Continue <ArrowRight size={16} style={{ marginLeft: '8px' }}/>
+              </button>
+            ) : (
+              <button 
+                type="submit" 
+                className="btn btn-primary"
+                disabled={loading}
+                style={{ flex: 2 }}
+              >
+                {loading ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Loader2 className="animate-spin" size={16} /> SAVING...
+                    </span>
+                ) : (
+                    <>Complete Setup <ArrowRight size={16} style={{ marginLeft: '8px' }}/></>
+                )}
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </div>

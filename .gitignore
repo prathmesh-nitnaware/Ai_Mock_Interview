@@ -5,12 +5,14 @@
 # Environment Variables
 # =========================
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 backend/.env
+backend/.env.*
+!backend/.env.example
 frontend/.env
+frontend/.env.*
+!frontend/.env.example
 
 # =========================
 # Dependencies
@@ -77,3 +79,4 @@ Thumbs.db
 # =========================
 ml/audio/test_audio.wav
 ml/nlp/test_resume.pdf
+scratch/

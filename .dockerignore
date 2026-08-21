@@ -1,0 +1,14 @@
+node_modules
+*/node_modules
+.git
+.gitignore
+.venv
+*/.venv
+venv
+*/venv
+__pycache__
+*/__pycache__
+*.pyc
+dist
+*/dist
+mongodb_data

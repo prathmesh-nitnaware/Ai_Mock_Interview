@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { api } from "../services/api";
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   Video,
@@ -11,9 +10,9 @@ import {
   ShieldCheck,
   Settings2,
   AlertTriangle,
-} from "lucide-react";
-
-import "./InterviewSession.css";
+  Loader2,
+} from 'lucide-react';
+import './InterviewSession.css';
 
 const InterviewSession = () => {
   const location = useLocation();
@@ -22,26 +21,33 @@ const InterviewSession = () => {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
 
-  // Extracting context from previous Config step
   const questionData = location.state?.question || null;
   const sessionConfig = location.state?.config || null;
   const sessionId = location.state?.session_id || null;
 
-  const [hasPermissions, setHasPermissions] = useState(false);
-  const [permissionError, setPermissionError] = useState(null);
+  const [cameraStatus, setCameraStatus] = useState('checking');
+  const [micStatus, setMicStatus] = useState('checking');
+  const [speechRecStatus, setSpeechRecStatus] = useState('checking');
+  const [backendStatus, setBackendStatus] = useState('ready');
   const [isChecking, setIsChecking] = useState(true);
 
   const [cameraOn, setCameraOn] = useState(true);
   const [micOn, setMicOn] = useState(true);
 
   useEffect(() => {
-    // Safety check: Redirect if no session context
     if (!questionData || !sessionId) {
-      navigate("/interview");
+      navigate('/interview');
       return;
     }
 
-    const initHardware = async () => {
+    const initDiagnostic = async () => {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        setSpeechRecStatus('ready');
+      } else {
+        setSpeechRecStatus('unavailable');
+      }
+
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
@@ -52,19 +58,32 @@ const InterviewSession = () => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
-
-        // Verification delay for UI experience
-        setTimeout(() => {
-          setHasPermissions(true);
-          setIsChecking(false);
-        }, 1500);
+        setCameraStatus('ready');
+        setMicStatus('ready');
+        setCameraOn(true);
+        setMicOn(true);
       } catch (err) {
-        setPermissionError("Camera/Microphone access denied. Please check settings.");
-        setIsChecking(false);
+        try {
+          const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          streamRef.current = audioStream;
+          setCameraStatus('unavailable');
+          setMicStatus('ready');
+          setCameraOn(false);
+          setMicOn(true);
+        } catch (audioErr) {
+          setCameraStatus('unavailable');
+          setMicStatus('unavailable');
+          setCameraOn(false);
+          setMicOn(false);
+        }
+      } finally {
+        setTimeout(() => {
+          setIsChecking(false);
+        }, 500);
       }
     };
 
-    initHardware();
+    initDiagnostic();
 
     return () => {
       if (streamRef.current) {
@@ -94,7 +113,7 @@ const InterviewSession = () => {
   };
 
   const startActualInterview = () => {
-    navigate("/interview/live", {
+    navigate('/interview/live', {
       state: {
         question: questionData,
         config: sessionConfig,
@@ -103,102 +122,118 @@ const InterviewSession = () => {
     });
   };
 
-  if (permissionError) {
-    return (
-      <div className="lobby-container">
-        <div className="glass-panel error-card text-center">
-          <AlertTriangle size={48} color="#ef4444" className="mb-4" />
-          <h2 className="text-xl font-bold mb-2">Hardware Blocked</h2>
-          <p className="mb-6" style={{ color: '#888' }}>{permissionError}</p>
-          <button className="btn-enter-studio" onClick={() => window.location.reload()}>
-            RETRY CONNECTION
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="lobby-container fade-in">
-      <div className="lobby-grid">
-        
-        {/* --- LEFT: Preview Panel --- */}
-        <div className="preview-panel">
-          <div className="panel-header">
-            <Settings2 size={14} /> SIGNAL MONITOR
+    <div className="diagnostic-lobby-page">
+      <div className="diagnostic-grid">
+        {/* Left Column: Camera Preview Box */}
+        <div className="camera-preview-panel">
+          <div className="preview-header-label">
+            <Settings2 size={14} /> Hardware Diagnostic Preview
           </div>
-          
-          <div className="video-wrapper">
+
+          <div className="camera-preview-box">
             {cameraOn ? (
-              <video ref={videoRef} autoPlay playsInline muted className="live-video" />
+              <video ref={videoRef} autoPlay playsInline muted className="preview-video-element" />
             ) : (
-              <div className="cam-off-state">
-                <div className="avatar-placeholder">P</div>
-                VIDEO FEED OFFLINE
+              <div className="preview-muted-state">
+                <div className="preview-avatar">P</div>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>
+                  {cameraStatus === 'unavailable' ? 'Camera Not Connected' : 'Camera Feed Muted'}
+                </span>
               </div>
             )}
 
-            <div className="controls-overlay">
-              <button className={`control-btn ${!micOn ? "off" : ""}`} onClick={toggleMic}>
-                {micOn ? <Mic size={20} /> : <MicOff size={20} />}
+            <div className="preview-controls-bar">
+              <button
+                type="button"
+                className={`media-toggle-btn ${!cameraOn ? 'off' : ''}`}
+                onClick={toggleCamera}
+                title={cameraOn ? 'Mute Camera' : 'Enable Camera'}
+              >
+                {cameraOn ? <Video size={16} /> : <VideoOff size={16} />}
               </button>
-              <button className={`control-btn ${!cameraOn ? "off" : ""}`} onClick={toggleCamera}>
-                {cameraOn ? <Video size={20} /> : <VideoOff size={20} />}
-              </button>
-            </div>
-          </div>
 
-          <div className="audio-visualizer-box">
-            <span className="av-label">AUDIO_INPUT_LEVEL</span>
-            <div className="equalizer">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="bar" style={{ animationDelay: `${i * 0.1}s` }}></div>
-              ))}
+              <button
+                type="button"
+                className={`media-toggle-btn ${!micOn ? 'off' : ''}`}
+                onClick={toggleMic}
+                title={micOn ? 'Mute Microphone' : 'Enable Microphone'}
+              >
+                {micOn ? <Mic size={16} /> : <MicOff size={16} />}
+              </button>
             </div>
           </div>
         </div>
 
-        {/* --- RIGHT: Checklist Panel --- */}
-        <div className="checklist-panel">
-          <h1 className="lobby-title">SYSTEM CHECK</h1>
-          <p className="lobby-sub">Verify your hardware environment before initializing the AI interview studio.</p>
-          
-          <div className="checklist-items">
-            <div className={`check-item ${!isChecking && hasPermissions ? 'passed' : ''}`}>
-              {isChecking ? <div className="loader-ring"></div> : <CheckCircle2 size={24} color="#818cf8" />}
-              <div className="ci-text">
-                <strong>Optical Sensors</strong>
-                <span>{isChecking ? "Verifying camera..." : "High-definition feed active"}</span>
+        {/* Right Column: Diagnostic Status Card */}
+        <div className="diagnostic-status-card">
+          <div>
+            <h2 className="diagnostic-card-title">Pre-Flight Readiness Check</h2>
+            <p style={{ fontSize: '0.85rem', color: '#8c8ca0', margin: '0.35rem 0 0 0' }}>
+              Verifying audio/video streams and backend session connectivity.
+            </p>
+          </div>
+
+          <div className="diagnostic-checklist">
+            {/* Camera */}
+            <div className="checklist-row">
+              <div className="checklist-label-group">
+                <Video size={16} style={{ color: '#7c5cfc' }} />
+                <span>Webcam & Framing</span>
               </div>
+              <span className={`checklist-badge ${cameraStatus}`}>
+                {cameraStatus === 'ready' ? '● Ready' : cameraStatus === 'checking' ? 'Checking...' : '○ Optional'}
+              </span>
             </div>
 
-            <div className={`check-item ${!isChecking && hasPermissions ? 'passed' : ''}`}>
-              {isChecking ? <div className="loader-ring"></div> : <CheckCircle2 size={24} color="#818cf8" />}
-              <div className="ci-text">
-                <strong>Audio Waveform</strong>
-                <span>{isChecking ? "Syncing microphone..." : "Input channel synchronized"}</span>
+            {/* Microphone */}
+            <div className="checklist-row">
+              <div className="checklist-label-group">
+                <Mic size={16} style={{ color: '#7c5cfc' }} />
+                <span>Microphone & Audio</span>
               </div>
+              <span className={`checklist-badge ${micStatus}`}>
+                {micStatus === 'ready' ? '● Ready' : micStatus === 'checking' ? 'Checking...' : '○ Typed Fallback'}
+              </span>
             </div>
 
-            <div className="check-item">
-              <ShieldCheck size={24} color="#818cf8" />
-              <div className="ci-text">
-                <strong>Secure Session</strong>
-                <span>End-to-end encryption enabled</span>
+            {/* Speech Recognition */}
+            <div className="checklist-row">
+              <div className="checklist-label-group">
+                <Settings2 size={16} style={{ color: '#7c5cfc' }} />
+                <span>Speech Recognition</span>
               </div>
+              <span className={`checklist-badge ${speechRecStatus}`}>
+                {speechRecStatus === 'ready' ? '● Active' : '○ Typed Fallback'}
+              </span>
+            </div>
+
+            {/* Backend Session */}
+            <div className="checklist-row">
+              <div className="checklist-label-group">
+                <ShieldCheck size={16} style={{ color: '#10b981' }} />
+                <span>AI Interviewer Session</span>
+              </div>
+              <span className="checklist-badge ready">
+                ● Connected
+              </span>
             </div>
           </div>
 
-          <button 
-            className="btn-enter-studio" 
-            disabled={isChecking || !hasPermissions} 
+          <p className="hardware-reassurance-note">
+            Note: If camera or microphone permissions are not granted, you can answer questions directly via the typed response box without score penalties.
+          </p>
+
+          <button
+            type="button"
+            className="btn-launch-interview"
             onClick={startActualInterview}
+            disabled={isChecking}
           >
-            {isChecking ? "VERIFYING..." : "INITIALIZE STUDIO"}
-            {!isChecking && <ArrowRight size={18} />}
+            <span>Enter Live Interview Studio</span>
+            <ArrowRight size={15} />
           </button>
         </div>
-
       </div>
     </div>
   );

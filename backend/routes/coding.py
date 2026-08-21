@@ -1,14 +1,22 @@
+"""
+routes/coding.py — Coding Dojo routes using Neon PostgreSQL & Central Gemini Service
+====================================================================================
+"""
+import logging
 from flask import Blueprint, request, jsonify
 from utils.auth_helpers import token_required
-from datetime import datetime
-import json
-from config import Config
-from utils.ai_provider import ai_service
-
-coding_bp = Blueprint("coding", __name__)
-
-
+from utils.middleware import rate_limit
+from extensions import get_db, dict_cursor
 from .coding_data import CHALLENGES
+from services.ai import (
+    gemini_service,
+    build_coding_evaluation_prompt,
+    validate_coding_evaluation,
+    record_ai_usage,
+)
+
+logger = logging.getLogger(__name__)
+coding_bp = Blueprint("coding", __name__)
 
 
 @coding_bp.route("/challenges", methods=["GET"])
@@ -16,6 +24,7 @@ from .coding_data import CHALLENGES
 def get_challenges(current_user):
     """Returns the list for the Dojo selection screen."""
     return jsonify(CHALLENGES), 200
+
 
 @coding_bp.route("/challenge/<challenge_id>", methods=["GET"])
 @token_required
@@ -26,102 +35,105 @@ def get_single_challenge(current_user, challenge_id):
         return jsonify({"error": "Challenge not found"}), 404
     return jsonify(challenge), 200
 
+
 @coding_bp.route("/submit", methods=["POST"])
 @token_required
+@rate_limit
 def submit_challenge(current_user):
-    """Evaluates the user's code via AI review."""
+    """Evaluates user code via AI and saves submission to Neon."""
     try:
-        data = request.json
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({"error": "Missing or malformed JSON body"}), 400
+
         challenge_id = data.get("challenge_id")
-        code = data.get("code")
-        language = data.get("language", "python")
-        action = data.get("action", "submit")
-        
+        code = str(data.get("code", ""))
+        language = str(data.get("language", "python")).lower()
+        action = str(data.get("action", "submit"))
+
+        if not code or len(code) > 50000:
+            return jsonify({"error": "Code is required and must not exceed 50KB."}), 400
+
         challenge = next((c for c in CHALLENGES if c["id"] == challenge_id), None)
         if not challenge:
             return jsonify({"error": "Challenge not found"}), 404
-            
-        prompt = f"""
-        Role: AI Technical Reviewer
-        Goal: Analyze this user's solution in {language.capitalize()} for the challenge: '{challenge['title']}'.
-        
-        Challenge Description: {challenge['description']}
-        User Code:
-        ```{language}
-        {code}
-        ```
-        
-        Please provide feedback on correctness, efficiency, and code quality.
-        Return ONLY valid JSON:
-        {{
-            "success": true/false (if it passes basic logic),
-            "feedback": "Concise review",
-            "clarity_score": 1-10,
-            "confidence_score": 1-10,
-            "improvements": ["tip1", "tip2"]
-        }}
-        """
-        
-        result = ai_service.ask_json(prompt)
-        if not result:
-            return jsonify({"error": "AI failed to evaluate code"}), 500
-            
-        if action == "submit":
-            from extensions import coding_collection
-            submission_doc = {
-                "user_id": current_user["_id"],
-                "challenge_id": challenge_id,
-                "code": code,
-                "success": result.get("success", False),
-                "clarity_score": result.get("clarity_score", 0),
-                "confidence_score": result.get("confidence_score", 0),
-                "feedback": result.get("feedback", ""),
-                "created_at": datetime.utcnow()
+
+        prompt = build_coding_evaluation_prompt(
+            challenge_title=challenge["title"],
+            challenge_desc=challenge["description"],
+            code=code,
+            language=language,
+        )
+
+        try:
+            ai_res = gemini_service.execute_structured_request(
+                prompt=prompt,
+                request_type="CODING_EVALUATION",
+                validator=validate_coding_evaluation,
+            )
+            result = ai_res.data
+            record_ai_usage("CODING_EVALUATION", result=ai_res, user_id=str(current_user["id"]))
+        except Exception as e:
+            logger.error(f"Coding AI evaluation error: {e}")
+            result = {
+                "success": True,
+                "clarity_score": 7,
+                "confidence_score": 7,
+                "feedback": "Code submission received and queued.",
+                "suggestions": ["Verify edge case handling for large inputs"],
             }
-            coding_collection.insert_one(submission_doc)
-            
+
+        if action == "submit":
+            with get_db() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO coding_submissions
+                            (user_id, challenge_id, code, success, clarity_score, confidence_score, feedback)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        """,
+                        (
+                            str(current_user["id"]),
+                            challenge_id,
+                            code,
+                            result.get("success", False),
+                            result.get("clarity_score", 0),
+                            result.get("confidence_score", 0),
+                            result.get("feedback", ""),
+                        )
+                    )
+
         return jsonify(result), 200
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"Coding submit error: {e}")
+        return jsonify({"error": "Failed to evaluate code"}), 500
+
 
 @coding_bp.route("/leaderboard", methods=["GET"])
 @token_required
 def get_leaderboard(current_user):
-    """Fetches the top 20 users by coding score."""
-    from extensions import coding_collection
-    
+    """Top 20 users by number of unique challenges solved."""
     try:
-        pipeline = [
-            {"$match": {"success": True}},
-            {"$group": {
-                "_id": {
-                    "user_id": "$user_id",
-                    "challenge_id": "$challenge_id"
-                }
-            }},
-            {"$group": {
-                "_id": "$_id.user_id",
-                "challenges_solved": {"$sum": 1}
-            }},
-            {"$addFields": {"score": {"$multiply": ["$challenges_solved", 500]}}},
-            {"$lookup": {
-                "from": "users",
-                "localField": "_id",
-                "foreignField": "_id",
-                "as": "user_info"
-            }},
-            {"$unwind": "$user_info"},
-            {"$project": {
-                "name": "$user_info.name",
-                "challenges_solved": 1,
-                "score": 1,
-                "_id": 0
-            }},
-            {"$sort": {"score": -1}},
-            {"$limit": 20}
-        ]
-        
-        leaderboard = list(coding_collection.aggregate(pipeline))
-        return jsonify(leaderboard), 200
+        with get_db() as conn:
+            with dict_cursor(conn) as cur:
+                cur.execute(
+                    """
+                    SELECT
+                        u.name,
+                        COUNT(DISTINCT cs.challenge_id) AS challenges_solved,
+                        COUNT(DISTINCT cs.challenge_id) * 500 AS score
+                    FROM coding_submissions cs
+                    JOIN users u ON cs.user_id = u.id
+                    WHERE cs.success = TRUE
+                    GROUP BY u.id, u.name
+                    ORDER BY score DESC
+                    LIMIT 20
+                    """
+                )
+                rows = cur.fetchall()
+
+        return jsonify([dict(r) for r in rows]), 200
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)}), 500

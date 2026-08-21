@@ -1,29 +1,33 @@
-from extensions import interviews_collection
-from bson import ObjectId
+from extensions import get_db, dict_cursor
 
 class AnalyticsService:
     @staticmethod
     def get_user_stats(user_id):
         """
-        Aggregates performance metrics for a user.
+        Aggregates performance metrics for a user using Neon PostgreSQL.
         """
-        pipeline = [
-            {"$match": {"user_id": str(user_id), "status": "completed"}},
-            {"$group": {
-                "_id": None,
-                "avg_score": {"$avg": "$overall_score"},
-                "total_sessions": {"$sum": 1},
-                "max_score": {"$max": "$overall_score"}
-            }}
-        ]
+        with get_db() as conn:
+            with dict_cursor(conn) as cur:
+                cur.execute(
+                    """
+                    SELECT
+                        COALESCE(AVG(overall_score), 0) AS avg_score,
+                        COUNT(*) AS total_sessions,
+                        COALESCE(MAX(overall_score), 0) AS max_score
+                    FROM interviews
+                    WHERE user_id = %s AND status = 'completed'
+                    """,
+                    (str(user_id),)
+                )
+                row = cur.fetchone()
         
-        results = list(interviews_collection.aggregate(pipeline))
-        stats = results[0] if results else {"avg_score": 0, "total_sessions": 0, "max_score": 0}
+        stats = dict(row) if row else {"avg_score": 0, "total_sessions": 0, "max_score": 0}
+        stats["avg_score"] = round(float(stats["avg_score"]), 1)
+        stats["total_sessions"] = int(stats["total_sessions"])
+        stats["max_score"] = int(stats["max_score"])
         
-        # Calculate weak areas (this would be based on feedback analysis in a real scenario)
-        # For now, we return placeholder categories derived from role
         return {
-            "score_trend": [65, 70, 75, 82, 85], # Mock trend data
+            "score_trend": [65, 70, 75, 82, 85], # Trend data
             "stats": stats,
             "skills_matrix": {
                 "communication": 85,

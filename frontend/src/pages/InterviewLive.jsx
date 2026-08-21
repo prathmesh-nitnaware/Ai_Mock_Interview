@@ -1,79 +1,131 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { api } from "../services/api";
-import { Mic, MicOff, Zap, ChevronRight, Loader2, MessageSquare, Activity } from "lucide-react";
-import * as faceapi from '@vladmandic/face-api';
-import "./InterviewLive.css";
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
+import {
+  Mic,
+  MicOff,
+  ChevronRight,
+  Loader2,
+  Activity,
+  Video,
+  VideoOff,
+  Volume2,
+  CheckCircle2,
+  Clock,
+  Send,
+  Layers,
+  Sparkles,
+} from 'lucide-react';
+import { defaultVoiceEngine } from '../utils/voiceAnalytics';
+import { defaultCameraEngine } from '../utils/cameraAnalytics';
+import './InterviewLive.css';
+
+const STAGES = [
+  { id: 1, name: 'Fundamentals' },
+  { id: 2, name: 'Applied Scenarios' },
+  { id: 3, name: 'Deep Technical Probing' },
+  { id: 4, name: 'System Architecture' },
+  { id: 5, name: 'Behavioral STAR' },
+];
 
 const InterviewLive = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const sessionId = location.state?.session_id;
-  const config = location.state?.config || { role: "General", intensity: 5 };
+  const config = location.state?.config || { role: 'Software Engineer', intensity: 5 };
   const MAX_QUESTIONS = parseInt(config.intensity) || 5;
-  const initialQuestion = location.state?.question || { title: "Initializing...", description: "Preparing environment..." };
+
+  const initialQuestion = location.state?.question || {
+    id: 1,
+    title: 'Question 1',
+    description: 'Preparing your first interview question...',
+    question: 'Preparing your first interview question...',
+  };
 
   const [question, setQuestion] = useState(initialQuestion);
   const [sessionHistory, setSessionHistory] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(1);
-  const [userAnswer, setUserAnswer] = useState("");
+  const [userAnswer, setUserAnswer] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
-  const [aiFeedback, setAiFeedback] = useState(null);
   const [isAiSpeaking, setIsAiSpeaking] = useState(false);
 
-  // Face API State
-  const [modelsLoaded, setModelsLoaded] = useState(false);
-  const [nervousnessScore, setNervousnessScore] = useState(0);
+  // Behavioral Telemetry
+  const [cameraActive, setCameraActive] = useState(true);
+  const [faceDetected, setFaceDetected] = useState(true);
+  const [liveWpm, setLiveWpm] = useState(0);
+  const [liveFillers, setLiveFillers] = useState(0);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
 
+  // Timer interval while answering
   useEffect(() => {
-    if (!sessionId) { navigate("/interview"); return; }
+    const timer = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!sessionId) {
+      navigate('/interview');
+      return;
+    }
     setupSpeechRecognition();
-    startCamera();
-    loadFaceModels();
-    if (question?.description) speakText(question.description);
+    initHardwareAndAnalytics();
+
+    const qText = question.question || question.description || question.title;
+    if (qText) speakText(qText);
+
     return () => {
       window.speechSynthesis.cancel();
-      if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
+      defaultVoiceEngine.cleanup();
+      defaultCameraEngine.stopSession();
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
+      }
     };
   }, []);
 
-  const loadFaceModels = async () => {
+  const initHardwareAndAnalytics = async () => {
     try {
-      await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-      await faceapi.nets.faceExpressionNet.loadFromUri('/models');
-      setModelsLoaded(true);
-    } catch (err) {
-      console.error("Error loading face API models:", err);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setCameraActive(true);
+
+      await defaultVoiceEngine.initializeAudioMonitoring(stream);
+      await defaultCameraEngine.loadModels('/models');
+      if (videoRef.current) {
+        defaultCameraEngine.startSession(videoRef.current);
+      }
+    } catch (e) {
+      setCameraActive(false);
     }
   };
 
   useEffect(() => {
-    if (!modelsLoaded || !videoRef.current) return;
-    
-    const intervalId = setInterval(async () => {
-      if (videoRef.current && videoRef.current.readyState === 4) {
-        const detections = await faceapi.detectSingleFace(
-          videoRef.current, 
-          new faceapi.TinyFaceDetectorOptions()
-        ).withFaceExpressions();
-        
-        if (detections) {
-          const exprs = detections.expressions;
-          // Combine fearful, sad, and surprised as proxy for nervousness (max 100)
-          const score = Math.min(100, (exprs.fearful * 0.5 + exprs.sad * 0.2 + exprs.surprised * 0.3) * 100);
-          setNervousnessScore(Math.round(score));
-        }
+    const hudInterval = setInterval(() => {
+      setFaceDetected(defaultCameraEngine.currentFacePresent);
+
+      if (isListening && userAnswer.trim().length > 0) {
+        const metrics = defaultVoiceEngine.computeMetrics(userAnswer);
+        setLiveWpm(metrics.wpm);
+        setLiveFillers(metrics.filler_word_count);
       }
-    }, 1000);
-    
-    return () => clearInterval(intervalId);
-  }, [modelsLoaded, videoRef]);
+    }, 500);
+
+    return () => clearInterval(hudInterval);
+  }, [isListening, userAnswer]);
 
   const setupSpeechRecognition = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -82,146 +134,298 @@ const InterviewLive = () => {
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.onresult = (event) => {
-      const transcript = Array.from(event.results).map(result => result[0].transcript).join("");
+      const transcript = Array.from(event.results)
+        .map((result) => result[0].transcript)
+        .join('');
       setUserAnswer(transcript);
     };
     recognitionRef.current = recognition;
   };
 
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      streamRef.current = stream;
-      if (videoRef.current) videoRef.current.srcObject = stream;
-    } catch (e) { console.warn("Cam off"); }
-  };
-
   const speakText = (text) => {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+
     utterance.onstart = () => setIsAiSpeaking(true);
     utterance.onend = () => setIsAiSpeaking(false);
+    utterance.onerror = () => setIsAiSpeaking(false);
+
     window.speechSynthesis.speak(utterance);
   };
 
   const toggleListening = () => {
-    if (isListening) { recognitionRef.current.stop(); setIsListening(false); }
-    else { setUserAnswer(""); recognitionRef.current.start(); setIsListening(true); }
-  };
-
-  const handleSubmit = async () => {
-    if (!userAnswer.trim()) return;
-    if (isListening) toggleListening();
-    setSubmitting(true);
-    try {
-      // Note: mapping response to handle your specific backend 'submit' route
-      const response = await api.client.post("/api/interview/submit", {
-        session_id: sessionId,
-        answer: userAnswer,
-        question_title: question.title,
-        nervousness_score: nervousnessScore
-      });
-      
-      const feedback = response.data.review;
-      setAiFeedback(feedback);
-      
-      setSessionHistory(prev => [...prev, { 
-        question: question.title, 
-        answer: userAnswer, 
-        feedback: feedback,
-        metrics: { wpm: 0, filler_words: 0, nervousness: nervousnessScore } // Default metrics to prevent report crashes
-      }]);
-
-      if (feedback.feedback) speakText(feedback.feedback);
-    } catch (err) { alert("Sync failed"); }
-    finally { setSubmitting(false); }
-  };
-
-  const handleNextQuestion = async () => {
-    if (questionIndex >= MAX_QUESTIONS) {
-      navigate("/interview/report", { state: { history: sessionHistory, config } });
-      return;
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    } else {
+      window.speechSynthesis.cancel();
+      setIsAiSpeaking(false);
+      try {
+        recognitionRef.current?.start();
+        setIsListening(true);
+      } catch (err) {
+        setIsListening(false);
+      }
     }
-    setLoadingNext(true);
-    try {
-      const nextQ = await api.client.post("/api/interview/next", { session_id: sessionId });
-      setQuestion(nextQ.data);
-      setQuestionIndex(prev => prev + 1);
-      setUserAnswer("");
-      setAiFeedback(null);
-      speakText(nextQ.data.description);
-    } catch { alert("Error"); }
-    finally { setLoadingNext(false); }
   };
+
+  const handleSubmitAnswer = async () => {
+    if (isListening) toggleListening();
+
+    const finalAnswer = userAnswer.trim() || 'No answer provided.';
+    setSubmitting(true);
+
+    const voiceMetrics = defaultVoiceEngine.computeMetrics(finalAnswer);
+    const cameraMetrics = defaultCameraEngine.getSummary();
+
+    const payload = {
+      session_id: sessionId,
+      question_id: question.id || questionIndex,
+      question: question.question || question.description || question.title,
+      answer: finalAnswer,
+      voice_metrics: voiceMetrics,
+      camera_metrics: cameraMetrics,
+      context: {
+        role: config.role,
+        question_index: questionIndex,
+      },
+    };
+
+    try {
+      const evalResponse = await api.submitAnswer(payload);
+      const updatedHistory = [
+        ...sessionHistory,
+        {
+          question: question.question || question.description || question.title,
+          answer: finalAnswer,
+          feedback: evalResponse,
+          voice_metrics: voiceMetrics,
+          camera_metrics: cameraMetrics,
+        },
+      ];
+      setSessionHistory(updatedHistory);
+
+      if (questionIndex >= MAX_QUESTIONS) {
+        navigate('/interview/report', {
+          state: {
+            history: updatedHistory,
+            config: config,
+            session_id: sessionId,
+          },
+        });
+        return;
+      }
+
+      // Fetch next adaptive question
+      setLoadingNext(true);
+      const nextResponse = await api.client.post('/api/interview/next', {
+        session_id: sessionId,
+        previous_answer: finalAnswer,
+        feedback: evalResponse,
+        current_question_index: questionIndex,
+      });
+
+      if (nextResponse.data && nextResponse.data.question) {
+        const nextQ = nextResponse.data.question;
+        setQuestion(nextQ);
+        setQuestionIndex((prev) => prev + 1);
+        setUserAnswer('');
+        const qText = nextQ.question || nextQ.description || nextQ.title;
+        if (qText) speakText(qText);
+      }
+    } catch (err) {
+      console.error('Answer submission error:', err);
+      alert('Answer recorded. Advancing session.');
+    } finally {
+      setSubmitting(false);
+      setLoadingNext(false);
+    }
+  };
+
+  const handleSkip = () => {
+    if (window.confirm('Skip this question and proceed to the next stage?')) {
+      setUserAnswer('Skipped');
+      setTimeout(() => handleSubmitAnswer(), 50);
+    }
+  };
+
+  const formatTimer = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const currentStageName = STAGES[Math.min(questionIndex - 1, STAGES.length - 1)].name;
 
   return (
-    <div className="live-root">
-      <div className="noise-bg"></div>
-      <div className="live-glow"></div>
-
-      <div className="live-layout">
-        <div className="interviewer-panel">
-          <div className="session-badge">
-            <Zap size={14} className="text-indigo" /> 
-            STAGE {questionIndex} OF {MAX_QUESTIONS}
+    <div className="interview-studio-page">
+      <div className="studio-container">
+        {/* Studio Top Bar */}
+        <div className="studio-top-bar">
+          <div className="studio-meta-group">
+            <span className="studio-brand-tag">PREP AI</span>
+            <span className="studio-role-title">{config.role}</span>
+            <span className="studio-stage-pill">
+              Stage {questionIndex} / {MAX_QUESTIONS}: {currentStageName}
+            </span>
           </div>
 
-          <div className={`ai-orb-container ${isAiSpeaking ? 'is-speaking' : ''}`}>
-            <div className="ai-orb"></div>
-            <div className="ai-orb-ring"></div>
+          <div className="studio-timer-box">
+            <Clock size={14} />
+            <span>{formatTimer(elapsedSeconds)}</span>
           </div>
-
-          <h1 className="problem-title">{question.title}</h1>
-          <div className="desc-box glass-card">{question.description}</div>
-
-          {aiFeedback && (
-            <div className="feedback-toast glass-card fade-in-up">
-              <div className="toast-tag"><MessageSquare size={14}/> EVALUATION</div>
-              <p>{aiFeedback.feedback}</p>
-            </div>
-          )}
         </div>
 
-        <div className="input-panel">
-          <div className="input-header">
-            <span>TRANSCRIPT_FEED</span>
-            <div className="status-dot"></div>
-          </div>
-          <textarea
-            className="transcript-area glass-card"
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-            placeholder="AI is monitoring audio... speak or type your answer here."
-          />
-
-          <div className="live-actions">
-            <button className={`mic-btn ${isListening ? "active" : ""}`} onClick={toggleListening}>
-              {isListening ? <MicOff /> : <Mic />}
-            </button>
-
-            {!aiFeedback ? (
-              <button className="submit-btn-glow" onClick={handleSubmit} disabled={submitting || !userAnswer}>
-                {submitting ? <Loader2 className="spin" /> : "SUBMIT RESPONSE"}
-              </button>
-            ) : (
-              <button className="next-btn-glow" onClick={handleNextQuestion} disabled={loadingNext}>
-                {loadingNext ? <Loader2 className="spin" /> : (
-                  <> {questionIndex >= MAX_QUESTIONS ? "FINISH SESSION" : "NEXT STAGE"} <ChevronRight size={18} /> </>
+        {/* Main 2-Column Grid */}
+        <div className="studio-main-grid">
+          {/* Left: Question Prompt & Answer Workspace */}
+          <div className="studio-workspace-col">
+            {/* Interviewer Question Card */}
+            <div className="interviewer-question-card">
+              <div className="question-header-row">
+                <span className="question-stage-label">Interviewer Question #{questionIndex}</span>
+                {isAiSpeaking && (
+                  <span className="speaker-indicator-badge">
+                    <Volume2 size={13} /> Speaking...
+                  </span>
                 )}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+              </div>
 
-      <div className="floating-cam glass-card">
-        <video ref={videoRef} autoPlay muted playsInline className="self-video" />
-        <div className="cam-overlay">
-          LIVE_CANDIDATE
-          <div className="nervousness-tracker">
-            <Activity size={14} className={nervousnessScore > 50 ? "text-red" : "text-green"} />
-            <span>Stress: {nervousnessScore}%</span>
-            {!modelsLoaded && <span className="loading-models"> (Loading AI...)</span>}
+              <h2 className="question-text-content">
+                {question.question || question.description || question.title}
+              </h2>
+
+              {question.intent && (
+                <div className="question-intent-meta">
+                  Intent: {question.intent}
+                </div>
+              )}
+            </div>
+
+            {/* Candidate Response Workspace */}
+            <div className="candidate-response-card">
+              <div className="response-card-header">
+                <span className="response-label">Your Verbal / Written Response</span>
+                {isListening && (
+                  <div className="listening-pulse-indicator">
+                    <div className="recording-dot"></div>
+                    <span>Listening to microphone...</span>
+                  </div>
+                )}
+              </div>
+
+              <textarea
+                className="candidate-answer-textarea"
+                placeholder="Speak clearly or type your structured response here..."
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                disabled={submitting || loadingNext}
+              />
+
+              <div className="response-actions-toolbar">
+                <button
+                  type="button"
+                  className={`mic-toggle-control ${isListening ? 'active' : ''}`}
+                  onClick={toggleListening}
+                  disabled={submitting || loadingNext}
+                >
+                  {isListening ? <MicOff size={15} /> : <Mic size={15} />}
+                  <span>{isListening ? 'Stop Recording' : 'Voice Input'}</span>
+                </button>
+
+                <div className="submission-actions-group">
+                  <button
+                    type="button"
+                    className="btn-skip-question"
+                    onClick={handleSkip}
+                    disabled={submitting || loadingNext}
+                  >
+                    Skip
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn-submit-answer"
+                    onClick={handleSubmitAnswer}
+                    disabled={submitting || loadingNext || (!userAnswer.trim() && !isListening)}
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 size={14} className="spin" /> Evaluating...
+                      </>
+                    ) : loadingNext ? (
+                      <>
+                        <Loader2 size={14} className="spin" /> Next Question...
+                      </>
+                    ) : (
+                      <>
+                        <span>Submit Answer</span>
+                        <Send size={13} />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Camera Feed, Telemetry, and Stage Tracker */}
+          <div className="studio-sidebar-col">
+            {/* Small Camera Preview Box */}
+            <div className="studio-camera-card">
+              <div className="camera-header-status">
+                <span>SIGNAL FEED</span>
+                <span style={{ color: cameraActive ? '#34d399' : '#8c8ca0' }}>
+                  {cameraActive ? '● Camera Active' : '○ Offline'}
+                </span>
+              </div>
+              <div className="camera-feed-container">
+                {cameraActive ? (
+                  <video ref={videoRef} autoPlay playsInline muted className="studio-video-element" />
+                ) : (
+                  <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6a6a7c', fontSize: '0.8rem' }}>
+                    Camera Offline (Typed Mode)
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Live Delivery Telemetry */}
+            <div className="studio-telemetry-panel">
+              <h3 className="telemetry-heading">Live Telemetry</h3>
+              <div className="telemetry-metrics-grid">
+                <div className="metric-tile">
+                  <span className="metric-val">{liveWpm}</span>
+                  <span className="metric-lbl">Words / Min</span>
+                </div>
+                <div className="metric-tile">
+                  <span className="metric-val">{liveFillers}</span>
+                  <span className="metric-lbl">Fillers Count</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 5-Stage Progression Tracker */}
+            <div className="studio-stage-tracker">
+              <h3 className="telemetry-heading">Interview Stages</h3>
+              {STAGES.map((s) => {
+                const isCurrent = s.id === questionIndex;
+                const isDone = s.id < questionIndex;
+                return (
+                  <div
+                    key={s.id}
+                    className={`stage-tracker-item ${isCurrent ? 'active' : isDone ? 'completed' : ''}`}
+                  >
+                    <div className="stage-dot"></div>
+                    <span>
+                      {s.id}. {s.name}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

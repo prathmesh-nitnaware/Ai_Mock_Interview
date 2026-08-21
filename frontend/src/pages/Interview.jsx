@@ -1,46 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { api } from "../services/api"; // This imports the object with methods like initiateInterview
-
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
 import {
-  ChevronRight,
   Code2,
   Users,
   Settings,
   AlertCircle,
   FileText,
   CheckCircle2,
-  UploadCloud,
+  ArrowRight,
   Loader2,
-} from "lucide-react";
-
-import Button from "../components/ui/Button";
-import InputField from "../components/forms/InputField";
-
-import "../styles/theme.css";
-import "./Interview.css";
+  Layers,
+  Sparkles,
+} from 'lucide-react';
+import './Interview.css';
 
 const Interview = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-
-  const [resumeText, setResumeText] = useState("");
-  const [resumeName, setResumeName] = useState("");
+  const [resumeText, setResumeText] = useState('');
+  const [resumeName, setResumeName] = useState('');
   const [fetchingResume, setFetchingResume] = useState(true);
 
   useEffect(() => {
     const fetchGlobalResume = async () => {
       try {
-        const res = await api.client.get("/api/profile/resume/get");
-        if(res.data && res.data.resume_text) {
+        const res = await api.client.get('/api/profile/resume/get');
+        if (res.data && res.data.resume_text) {
           setResumeText(res.data.resume_text);
           setResumeName(res.data.resume_filename);
         }
       } catch (err) {
-        // No resume found, that's fine
+        // No resume uploaded
       } finally {
         setFetchingResume(false);
       }
@@ -49,20 +42,15 @@ const Interview = () => {
   }, []);
 
   const [formData, setFormData] = useState({
-    role: "",
-    experience: "0-2 years",
-    type: "Technical",
-    difficulty: "Medium",
+    role: 'Backend Software Engineer',
+    experience: '0-2 years',
+    type: 'Technical',
+    difficulty: 'Medium',
     questionCount: 5,
   });
 
-  // =========================
-  // HANDLERS
-  // =========================
-
   const handleChange = (e) => {
     setError(false);
-
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -75,15 +63,6 @@ const Interview = () => {
       [key]: value,
     }));
   };
-
-  // =========================
-  // =========================
-  // SUBMIT
-  // =========================
-
-  // =========================
-  // SUBMIT (The Fix is here)
-  // =========================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,17 +84,14 @@ const Interview = () => {
         resume_context: resumeText,
       };
 
-      /** * FIX: Use api.initiateInterview(config) 
-       * instead of api.post(...)
-       */
       const data = await api.initiateInterview(config);
 
       if (!data.session_id || !data.question) {
-        alert("Backend response invalid. Please check Ollama logs.");
+        alert('Backend response invalid. Please verify server status.');
         return;
       }
 
-      navigate("/interview/session", {
+      navigate('/interview/session', {
         state: {
           session_id: data.session_id,
           question: data.question,
@@ -123,193 +99,186 @@ const Interview = () => {
         },
       });
     } catch (err) {
-      console.error("Interview Init Error:", err);
-      alert(err.message || "Failed to initialize interview environment.");
+      console.error('Interview Init Error:', err);
+      alert(err.message || 'Failed to initialize interview environment.');
     } finally {
       setLoading(false);
     }
   };
 
-  // =========================
-  // OPTIONS
-  // =========================
-
   const expOptions = [
-    { label: "0-2 YEARS", val: "0-2 years" },
-    { label: "3-5 YEARS", val: "3-5 years" },
-    { label: "5+ YEARS", val: "5+ years" },
+    { label: '0–2 YRS', val: '0-2 years' },
+    { label: '3–5 YRS', val: '3-5 years' },
+    { label: '5+ YRS', val: '5+ years' },
   ];
 
   const typeOptions = [
-    { label: "Technical", icon: <Code2 size={16} /> },
-    { label: "Behavioral", icon: <Users size={16} /> },
-    { label: "System Design", icon: <Settings size={16} /> },
+    { label: 'Technical', val: 'Technical', icon: <Code2 size={14} /> },
+    { label: 'System Design', val: 'System Design', icon: <Settings size={14} /> },
+    { label: 'Behavioral', val: 'Behavioral', icon: <Users size={14} /> },
   ];
 
-  // =========================
-  // UI
-  // =========================
+  const difficultyOptions = [
+    { label: 'Standard', val: 'Standard' },
+    { label: 'Medium', val: 'Medium' },
+    { label: 'Senior', val: 'Senior' },
+  ];
 
   return (
-    <div className="interview-root page-container fade-in-up">
-      <div className="ambient-glow"></div>
+    <div className="interview-setup-page">
+      <div className="interview-setup-container">
+        {/* Left Column: Pre-Flight Briefing */}
+        <div className="setup-briefing-col">
+          <div className="setup-badge-tag">
+            <Layers size={13} />
+            <span>MOCK INTERVIEW SETUP</span>
+          </div>
 
-      <div className="interview-split">
-        {/* LEFT PANEL */}
-        <div className="interview-meta">
-          <div className="meta-badge">SYSTEM.INIT</div>
+          <div>
+            <h1 className="setup-hero-title">Prepare for your mock interview.</h1>
+            <p className="setup-hero-desc">
+              Calibrate role targeting, technical depth, and session intensity. The interviewer adapts dynamically to your answers across 5 interview stages.
+            </p>
+          </div>
 
-          <h1 className="meta-title">
-            INTERVIEW
-            <br />
-            CONFIG
-          </h1>
-
-          <p className="meta-desc">
-            Configure AI interviewer personality, intensity, and experience
-            targeting.
-          </p>
-
-          <div className={`context-widget ${resumeText ? "active" : ""}`}>
-            <div className="cw-header">
-              {fetchingResume ? (
-                <Loader2 size={18} className="spin" />
-              ) : resumeText ? (
-                <CheckCircle2 size={18} color="#10b981" />
-              ) : (
-                <FileText size={18} />
-              )}
-
-              <h3>
-                {fetchingResume
-                  ? "Syncing Vault..."
-                  : resumeText
-                  ? "Vault Linked"
-                  : "No Vault Resume"}
-              </h3>
+          {/* 5-Stage Progression Overview */}
+          <div className="stage-progression-card">
+            <h3 className="stage-card-title">Adaptive 5-Stage Progression</h3>
+            <div className="stage-step-list">
+              <div className="stage-step-item">
+                <span className="stage-num-badge">1</span>
+                <span>Technical Fundamentals & Core Theory</span>
+              </div>
+              <div className="stage-step-item">
+                <span className="stage-num-badge">2</span>
+                <span>Applied Coding & Practical Scenarios</span>
+              </div>
+              <div className="stage-step-item">
+                <span className="stage-num-badge">3</span>
+                <span>Deep Technical Reasoning & Gap Probing</span>
+              </div>
+              <div className="stage-step-item">
+                <span className="stage-num-badge">4</span>
+                <span>System Architecture & Trade-Off Analysis</span>
+              </div>
+              <div className="stage-step-item">
+                <span className="stage-num-badge">5</span>
+                <span>Behavioral STAR Competency</span>
+              </div>
             </div>
+          </div>
 
-            {resumeText ? (
-              <div className="resume-status-wrapper">
-                <p className="resume-status-subtext" style={{margin:'10px 0', color: '#e4e4e7'}}>
-                  <strong>Synced:</strong> {resumeName}
-                </p>
-                <p className="resume-status-subtext" style={{fontSize: '0.8rem', marginBottom: '15px'}}>
-                  AI will dynamically tailor the questions towards your background.
-                </p>
-                <button 
-                  className="chip-btn" 
-                  style={{justifyContent: 'center', width: '100%', fontSize: '0.85rem'}} 
-                  onClick={() => navigate('/profile')}
-                >
-                  Manage in Profile
-                </button>
-              </div>
-            ) : !fetchingResume && (
-              <div className="resume-status-wrapper text-center">
-                <p className="resume-status-subtext" style={{marginBottom: '15px'}}>
-                  Upload your resume in the Global Vault to sync across services!
-                </p>
-                <button 
-                  className="chip-btn" 
-                  style={{justifyContent: 'center', width: '100%', fontSize: '0.85rem'}} 
-                  onClick={() => navigate('/profile')}
-                >
-                  Configure Vault
-                </button>
-              </div>
-            )}
+          {/* Resume Sync Status */}
+          <div className="resume-sync-status-box">
+            <FileText size={18} style={{ color: resumeName ? '#10b981' : '#8c8ca0', flexShrink: 0 }} />
+            <div>
+              {resumeName ? (
+                <div style={{ color: '#ffffff', fontWeight: 600 }}>
+                  Resume Synced ({resumeName})
+                </div>
+              ) : (
+                <div style={{ color: '#8c8ca0' }}>No resume synced (General questions will be used)</div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* RIGHT PANEL */}
-        <div className="interview-form-wrapper">
-          <div className="glass-panel setup-card">
-            <form onSubmit={handleSubmit}>
-              <InputField
-                label="TARGET ROLE"
+        {/* Right Column: Configuration Form */}
+        <div className="setup-config-card">
+          <h2 className="config-card-title">Session Configuration</h2>
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            {/* Target Role Input */}
+            <div className="config-group">
+              <label className="config-label" htmlFor="role-input">Target Placement Role</label>
+              <input
+                id="role-input"
+                type="text"
                 name="role"
-                placeholder="e.g. Full Stack Developer"
+                className="auth-input-field"
+                placeholder="e.g. Backend Software Engineer"
                 value={formData.role}
                 onChange={handleChange}
+                required
+                style={{ paddingLeft: '0.85rem' }}
               />
-
               {error && (
-                <span className="error-text">
-                  <AlertCircle size={14} />
-                  Target role required
+                <span style={{ color: '#ef4444', fontSize: '0.75rem' }}>
+                  Please specify a target role.
                 </span>
               )}
+            </div>
 
-              <div className="section-label">EXPERIENCE LEVEL</div>
-
-              <div className="chips-row">
-                {expOptions.map((exp) => (
+            {/* Experience Level */}
+            <div className="config-group">
+              <label className="config-label">Experience Tier</label>
+              <div className="button-chip-grid">
+                {expOptions.map((opt) => (
                   <button
-                    key={exp.val}
+                    key={opt.val}
                     type="button"
-                    onClick={() => handleSelect("experience", exp.val)}
-                    className={`chip-btn ${formData.experience === exp.val ? "active" : ""}`}
+                    className={`config-chip-btn ${formData.experience === opt.val ? 'active' : ''}`}
+                    onClick={() => handleSelect('experience', opt.val)}
                   >
-                    {exp.label}
+                    {opt.label}
                   </button>
                 ))}
               </div>
+            </div>
 
-              <div className="section-label">INTERVIEW TYPE</div>
-
-              <div className="chips-row">
-                {typeOptions.map((type) => (
+            {/* Focus Type */}
+            <div className="config-group">
+              <label className="config-label">Primary Track Focus</label>
+              <div className="button-chip-grid">
+                {typeOptions.map((opt) => (
                   <button
-                    key={type.label}
+                    key={opt.val}
                     type="button"
-                    onClick={() => handleSelect("type", type.label)}
-                    className={`chip-btn ${formData.type === type.label ? "active" : ""}`}
+                    className={`config-chip-btn ${formData.type === opt.val ? 'active' : ''}`}
+                    onClick={() => handleSelect('type', opt.val)}
                   >
-                    {type.icon}
-                    {type.label}
+                    {opt.icon}
+                    <span>{opt.label}</span>
                   </button>
                 ))}
               </div>
+            </div>
 
-              <div className="section-label">DIFFICULTY LEVEL</div>
-
-              <div className="chips-row">
-                {["Easy", "Medium", "Hard"].map((diff) => (
+            {/* Question Count */}
+            <div className="config-group">
+              <label className="config-label">Question Intensity</label>
+              <div className="button-chip-grid">
+                {[3, 5, 7].map((count) => (
                   <button
-                    key={diff}
+                    key={count}
                     type="button"
-                    onClick={() => handleSelect("difficulty", diff)}
-                    className={`chip-btn ${formData.difficulty === diff ? "active" : ""}`}
+                    className={`config-chip-btn ${formData.questionCount === count ? 'active' : ''}`}
+                    onClick={() => handleSelect('questionCount', count)}
                   >
-                    {diff}
+                    {count} Questions
                   </button>
                 ))}
               </div>
+            </div>
 
-              <div className="section-label">SESSION LENGTH (QUESTIONS)</div>
-
-              <div className="chips-row">
-                {[3, 5, 7, 10].map((num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => handleSelect("questionCount", num)}
-                    className={`chip-btn ${formData.questionCount === num ? "active" : ""}`}
-                  >
-                    {num} Qs
-                  </button>
-                ))}
-              </div>
-
-              <div className="submit-row">
-                <Button type="submit" isLoading={loading} disabled={loading}>
-                  {loading ? "GENERATING QUESTIONS..." : "INITIALIZE ENVIRONMENT"}
-                  {!loading && <ChevronRight size={18} />}
-                </Button>
-              </div>
-            </form>
-          </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="btn-launch-interview"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 size={16} className="spin" /> Calibrating Interviewer...
+                </>
+              ) : (
+                <>
+                  <span>Enter Diagnostic Lobby</span>
+                  <ArrowRight size={15} />
+                </>
+              )}
+            </button>
+          </form>
         </div>
       </div>
     </div>

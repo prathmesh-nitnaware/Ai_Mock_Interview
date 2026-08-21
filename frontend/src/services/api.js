@@ -1,10 +1,30 @@
+
 import axios from "axios";
 
 /**
  * BASE URL SWITCHER
  * Swaps between local development and production Render deployment.
  */
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const getApiUrl = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window !== "undefined" && (window.location.port === "5173" || window.location.port === "5174")) {
+    return "http://localhost:5000";
+  }
+  return "";
+};
+
+export const getWebSocketUrl = (path = "/api/v1/interview/stream") => {
+  if (typeof window === "undefined") return "";
+  const isHttps = window.location.protocol === "https:";
+  const protocol = isHttps ? "wss:" : "ws:";
+  const host = window.location.host;
+  if (window.location.port === "5173" || window.location.port === "5174") {
+    return `ws://localhost:5000${path}`;
+  }
+  return `${protocol}//${host}${path}`;
+};
+
+const API_URL = getApiUrl();
 
 
 /**
@@ -12,6 +32,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
  */
 const apiClient = axios.create({
   baseURL: API_URL,
+  timeout: 60000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -45,6 +66,18 @@ apiClient.interceptors.response.use(
       localStorage.removeItem("user");
       window.location.href = "/login";
     }
+
+    // Global error banner
+    const msg = error.response?.data?.error || error.response?.data?.message || error.message || "An unexpected error occurred.";
+    const banner = document.createElement("div");
+    banner.style.cssText = "position:fixed; top:20px; right:20px; background:#ef4444; color:white; padding:12px 24px; border-radius:6px; z-index:9999; box-shadow:0 4px 6px rgba(0,0,0,0.1); font-family:sans-serif; transition: opacity 0.3s;";
+    banner.innerText = msg;
+    document.body.appendChild(banner);
+    setTimeout(() => {
+      banner.style.opacity = '0';
+      setTimeout(() => banner.remove(), 300);
+    }, 5000);
+
     return Promise.reject(
       error.response?.data || { message: "Server error" }
     );
@@ -145,5 +178,5 @@ export const api = {
     return res.data;
   },
 
-  client: apiClient 
+  client: apiClient
 };

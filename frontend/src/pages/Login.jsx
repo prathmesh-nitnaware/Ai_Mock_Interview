@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, ArrowRight, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
-import Button from '../components/ui/Button';
-import InputField from '../components/forms/InputField';
+import { Mail, Lock, AlertCircle, Sparkles, Layers, Target, ShieldCheck } from 'lucide-react';
 import './Login.css';
 
 const Login = () => {
@@ -13,8 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Redirect to where they came from, or dashboard by default
-  const from = location.state?.from?.pathname || "/dashboard";
+  const from = location.state?.from?.pathname || '/dashboard';
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,13 +21,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      setError("Please fill in all fields");
+      setError('Please enter both your email and password.');
       return;
     }
-    
-    // Calls the backend via AuthContext
+
     const result = await login(formData.email, formData.password);
-    
+
     if (result.success) {
       if (result.user && result.user.role === 'admin') {
         navigate('/admin', { replace: true });
@@ -40,112 +36,151 @@ const Login = () => {
         navigate(from, { replace: true });
       }
     } else {
-      setError(result.message || "Invalid credentials. Please try again.");
+      setError(result.message || 'Invalid email or password. Please try again.');
     }
   };
 
   return (
-    <div className="login-root">
-      <div className="login-split">
-        
-        {/* --- Left Side: Visual / Value Prop --- */}
-        <div className="login-visual">
-          <div className="ambient-glow-brand"></div>
-          <div className="noise-overlay"></div>
-          
-          <div className="visual-content fade-in-up">
-            <div className="brand-pill-light mb-6">
-              <Sparkles size={14} className="text-indigo-light" />
-              <span>PREP AI 2.0</span>
+    <div className="auth-page-root">
+      <div className="auth-workspace-container">
+        {/* Left Column: Product Value Pillars */}
+        <div className="auth-brand-column">
+          <Link to="/" className="auth-brand-logo">
+            <div className="auth-logo-icon">
+              <Sparkles size={18} />
             </div>
-            
-            <h1 className="visual-heading">Resume <br/> Excellence.</h1>
-            <p className="visual-text">
-              Log back in to continue your personalized interview training sessions and review your ATS performance metrics.
-            </p>
+            <span className="auth-logo-text">PREP AI</span>
+          </Link>
 
-            <ul className="value-props-list mt-8">
-              <li><CheckCircle2 size={18} className="text-success" /> Track Progression History</li>
-              <li><CheckCircle2 size={18} className="text-success" /> Connect Global Resume Vault</li>
-              <li><CheckCircle2 size={18} className="text-success" /> Review Actionable AI Feedback</li>
-            </ul>
+          <div>
+            <h1 className="auth-hero-title">
+              Practice the interview before the interview.
+            </h1>
+            <p className="auth-hero-subtitle" style={{ marginTop: '0.6rem' }}>
+              Adaptive technical, system design, and behavioral mock interviews calibrated for engineering campus placements.
+            </p>
           </div>
-          
-          <div className="visual-footer fade-in-up delay-200">
-            <span>SECURE ENCLAVE</span>
-            <span>SYSTEM.ONLINE</span>
+
+          <div className="auth-feature-list">
+            <div className="auth-feature-item">
+              <div className="auth-feature-icon-box">
+                <Layers size={15} />
+              </div>
+              <div className="auth-feature-content">
+                <span className="auth-feature-heading">5-Stage Adaptive Progression</span>
+                <p className="auth-feature-desc">
+                  Fundamentals, applied problem solving, deep technical depth, system architecture, and behavioral STAR questions.
+                </p>
+              </div>
+            </div>
+
+            <div className="auth-feature-item">
+              <div className="auth-feature-icon-box">
+                <Target size={15} />
+              </div>
+              <div className="auth-feature-content">
+                <span className="auth-feature-heading">Explainable Performance Audits</span>
+                <p className="auth-feature-desc">
+                  Objective evidence breakdowns, trade-off analysis, technical gap probing, and vocal delivery coaching.
+                </p>
+              </div>
+            </div>
+
+            <div className="auth-feature-item">
+              <div className="auth-feature-icon-box">
+                <ShieldCheck size={15} />
+              </div>
+              <div className="auth-feature-content">
+                <span className="auth-feature-heading">Role-Specific Placement Tracks</span>
+                <p className="auth-feature-desc">
+                  Tailored questioning for Backend, Frontend, Full Stack, SRE, and ML/AI engineering roles.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* --- Right Side: Form --- */}
-        <div className="login-form-container">
-          <div className="ambient-glow-mobile"></div>
+        {/* Right Column: Clean Login Card */}
+        <div className="auth-form-card">
+          <div className="auth-card-header">
+            <h2 className="auth-card-title">Sign in to your account</h2>
+            <p className="auth-card-subtitle">
+              Enter your placement preparation credentials.
+            </p>
+          </div>
 
-          {/* Glassmorphism Container */}
-          <div className="glass-login-card fade-in-up delay-200">
-            
-            <div className="login-header">
-              <h2>Welcome Back</h2>
-              <p>Access your dashboard and resume your training.</p>
+          {error && (
+            <div className="auth-alert-banner">
+              <AlertCircle size={16} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <label className="form-label" htmlFor="email">Email Address</label>
+              <div className="input-with-icon">
+                <div className="input-icon-slot">
+                  <Mail size={15} />
+                </div>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  className="auth-input-field"
+                  placeholder="student@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  autoComplete="email"
+                  required
+                />
+              </div>
             </div>
 
-            {error && (
-              <div className="error-pill shake-animation">
-                <AlertCircle size={18} />
-                <span>{error}</span>
+            <div className="form-group">
+              <label className="form-label" htmlFor="password">Password</label>
+              <div className="input-with-icon">
+                <div className="input-icon-slot">
+                  <Lock size={15} />
+                </div>
+                <input
+                  id="password"
+                  type="password"
+                  name="password"
+                  className="auth-input-field"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  autoComplete="current-password"
+                  required
+                />
               </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="login-form">
-              <div className="input-wrapper">
-                  <InputField
-                    type="email"
-                    label="EMAIL ADDRESS"
-                    name="email"
-                    placeholder="name@example.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    icon={<Mail size={16} />}
-                    required
-                  />
-              </div>
-              
-              <div className="input-wrapper">
-                  <InputField
-                    type="password"
-                    label="PASSWORD"
-                    name="password"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={handleChange}
-                    icon={<Lock size={16} />}
-                    required
-                  />
-              </div>
-
-              <div className="form-options">
-                <label className="custom-checkbox">
-                  <input type="checkbox" /> 
-                  <span className="checkmark"></span>
-                  <span className="cb-label">Remember me for 30 days</span>
-                </label>
-                <Link to="/forgot-password" className="link-hover-glow">Forgot Password?</Link>
-              </div>
-
-              <Button 
-                type="submit" 
-                variant="primary" 
-                className="btn-glow-submit w-full mt-4" 
-                isLoading={submitting}
-                disabled={submitting}
-              >
-                {submitting ? "Authenticating..." : <> Secure Sign In <ArrowRight size={18} /> </>}
-              </Button>
-            </form>
-
-            <div className="login-footer">
-              <p>Don't have an account? <Link to="/signup" className="link-highlight">Create one now</Link></p>
             </div>
+
+            <div className="auth-options-row">
+              <label className="auth-remember-label">
+                <input type="checkbox" />
+                <span>Remember me</span>
+              </label>
+              <Link to="/forgot-password" className="auth-forgot-link">
+                Forgot password?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              className="btn-auth-submit"
+              disabled={submitting}
+            >
+              {submitting ? 'Authenticating...' : 'Sign In'}
+            </button>
+          </form>
+
+          <div className="auth-card-footer">
+            <span>Don't have an account? </span>
+            <Link to="/signup" className="auth-switch-link">
+              Create account
+            </Link>
           </div>
         </div>
       </div>

@@ -19,6 +19,8 @@ def get_head_pose(frame, landmarks):
     Calculates the 3D head pose from 2D facial landmarks.
     Returns: (x, y, z) rotation angles.
     """
+    if not landmarks or len(landmarks) < 468:
+        return 0, 0, 0
     frame_h, frame_w, _ = frame.shape
     focal_length = frame_w
     center = (frame_w / 2, frame_h / 2)

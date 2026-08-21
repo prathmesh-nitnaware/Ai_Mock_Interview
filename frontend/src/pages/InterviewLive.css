@@ -1,175 +1,425 @@
-.live-root {
-    background: #050505;
-    min-height: 100vh;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Inter', sans-serif;
-    position: relative;
-    overflow: hidden;
+/* ============================================================
+   INTERVIEW LIVE.CSS — Professional Mock Interview Studio
+   Linear / GitHub inspired: Clean, high-focus workspace
+   ============================================================ */
+
+.interview-studio-page {
+  min-height: calc(100vh - 64px);
+  background-color: #0b0b0f;
+  color: #ededf2;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 1.5rem 1.5rem 4rem 1.5rem;
+  display: flex;
+  justify-content: center;
 }
 
-.live-glow {
-    position: absolute;
-    width: 800px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(129, 140, 248, 0.08) 0%, transparent 70%);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
+.studio-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.live-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    max-width: 1400px;
-    width: 90%;
-    z-index: 10;
+/* ── STUDIO TOP BAR ──────────────────────────────────────── */
+.studio-top-bar {
+  background: #121218;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
-.glass-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 1.5rem;
+.studio-meta-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-/* AI Orb Logic */
-.ai-orb-container {
-    position: relative;
-    width: 140px;
-    height: 140px;
-    margin: 2rem 0;
+.studio-brand-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: #7c5cfc;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
 }
 
-.ai-orb {
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, #818cf8 0%, transparent 75%);
-    border-radius: 50%;
-    filter: blur(15px);
-    opacity: 0.6;
+.studio-role-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ededf2;
 }
 
-.is-speaking .ai-orb {
-    animation: pulseOrb 2s infinite ease-in-out;
+.studio-stage-pill {
+  background: rgba(124, 92, 252, 0.12);
+  border: 1px solid rgba(124, 92, 252, 0.25);
+  color: #a78bfa;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 5px;
 }
 
-@keyframes pulseOrb {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.3); opacity: 0.9; }
+.studio-timer-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+  color: #8c8ca0;
+  font-family: var(--font-mono, monospace);
 }
 
-.problem-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: -1.5px;
-    margin-bottom: 1rem;
+/* ── STUDIO MAIN GRID ────────────────────────────────────── */
+.studio-main-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
 }
 
-.desc-box {
-    color: #a1a1aa;
-    line-height: 1.6;
-    font-size: 1.05rem;
+/* ── LEFT: QUESTION & ANSWER WORKSPACE ───────────────────── */
+.studio-workspace-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-/* Transcript Area */
-.transcript-area {
-    width: 100%;
-    height: 400px;
-    background: rgba(0, 0, 0, 0.2);
-    color: #e4e4e7;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    resize: none;
-    border: 1px solid rgba(129, 140, 248, 0.1);
+.interviewer-question-card {
+  background: #121218;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
-.live-actions {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    align-items: center;
+.question-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.mic-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
+.question-stage-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7c5cfc;
 }
 
-.mic-btn.active {
-    background: #ef4444;
-    border-color: #f87171;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+.speaker-indicator-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #34d399;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.submit-btn-glow, .next-btn-glow {
-    flex: 1;
-    padding: 18px;
-    background: #818cf8;
-    color: white;
-    font-weight: 700;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
+.question-text-content {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.45;
+  margin: 0;
 }
 
-.submit-btn-glow:hover {
-    box-shadow: 0 0 30px rgba(129, 140, 248, 0.4);
-    transform: translateY(-2px);
+.question-intent-meta {
+  background: #16161f;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.775rem;
+  color: #8c8ca0;
 }
 
-/* Floating Camera */
-.floating-cam {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 280px;
-    aspect-ratio: 16/9;
-    padding: 4px;
-    overflow: hidden;
+/* Candidate Response Card */
+.candidate-response-card {
+  background: #121218;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.self-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 12px;
-    transform: scaleX(-1);
+.response-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.nervousness-tracker {
-    position: absolute;
-    bottom: 12px;
-    left: 12px;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 6px 12px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.response-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #a0a0b5;
 }
 
-.text-red { color: #ef4444; }
-.text-green { color: #10b981; }
+.listening-pulse-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ef4444;
+}
 
-.loading-models {
-    font-size: 0.75rem;
-    color: #a1a1aa;
-    font-style: italic;
+.recording-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: pulseRecording 1.5s infinite;
+}
+
+@keyframes pulseRecording {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.candidate-answer-textarea {
+  width: 100%;
+  min-height: 140px;
+  background: #16161f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.85rem;
+  color: #ededf2;
+  font-size: 0.9rem;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.candidate-answer-textarea:focus {
+  border-color: #7c5cfc;
+  background: #1a1a24;
+}
+
+.response-actions-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mic-toggle-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #16161f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.55rem 0.95rem;
+  color: #ededf2;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mic-toggle-control.active {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.submission-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.btn-skip-question {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.55rem 0.95rem;
+  color: #8c8ca0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-skip-question:hover {
+  background: #1c1c26;
+  color: #ffffff;
+}
+
+.btn-submit-answer {
+  background: #7c5cfc;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.55rem 1.15rem;
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease;
+}
+
+.btn-submit-answer:hover:not(:disabled) {
+  background: #6d4be2;
+}
+
+.btn-submit-answer:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── RIGHT: SIGNALS & STAGES COLUMN ──────────────────────── */
+.studio-sidebar-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Small camera card */
+.studio-camera-card {
+  background: #121218;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.camera-header-status {
+  padding: 0.6rem 0.85rem;
+  background: #16161f;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: #8c8ca0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.camera-feed-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #000;
+}
+
+.studio-video-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+/* Live Telemetry Signals */
+.studio-telemetry-panel {
+  background: #121218;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.telemetry-heading {
+  font-size: 0.775rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #a0a0b5;
+  margin: 0;
+}
+
+.telemetry-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.metric-tile {
+  background: #16161f;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 7px;
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric-val {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.metric-lbl {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #727285;
+  text-transform: uppercase;
+}
+
+/* 5-Stage Tracker */
+.studio-stage-tracker {
+  background: #121218;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stage-tracker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.8rem;
+  color: #727285;
+}
+
+.stage-tracker-item.active {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.stage-tracker-item.completed {
+  color: #10b981;
+}
+
+.stage-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2a2a38;
+}
+
+.stage-tracker-item.active .stage-dot {
+  background: #7c5cfc;
+}
+
+.stage-tracker-item.completed .stage-dot {
+  background: #10b981;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .studio-main-grid {
+    grid-template-columns: 1fr;
+  }
 }

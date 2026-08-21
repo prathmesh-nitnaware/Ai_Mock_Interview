@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { User, Mail, Lock, ArrowRight, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
-import Button from '../components/ui/Button';
-import InputField from '../components/forms/InputField';
-import './Login.css'; 
+import { User, Mail, Lock, AlertCircle, Sparkles, CheckCircle2, Layers, Target, ShieldCheck } from 'lucide-react';
+import './Login.css';
 
 const Signup = () => {
   const navigate = useNavigate();
   const { signup, submitting } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
   const [error, setError] = useState(null);
 
@@ -25,195 +23,254 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // 1. Frontend Validation
-    if (!formData.name || !formData.email || !formData.password) {
-      setError("All fields are required.");
+
+    if (!formData.name.trim() || !formData.email.trim() || !formData.password) {
+      setError('All fields are required.');
       return;
     }
-    
-    // Password Strength Validation
+
     const hasUpperCase = /[A-Z]/.test(formData.password);
     const hasLowerCase = /[a-z]/.test(formData.password);
     const hasNumbers = /\d/.test(formData.password);
     const isLongEnough = formData.password.length >= 8;
-    
+
     if (!hasUpperCase || !hasLowerCase || !hasNumbers || !isLongEnough) {
-      setError("Password does not meet all requirements.");
+      setError('Please ensure your password meets all requirements below.');
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
+      setError('Passwords do not match.');
       return;
     }
 
-    // 2. Data Preparation
-    // Passing as an object ensures your AuthContext/API layer receives the correct keys
     const signupPayload = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      password: formData.password,
     };
 
     try {
       const result = await signup(signupPayload);
-      
+
       if (result && result.success) {
-        // Show success message and hide form
         setError(null);
         setFormData({ name: '', email: '', password: '', confirmPassword: '' });
-        alert(result.message || "Account created! Please check your email to verify your account.");
+        alert('Account created successfully! You can now log in.');
         navigate('/login');
       } else {
-        setError(result?.message || "Failed to create account. Please try again.");
+        setError(result?.message || 'Failed to create account. Please try again.');
       }
     } catch (err) {
-      setError(err?.error || "A connection error occurred. Is the backend running?");
+      setError(err?.error || 'A connection error occurred. Please verify backend connectivity.');
     }
   };
 
-  return (
-    <div className="signup-root">
-      <div className="signup-split">
-        
-        {/* --- Left Side: Visual / Value Prop --- */}
-        <div className="signup-visual">
-          <div className="ambient-glow-brand"></div>
-          <div className="noise-overlay"></div>
-          
-          <div className="visual-content fade-in-up">
-            <div className="brand-pill-light mb-6">
-              <Sparkles size={14} className="text-indigo-light" />
-              <span>PREP AI 2.0</span>
-            </div>
-            
-            <h1 className="visual-heading">Join the <br/> Elite.</h1>
-            <p className="visual-text">
-              Master your interview skills with AI-driven analysis. Join professionals securing roles at top-tier tech companies.
-            </p>
+  const isLenMet = formData.password.length >= 8;
+  const isUpperMet = /[A-Z]/.test(formData.password);
+  const isLowerMet = /[a-z]/.test(formData.password);
+  const isNumMet = /\d/.test(formData.password);
+  const isMatchMet = formData.password === formData.confirmPassword && formData.confirmPassword.length > 0;
 
-            <ul className="value-props-list mt-8">
-              <li><CheckCircle2 size={18} className="text-success" /> Real-time Voice & Pace Analysis</li>
-              <li><CheckCircle2 size={18} className="text-success" /> Contextual ATS Resume Scoring</li>
-              <li><CheckCircle2 size={18} className="text-success" /> Personalized Coding Dojo</li>
-            </ul>
+  return (
+    <div className="auth-page-root">
+      <div className="auth-workspace-container">
+        {/* Left Column: Product Value Pillars */}
+        <div className="auth-brand-column">
+          <Link to="/" className="auth-brand-logo">
+            <div className="auth-logo-icon">
+              <Sparkles size={18} />
+            </div>
+            <span className="auth-logo-text">PREP AI</span>
+          </Link>
+
+          <div>
+            <h1 className="auth-hero-title">
+              Start your placement preparation journey.
+            </h1>
+            <p className="auth-hero-subtitle" style={{ marginTop: '0.6rem' }}>
+              Create your account to unlock personalized mock interviews, resume skill verification, and deep performance feedback.
+            </p>
           </div>
-          
-          <div className="visual-footer fade-in-up delay-200">
-            <span>SECURE ENCLAVE</span>
-            <span>SYSTEM.ONLINE</span>
+
+          <div className="auth-feature-list">
+            <div className="auth-feature-item">
+              <div className="auth-feature-icon-box">
+                <Layers size={15} />
+              </div>
+              <div className="auth-feature-content">
+                <span className="auth-feature-heading">Immediate Account Activation</span>
+                <p className="auth-feature-desc">
+                  Register with any valid email address and access your interview dashboard instantly.
+                </p>
+              </div>
+            </div>
+
+            <div className="auth-feature-item">
+              <div className="auth-feature-icon-box">
+                <Target size={15} />
+              </div>
+              <div className="auth-feature-content">
+                <span className="auth-feature-heading">Resume Skill Grounding</span>
+                <p className="auth-feature-desc">
+                  Interviewers validate technical technologies and frameworks directly from your resume.
+                </p>
+              </div>
+            </div>
+
+            <div className="auth-feature-item">
+              <div className="auth-feature-icon-box">
+                <ShieldCheck size={15} />
+              </div>
+              <div className="auth-feature-content">
+                <span className="auth-feature-heading">Deterministic 85/15 Scoring</span>
+                <p className="auth-feature-desc">
+                  Content accuracy and delivery coaching scores are strictly isolated without hardware bias.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* --- Right Side: Form --- */}
-        <div className="signup-form-container">
-          <div className="ambient-glow-mobile"></div>
+        {/* Right Column: Clean Signup Card */}
+        <div className="auth-form-card">
+          <div className="auth-card-header">
+            <h2 className="auth-card-title">Create your account</h2>
+            <p className="auth-card-subtitle">
+              Set up your candidate profile in under a minute.
+            </p>
+          </div>
 
-          {/* Glassmorphism Container */}
-          <div className="glass-signup-card fade-in-up delay-200">
-            <div className="form-header">
-              <h2>Create Account</h2>
-              <p>Initialize your personalized training environment.</p>
+          {error && (
+            <div className="auth-alert-banner">
+              <AlertCircle size={16} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <label className="form-label" htmlFor="name">Full Name</label>
+              <div className="input-with-icon">
+                <div className="input-icon-slot">
+                  <User size={15} />
+                </div>
+                <input
+                  id="name"
+                  type="text"
+                  name="name"
+                  className="auth-input-field"
+                  placeholder="Jane Doe"
+                  value={formData.name}
+                  onChange={handleChange}
+                  autoComplete="name"
+                  required
+                />
+              </div>
             </div>
 
-            {error && (
-              <div className="error-pill shake-animation">
-                <AlertCircle size={16} /> <span>{error}</span>
+            <div className="form-group">
+              <label className="form-label" htmlFor="signup-email">Email Address</label>
+              <div className="input-with-icon">
+                <div className="input-icon-slot">
+                  <Mail size={15} />
+                </div>
+                <input
+                  id="signup-email"
+                  type="email"
+                  name="email"
+                  className="auth-input-field"
+                  placeholder="student@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  autoComplete="email"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="signup-password">Password</label>
+              <div className="input-with-icon">
+                <div className="input-icon-slot">
+                  <Lock size={15} />
+                </div>
+                <input
+                  id="signup-password"
+                  type="password"
+                  name="password"
+                  className="auth-input-field"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  autoComplete="new-password"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="confirmPassword">Confirm Password</label>
+              <div className="input-with-icon">
+                <div className="input-icon-slot">
+                  <Lock size={15} />
+                </div>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  name="confirmPassword"
+                  className="auth-input-field"
+                  placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  autoComplete="new-password"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password Validation Requirements */}
+            {formData.password.length > 0 && (
+              <div className="password-requirements-grid">
+                <div className={`req-item ${isLenMet ? 'met' : ''}`}>
+                  <CheckCircle2 size={13} />
+                  <span>8+ characters</span>
+                </div>
+                <div className={`req-item ${isUpperMet ? 'met' : ''}`}>
+                  <CheckCircle2 size={13} />
+                  <span>1 uppercase</span>
+                </div>
+                <div className={`req-item ${isLowerMet ? 'met' : ''}`}>
+                  <CheckCircle2 size={13} />
+                  <span>1 lowercase</span>
+                </div>
+                <div className={`req-item ${isNumMet ? 'met' : ''}`}>
+                  <CheckCircle2 size={13} />
+                  <span>1 number</span>
+                </div>
+                <div className={`req-item ${isMatchMet ? 'met' : ''}`} style={{ gridColumn: 'span 2' }}>
+                  <CheckCircle2 size={13} />
+                  <span>Passwords match</span>
+                </div>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="signup-form">
-              <div className="input-wrapper">
-                  <InputField
-                    label="FULL NAME"
-                    name="name"
-                    placeholder="E.g. Jane Doe"
-                    value={formData.name}
-                    onChange={handleChange}
-                    icon={<User size={16} />}
-                    required
-                  />
-              </div>
+            <button
+              type="submit"
+              className="btn-auth-submit"
+              disabled={submitting}
+            >
+              {submitting ? 'Creating Account...' : 'Create Account'}
+            </button>
+          </form>
 
-              <div className="input-wrapper">
-                  <InputField
-                    type="email"
-                    label="EMAIL ADDRESS"
-                    name="email"
-                    placeholder="name@example.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    icon={<Mail size={16} />}
-                    required
-                  />
-              </div>
-
-              <div className="password-grid">
-                <div className="input-wrapper">
-                    <InputField
-                      type="password"
-                      label="PASSWORD"
-                      name="password"
-                      placeholder="••••••••"
-                      value={formData.password}
-                      onChange={handleChange}
-                      icon={<Lock size={16} />}
-                      required
-                    />
-                </div>
-                <div className="input-wrapper">
-                    <InputField
-                      type="password"
-                      label="CONFIRM"
-                      name="confirmPassword"
-                      placeholder="••••••••"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      icon={<Lock size={16} />}
-                      required
-                    />
-                </div>
-              </div>
-
-              {/* Password Feedback */}
-              {formData.password.length > 0 && (
-                <div className="password-feedback fade-in">
-                  <div className={`feedback-item ${formData.password.length >= 8 ? 'met' : ''}`}>
-                    <CheckCircle2 size={14} /> <span>At least 8 characters</span>
-                  </div>
-                  <div className={`feedback-item ${/[A-Z]/.test(formData.password) ? 'met' : ''}`}>
-                    <CheckCircle2 size={14} /> <span>One uppercase letter</span>
-                  </div>
-                  <div className={`feedback-item ${/[a-z]/.test(formData.password) ? 'met' : ''}`}>
-                    <CheckCircle2 size={14} /> <span>One lowercase letter</span>
-                  </div>
-                  <div className={`feedback-item ${/\d/.test(formData.password) ? 'met' : ''}`}>
-                    <CheckCircle2 size={14} /> <span>One number</span>
-                  </div>
-                  <div className={`feedback-item ${formData.password === formData.confirmPassword && formData.confirmPassword.length > 0 ? 'met' : ''}`}>
-                    <CheckCircle2 size={14} /> <span>Passwords match</span>
-                  </div>
-                </div>
-              )}
-
-              <Button 
-                type="submit" 
-                variant="primary" 
-                className="btn-glow-submit w-full mt-6" 
-                isLoading={submitting}
-                disabled={submitting}
-              >
-                {submitting ? "INITIALIZING..." : <> Initialize Account <ArrowRight size={16} /> </>}
-              </Button>
-            </form>
-
-            <div className="form-footer">
-              <p>Already a member? <Link to="/login" className="link-highlight">Secure Log In</Link></p>
-            </div>
+          <div className="auth-card-footer">
+            <span>Already have an account? </span>
+            <Link to="/login" className="auth-switch-link">
+              Sign in
+            </Link>
           </div>
         </div>
-
       </div>
     </div>
   );

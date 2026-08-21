@@ -33,7 +33,11 @@ const VerifyEmail = () => {
 
         if (response.ok) {
             setStatus('success');
-            setMessage('Your email has been successfully verified! You can now log in to your account.');
+            if (data.already_verified) {
+                setMessage('Your email is already verified. You can log in to your account.');
+            } else {
+                setMessage('Your email has been successfully verified! You can now log in to your account.');
+            }
         } else {
             setStatus('error');
             setMessage(data.error || 'Failed to verify email. The link may have expired.');

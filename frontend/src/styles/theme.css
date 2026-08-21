@@ -1,27 +1,30 @@
 /* ============================================================
-   THEME.CSS — Shared component utilities (buttons, cards, text)
-   Uses CSS tokens from global.css for full theme support
+   THEME.CSS — PrepAI Shared Component Utilities
+   Dark-only — uses variables from global.css
    ============================================================ */
 
-/* ── TYPOGRAPHY ─────────────────────────────────────────── */
+/* ── TYPOGRAPHY ──────────────────────────────────────────── */
 .text-editorial-h1 {
   font-family: var(--font-main);
-  font-weight: 800;
-  letter-spacing: -1.5px;
-  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1.08;
   color: var(--text-primary);
 }
 
 .text-editorial-sub {
   font-family: var(--font-main);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-size: 0.85rem;
-  color: var(--accent);
+  letter-spacing: 2px;
+  font-size: 0.75rem;
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* ── BUTTON VARIANTS ────────────────────────────────────── */
+/* ── BUTTON VARIANTS ─────────────────────────────────────── */
 .btn-editorial {
   display: inline-flex;
   align-items: center;
@@ -38,6 +41,7 @@
   cursor: pointer;
   border-radius: var(--btn-radius);
   font-family: var(--font-main);
+  backdrop-filter: blur(8px);
 }
 .btn-editorial:hover:not(:disabled) {
   background: var(--bg-card-hover);
@@ -45,17 +49,18 @@
   transform: translateY(-1px);
 }
 .btn-editorial.primary {
-  background: var(--accent);
+  background: var(--gradient-brand);
   color: white;
   border-color: transparent;
+  box-shadow: 0 2px 14px rgba(124,58,237,0.3);
 }
 .btn-editorial.primary:hover:not(:disabled) {
-  background: var(--accent-hover);
-  box-shadow: 0 6px 20px rgba(99,102,241,0.3);
+  box-shadow: 0 6px 24px rgba(124,58,237,0.45);
+  filter: brightness(1.08);
 }
-.btn-editorial:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-editorial:disabled { opacity: 0.45; cursor: not-allowed; }
 
-/* ── CARD VARIANT ───────────────────────────────────────── */
+/* ── CARD VARIANT ────────────────────────────────────────── */
 .card-editorial {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
@@ -71,22 +76,49 @@
   box-shadow: var(--shadow-md);
 }
 
-/* ── ICON WRAPPER ───────────────────────────────────────── */
+/* ── ICON WRAPPER ────────────────────────────────────────── */
 .icon-glow-circle-small {
   width: 30px; height: 30px;
-  background: var(--accent-subtle);
-  border: 1px solid var(--accent-border);
+  background: var(--gradient-brand);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
+  color: white;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.4);
 }
 
-/* ── SECTION SPACING ────────────────────────────────────── */
+/* ── GRADIENT ICON WRAP ──────────────────────────────────── */
+.gradient-icon-wrap {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(6,182,212,0.1) 100%);
+  border: 1px solid rgba(124,58,237,0.25);
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+
+/* ── SECTION SPACING ─────────────────────────────────────── */
 .mb-2  { margin-bottom: 0.5rem; }
 .mb-4  { margin-bottom: 1rem; }
 .mb-6  { margin-bottom: 1.5rem; }
 .mt-4  { margin-top: 1rem; }
 .mt-6  { margin-top: 1.5rem; }
 .mt-8  { margin-top: 2rem; }
+
+/* ── GRADIENT TEXT ───────────────────────────────────────── */
+.gradient-text {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── GLOW RING ───────────────────────────────────────────── */
+.glow-ring {
+  border: 1px solid rgba(124,58,237,0.35);
+  box-shadow: 0 0 0 4px rgba(124,58,237,0.08), inset 0 0 0 1px rgba(124,58,237,0.1);
+}

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UploadCloud, FileText, X, ArrowRight, Target, Loader2 } from 'lucide-react';
-import { api } from '../services/api'; 
-import '../styles/theme.css';
+import { UploadCloud, FileText, X, ArrowRight, Target, Loader2, AlertCircle, Sparkles } from 'lucide-react';
+import { api } from '../services/api';
 import './ResumeUpload.css';
 
 const ResumeUpload = () => {
@@ -15,131 +14,137 @@ const ResumeUpload = () => {
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (selected && selected.type === 'application/pdf') {
-        setFile(selected);
-        setError(null);
+      setFile(selected);
+      setError(null);
     } else {
-        setError("Please select a valid PDF file.");
+      setError('Please select a valid PDF file.');
     }
   };
 
   const handleUpload = async () => {
     if (!file) {
-      setError("Please attach a PDF document first.");
+      setError('Please attach a PDF document first.');
       return;
     }
     if (!targetRole.trim()) {
-      setError("Please specify a target role for accurate ATS parsing.");
+      setError('Please specify a target role for accurate ATS parsing.');
       return;
     }
 
     setLoading(true);
     setError(null);
 
-    // Prepare Multipart Form Data for Flask
     const formData = new FormData();
     formData.append('resume', file);
     formData.append('job_description', targetRole);
 
     try {
-      // 1. Call the backend API (ensure api.scoreResume uses axios.post or fetch)
-      // Pass the formData directly
-      const response = await api.scoreResume(formData); 
-      
-      // 2. Navigate to Results page with the real AI data
-      navigate('/resume/result', { 
-          state: { 
-              results: response, // Passing the full AI JSON (score, summary, etc.)
-              job_role: targetRole 
-          } 
+      const response = await api.scoreResume(formData);
+      navigate('/resume/result', {
+        state: {
+          results: response,
+          job_role: targetRole,
+        },
       });
-
     } catch (err) {
-      console.error("Upload/Processing Error:", err);
-      setError(err.response?.data?.error || "AI Analysis failed. Please check your Ollama connection.");
+      console.error('Upload/Processing Error:', err);
+      setError(err.response?.data?.error || 'Resume analysis failed. Please verify the document format.');
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   return (
-    <div className="upload-root page-container fade-in-up">
-      <div className="upload-wrapper">
-        
-        <div className="upload-header text-center">
-          <div className="brand-pill mx-auto mb-4">
-             <Target size={14} className="text-indigo" />
-             <span>ATS OPTIMIZER</span>
+    <div className="resume-upload-page">
+      <div className="resume-upload-container">
+        <div className="resume-upload-header">
+          <div className="resume-badge-tag">
+            <Target size={13} />
+            <span>PLACEMENT ATS SCANNER</span>
           </div>
-          <h1 className="upload-title">Resume Parser</h1>
-          <p className="upload-sub">
-            Drop your CV into the engine. We'll parse your formatting, extract your impact metrics, map your skills against industry standards, and identify missing keywords, core strengths, and critical weaknesses.
+          <h1 className="resume-upload-title">Resume ATS Scanner</h1>
+          <p className="resume-upload-subtitle">
+            Upload your resume PDF and specify your target engineering role to scan keyword match rates, missing technical competencies, and impact bullet formatting.
           </p>
         </div>
 
-        <div className="glass-panel upload-panel">
-          
-          {/* File Dropzone */}
+        <div className="resume-upload-card">
+          {error && (
+            <div className="resume-error-banner">
+              <AlertCircle size={16} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Target Role Input */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <label style={{ fontSize: '0.775rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em', color: '#a0a0b5' }}>
+              Target Placement Role
+            </label>
+            <input
+              type="text"
+              className="auth-input-field"
+              placeholder="e.g. Backend Engineer, Full Stack Developer, SRE"
+              value={targetRole}
+              onChange={(e) => {
+                setTargetRole(e.target.value);
+                if (error) setError(null);
+              }}
+              style={{ paddingLeft: '0.85rem' }}
+            />
+          </div>
+
+          {/* File Dropzone / Selected file preview */}
           {!file ? (
-            <label className="dropzone-area">
-              <UploadCloud size={48} className={`text-indigo mb-4 drop-icon ${loading ? 'animate-bounce' : ''}`} />
-              <span className="dz-text">Click to browse or drag PDF here</span>
-              <span className="dz-hint">Maximum file size: 5MB</span>
-              <input 
-                type="file" 
-                accept=".pdf" 
-                className="hidden" 
-                onChange={handleFileChange} 
+            <label className="resume-dropzone">
+              <UploadCloud size={36} className="dropzone-icon" />
+              <span className="dropzone-primary-text">Click to browse or drag PDF here</span>
+              <span className="dropzone-secondary-text">PDF format only (Max 5MB)</span>
+              <input
+                type="file"
+                accept=".pdf"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
                 disabled={loading}
               />
             </label>
           ) : (
-            <div className="file-secured-banner">
-              <div className="file-info-flex">
-                <FileText size={28} className="text-success" />
-                <div className="file-details">
-                    <span className="file-name">{file.name}</span>
-                    <span className="file-size">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+            <div className="file-selected-box">
+              <div className="file-selected-info">
+                <FileText size={22} style={{ color: '#7c5cfc' }} />
+                <div>
+                  <div className="file-name-text">{file.name}</div>
+                  <div className="file-size-text">{(file.size / 1024).toFixed(1)} KB</div>
                 </div>
               </div>
-              {!loading && (
-                <button onClick={() => setFile(null)} className="btn-remove-file" title="Remove file">
-                  <X size={20} />
-                </button>
-              )}
+              <button
+                type="button"
+                className="remove-file-btn"
+                onClick={() => setFile(null)}
+                title="Remove attached file"
+              >
+                <X size={16} />
+              </button>
             </div>
           )}
 
-          {/* Role Input */}
-          <div className="role-input-section mt-8">
-              <label className="input-label-glow">
-                  <Target size={14}/> TARGET JOB ROLE
-              </label>
-              <input 
-                  type="text" 
-                  className="input-glass w-full mt-2"
-                  placeholder="E.g. Full Stack Developer, Product Manager"
-                  value={targetRole}
-                  onChange={(e) => setTargetRole(e.target.value)}
-                  disabled={loading}
-              />
-          </div>
-
-          {error && <div className="error-pill mt-4"><X size={16} /> {error}</div>}
-
-          <button 
-            onClick={handleUpload} 
+          <button
+            type="button"
+            className="btn-analyze-resume"
+            onClick={handleUpload}
             disabled={loading || !file || !targetRole.trim()}
-            className="btn-glow-submit w-full mt-8"
           >
             {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 className="animate-spin" size={18} /> ANALYZING WITH OLLAMA...
-              </span>
+              <>
+                <Loader2 size={16} className="spin" /> Analyzing Document...
+              </>
             ) : (
-              <>INITIATE SCAN <ArrowRight size={18} /></>
+              <>
+                <span>Run ATS Audit</span>
+                <ArrowRight size={15} />
+              </>
             )}
           </button>
-          
         </div>
       </div>
     </div>

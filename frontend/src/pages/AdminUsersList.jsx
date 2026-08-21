@@ -151,7 +151,6 @@ const AdminUsersList = () => {
   return (
     <div className="admin-users-page fade-in">
       <div className="noise-bg"></div>
-      <div className="ambient-glow"></div>
 
       <div className="admin-users-content">
         
@@ -178,14 +177,14 @@ const AdminUsersList = () => {
 
         {/* --- ERROR ALERT --- */}
         {error && (
-          <div className="glass-card mb-6" style={{ padding: '1.25rem', borderColor: 'var(--danger-border)', background: 'var(--danger-subtle)', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-            <AlertCircle size={20} style={{ color: 'var(--danger)' }} />
-            <p style={{ color: 'var(--danger)', fontSize: '0.9rem' }}>{error}</p>
+          <div className="mb-6" style={{ padding: '1.25rem', borderColor: 'var(--color-error)', background: 'var(--color-error-bg)', display: 'flex', gap: '0.75rem', alignItems: 'center', borderRadius: 'var(--radius-md)' }}>
+            <AlertCircle size={20} style={{ color: 'var(--color-error)' }} />
+            <p style={{ color: 'var(--color-error)', fontSize: '0.9rem' }}>{error}</p>
           </div>
         )}
 
         {/* --- SEARCH & TABLE DIRECTORY --- */}
-        <section className="users-directory-section glass-card">
+        <section className="users-directory-section">
           
           <div className="table-controls-header-directory">
             <h3 style={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: '0.5px' }}>Candidate Directory</h3>
@@ -304,7 +303,7 @@ const AdminUsersList = () => {
       {/* --- ACTIVITY POPUP / ENGAGEMENT MODAL --- */}
       {selectedUser && (
         <div className="admin-modal-overlay fade-in">
-          <div className="admin-modal-card glass-card">
+          <div className="admin-modal-card">
             
             <div className="modal-header">
               <div className="modal-header-profile">
@@ -381,7 +380,7 @@ const AdminUsersList = () => {
                   </div>
 
                   {/* Onboarding & resume status */}
-                  <div className="profile-completeness-row glass-card">
+                  <div className="profile-completeness-row">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <CheckCircle size={16} style={{ color: userActivity.user.onboarding_completed ? 'var(--success)' : 'var(--text-tertiary)' }} />
                       <span style={{ fontSize: '0.85rem' }}>
@@ -401,9 +400,9 @@ const AdminUsersList = () => {
                   <div className="modal-graphs-grid">
                     
                     {/* Score Progression graph */}
-                    <div className="modal-graph-card glass-card">
+                    <div className="modal-graph-card">
                       <h4 className="modal-graph-title">
-                        <TrendingUp size={14} style={{ color: 'var(--accent)' }} />
+                        <TrendingUp size={14} style={{ color: 'var(--color-admin)' }} />
                         <span>Mock Score Progression</span>
                       </h4>
                       <div className="mg-body">
@@ -412,12 +411,12 @@ const AdminUsersList = () => {
                             <svg viewBox="0 0 260 80" width="100%" height="80" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
                               <defs>
                                 <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.25"/>
-                                  <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.0"/>
+                                  <stop offset="0%" stopColor="var(--color-admin)" stopOpacity="0.25"/>
+                                  <stop offset="100%" stopColor="var(--color-admin)" stopOpacity="0.0"/>
                                 </linearGradient>
                               </defs>
                               <path d={renderScoreAreaPath(userActivity.scores_chart)} fill="url(#scoreGrad)" />
-                              <path d={renderScoreLinePath(userActivity.scores_chart)} fill="none" stroke="var(--accent)" strokeWidth="2" />
+                              <path d={renderScoreLinePath(userActivity.scores_chart)} fill="none" stroke="var(--color-admin)" strokeWidth="2" />
                             </svg>
                             <div className="mg-axis-scores">
                               <span>Initial</span>
@@ -431,9 +430,9 @@ const AdminUsersList = () => {
                     </div>
 
                     {/* Weekly Engagement Bars */}
-                    <div className="modal-graph-card glass-card">
+                    <div className="modal-graph-card">
                       <h4 className="modal-graph-title">
-                        <Activity size={14} style={{ color: '#ec4899' }} />
+                        <Activity size={14} style={{ color: 'var(--color-admin)' }} />
                         <span>7-Day Engagement</span>
                       </h4>
                       <div className="mg-body bar-layout">
@@ -480,7 +479,7 @@ const AdminUsersList = () => {
                         ))}
                       </div>
                     ) : (
-                      <div className="empty-timeline glass-card">
+                      <div className="empty-timeline">
                         <Compass size={24} className="text-muted" style={{ marginBottom: '0.5rem' }} />
                         <p className="text-muted" style={{ fontSize: '0.85rem' }}>No activity records found for this user.</p>
                       </div>
@@ -492,7 +491,7 @@ const AdminUsersList = () => {
             </div>
 
             <div className="modal-footer">
-              <button className="btn-glow-primary modal-close-action" onClick={() => setSelectedUser(null)}>
+              <button className="modal-close-action" onClick={() => setSelectedUser(null)}>
                 Dismiss Panel
               </button>
             </div>

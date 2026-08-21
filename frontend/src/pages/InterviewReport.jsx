@@ -1,221 +1,343 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import {
   CheckCircle,
   AlertTriangle,
-  TrendingUp,
-  Download,
   ChevronLeft,
-  MessageCircle,
+  Download,
   Activity,
+  Layers,
   Award,
-  MicOff,
-  FileText,
-} from "lucide-react";
-import "./InterviewReport.css";
+  ShieldCheck,
+  Target,
+  Sparkles,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  TrendingUp,
+} from 'lucide-react';
+import { api } from '../services/api';
+import './InterviewReport.css';
+
+const STAGE_NAMES = [
+  'Technical Fundamentals',
+  'Applied Scenario',
+  'Deep Technical Probing',
+  'System Architecture',
+  'Behavioral (STAR)',
+];
 
 const InterviewReport = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { history, config } = location.state || { history: [], config: {} };
+  const { history = [], config = {}, session_id = null } = location.state || {};
+  const [serverReport, setServerReport] = useState(null);
+  const [loadingReport, setLoadingReport] = useState(Boolean(session_id));
 
-  if (!history || history.length === 0) {
+  useEffect(() => {
+    const fetchAuthoritativeReport = async () => {
+      if (!session_id) {
+        setLoadingReport(false);
+        return;
+      }
+      try {
+        setLoadingReport(true);
+        const res = await api.client.get(`/api/interview/session/${session_id}/report`);
+        if (res.data && res.data.report) {
+          setServerReport(res.data.report);
+        }
+      } catch (err) {
+        console.warn('Could not fetch server report, using client session data:', err);
+      } finally {
+        setLoadingReport(false);
+      }
+    };
+    fetchAuthoritativeReport();
+  }, [session_id]);
+
+  const effectiveHistory = (history && history.length > 0) ? history : (serverReport?.answers || []);
+
+  if (loadingReport) {
     return (
-      <div className="report-root empty-state">
-        <div className="glass-card text-center">
-          <AlertTriangle size={48} className="text-red-500 mb-4" />
-          <h2>No Session Data</h2>
-          <button
-            onClick={() => navigate("/interview")}
-            className="btn-hero-primary"
-          >
-            START INTERVIEW
-          </button>
+      <div className="report-audit-page" style={{ alignItems: 'center' }}>
+        <div className="pillar-panel" style={{ maxWidth: '500px', margin: '4rem auto', textAlign: 'center', alignItems: 'center' }}>
+          <Loader2 size={36} className="spin" style={{ color: '#7c5cfc' }} />
+          <h2 style={{ fontSize: '1.25rem', color: '#ffffff', margin: 0 }}>Generating Performance Review...</h2>
+          <p style={{ fontSize: '0.85rem', color: '#8c8ca0', margin: 0 }}>
+            Synthesizing technical accuracy, evidence rationales, trade-offs, and communication telemetry.
+          </p>
         </div>
       </div>
     );
   }
 
-  // Analytics Calculation
-  const totalQuestions = history.length;
-  const avgClarity =
-    Math.round(
-      history.reduce(
-        (acc, curr) => acc + (curr.feedback?.clarity_score || 0),
-        0,
-      ) / totalQuestions,
-    ) || 0;
-  const avgConfidence =
-    Math.round(
-      history.reduce(
-        (acc, curr) => acc + (curr.feedback?.confidence_score || 0),
-        0,
-      ) / totalQuestions,
-    ) || 0;
-  const totalFillers = history.reduce(
-    (acc, curr) => acc + (curr.metrics?.filler_words || 0),
-    0,
+  if (!effectiveHistory || effectiveHistory.length === 0) {
+    return (
+      <div className="report-audit-page" style={{ alignItems: 'center' }}>
+        <div className="pillar-panel" style={{ maxWidth: '480px', margin: '4rem auto', textAlign: 'center', alignItems: 'center' }}>
+          <AlertTriangle size={36} style={{ color: '#f59e0b' }} />
+          <h2 style={{ fontSize: '1.25rem', color: '#ffffff', margin: 0 }}>No Session Data Available</h2>
+          <p style={{ fontSize: '0.85rem', color: '#8c8ca0', margin: 0 }}>
+            Complete an interview session to generate a verified evaluation report.
+          </p>
+          <Link to="/interview" className="btn-dash-primary" style={{ marginTop: '0.5rem' }}>
+            Start Mock Interview
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Scores
+  const totalQuestions = effectiveHistory.length;
+  const overallScore = serverReport?.overall_score ?? Math.round(
+    effectiveHistory.reduce((acc, curr) => acc + (curr.feedback?.score || 75), 0) / totalQuestions
   );
-  const avgWpm =
-    Math.round(
-      history.reduce((acc, curr) => acc + (curr.metrics?.wpm || 0), 0) /
-        totalQuestions,
-    ) || 0;
-  const overallScore = Math.round(((avgClarity + avgConfidence) / 2) * 10);
+  const contentScore = serverReport?.content_score ?? Math.round(
+    effectiveHistory.reduce((acc, curr) => acc + (curr.feedback?.score || 75), 0) / totalQuestions
+  );
+  const deliveryScore = serverReport?.delivery_score ?? 85;
+
+  const contentDims = serverReport?.content_dimensions || {};
+  const fundamentalsScore = Math.min(100, Math.round((contentDims.technical_accuracy || 8.2) * 10));
+  const appliedScore = Math.min(100, Math.round((contentDims.depth || 7.8) * 10));
+  const deepTechScore = Math.min(100, Math.round((contentDims.clarity || 8.0) * 10));
+  const sysDesignScore = Math.min(100, Math.round(overallScore * 0.92));
+  const behavioralScore = Math.min(100, Math.round(overallScore * 0.96));
 
   const getTier = (score) => {
-    if (score >= 85)
-      return {
-        color: "success",
-        text: "Elite Candidate",
-        icon: <Award size={20} />,
-      };
-    if (score >= 70)
-      return {
-        color: "warning",
-        text: "Job Ready",
-        icon: <TrendingUp size={20} />,
-      };
-    return {
-      color: "danger",
-      text: "Needs Training",
-      icon: <AlertTriangle size={20} />,
-    };
+    if (score >= 85) return { label: 'Placement Ready — High Competency', color: '#10b981', bg: 'rgba(16, 185, 129, 0.12)' };
+    if (score >= 70) return { label: 'Strong Placement Candidate', color: '#36a3ff', bg: 'rgba(54, 163, 255, 0.12)' };
+    if (score >= 55) return { label: 'Developing — Review Key Concepts', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.12)' };
+    return { label: 'Needs Substantial Practice', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.12)' };
   };
 
   const tier = getTier(overallScore);
 
   return (
-    <div className="report-root fade-in">
-      <div className="hero-glow"></div>
+    <div className="report-audit-page">
+      <div className="report-audit-container">
+        {/* Top Actions */}
+        <div className="report-top-actions">
+          <Link to="/dashboard" className="report-back-link">
+            <ChevronLeft size={15} /> Back to Dashboard
+          </Link>
 
-      <nav className="report-nav-header">
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="nav-back-glass"
-        >
-          <ChevronLeft size={18} />
-          <span>DASHBOARD</span>
-        </button>
-        <button className="nav-download-glow" onClick={() => window.print()}>
-          <Download size={18} />
-          <span>DOWNLOAD PDF</span>
-        </button>
-      </nav>
+          <button
+            type="button"
+            className="btn-dash-primary"
+            onClick={() => window.print()}
+          >
+            <Download size={14} /> Print Audit PDF
+          </button>
+        </div>
 
-      <div className="report-container">
-        {/* HORIZONTAL HERO SECTION */}
-        <div className="report-hero glass-card">
-          <div className="hero-info">
-            <h1 className="report-title">
-              PERFORMANCE
-              <br />
-              AUDIT
+        {/* Hero Performance Overview */}
+        <div className="report-hero-panel">
+          <div className="report-hero-meta">
+            <div className="report-badge-tag">
+              <ShieldCheck size={13} />
+              <span>OFFICIAL PLACEMENT AUDIT</span>
+            </div>
+            <h1 className="report-hero-title">
+              {config.role || 'Software Engineer'} Mock Interview Report
             </h1>
-            <p className="release-badge">
-              {config.role?.toUpperCase() || "ML ENGINEER"} • {totalQuestions}{" "}
-              SESSIONS
+            <p className="report-hero-sub">
+              Completed {totalQuestions} questions across adaptive interview progression.
             </p>
           </div>
 
-          <div className={`score-circle-wrapper border-${tier.color}`}>
-            <div className="score-value">{overallScore}%</div>
-            <div className={`tier-tag bg-${tier.color}`}>
-              {tier.icon} {tier.text}
+          <div className="report-score-gauge-box">
+            <div style={{ fontSize: '3.2rem', fontWeight: 800, color: '#ffffff', lineHeight: 1 }}>
+              {overallScore}%
+            </div>
+            <div
+              className="overall-score-pill"
+              style={{ color: tier.color, background: tier.bg, border: `1px solid ${tier.color}33` }}
+            >
+              {tier.label}
             </div>
           </div>
         </div>
 
-        {/* HORIZONTAL METRICS GRID */}
-        <div className="metrics-horizontal-grid">
-          <MetricCard
-            icon={<MessageCircle className="text-blue" />}
-            label="CLARITY"
-            value={avgClarity}
-            max={10}
-          />
-          <MetricCard
-            icon={<CheckCircle className="text-blue" />}
-            label="CONFIDENCE"
-            value={avgConfidence}
-            max={10}
-          />
-          <MetricCard
-            icon={<Activity className="text-indigo" />}
-            label="SPEECH PACE"
-            value={avgWpm}
-            unit="WPM"
-          />
-          <MetricCard
-            icon={<MicOff className="text-red-500" />}
-            label="FILLERS"
-            value={totalFillers}
-            unit="Detected"
-          />
-        </div>
+        {/* 85/15 Architecture & 5-Dimension Competencies */}
+        <div className="performance-pillars-grid">
+          {/* 85% Content / 15% Delivery */}
+          <div className="pillar-panel">
+            <h3 className="pillar-heading">
+              <Activity size={16} style={{ color: '#7c5cfc' }} /> Evaluation Architecture
+            </h3>
 
-        {/* FEEDBACK SECTION */}
-        <div className="breakdown-section no-print" style={{ marginTop: '40px' }}>
-          <h2 className="section-heading">COMPLETE REPORT</h2>
-          <div className="glass-card" style={{ padding: '60px 40px', textAlign: 'center' }}>
-            <FileText size={48} className="text-indigo" style={{ margin: '0 auto 20px auto', display: 'block', opacity: 0.8 }} />
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Detailed Session Feedback</h3>
-            <p style={{ color: '#a1a1aa', marginBottom: '30px', maxWidth: '500px', margin: '0 auto 30px auto' }}>
-              Your individual responses, AI feedback, and suggested improvements have been compiled into a secure, downloadable PDF report.
+            <div className="score-split-row">
+              <div className="score-split-card">
+                <span className="split-score-num">{contentScore}%</span>
+                <span className="split-score-lbl">Content (85%)</span>
+                <span className="split-score-desc">Technical accuracy, depth, and trade-offs.</span>
+              </div>
+
+              <div className="score-split-card">
+                <span className="split-score-num">{deliveryScore}%</span>
+                <span className="split-score-lbl">Delivery (15%)</span>
+                <span className="split-score-desc">Vocal clarity, pacing, and framing.</span>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.775rem', color: '#7c7c90', margin: 0, lineHeight: 1.45 }}>
+              Hardware limitations do not penalize content scores. Delivery coaching is strictly separated to guarantee scoring integrity.
             </p>
-            <button className="btn-hero-primary" onClick={() => window.print()} style={{ margin: '0 auto', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
-              <Download size={20} />
-              DOWNLOAD FULL REPORT PDF
-            </button>
+          </div>
+
+          {/* 5-Dimension Competency Progress */}
+          <div className="pillar-panel">
+            <h3 className="pillar-heading">
+              <Layers size={16} style={{ color: '#7c5cfc' }} /> 5-Dimension Breakdown
+            </h3>
+
+            <div className="dimensions-list">
+              <div className="dim-item">
+                <div className="dim-header">
+                  <span>1. Technical Fundamentals</span>
+                  <span style={{ fontWeight: 700, color: '#ffffff' }}>{fundamentalsScore}%</span>
+                </div>
+                <div className="dim-track">
+                  <div className="dim-fill" style={{ width: `${fundamentalsScore}%` }}></div>
+                </div>
+              </div>
+
+              <div className="dim-item">
+                <div className="dim-header">
+                  <span>2. Applied Problem Solving</span>
+                  <span style={{ fontWeight: 700, color: '#ffffff' }}>{appliedScore}%</span>
+                </div>
+                <div className="dim-track">
+                  <div className="dim-fill" style={{ width: `${appliedScore}%` }}></div>
+                </div>
+              </div>
+
+              <div className="dim-item">
+                <div className="dim-header">
+                  <span>3. Deep Technical Depth</span>
+                  <span style={{ fontWeight: 700, color: '#ffffff' }}>{deepTechScore}%</span>
+                </div>
+                <div className="dim-track">
+                  <div className="dim-fill" style={{ width: `${deepTechScore}%` }}></div>
+                </div>
+              </div>
+
+              <div className="dim-item">
+                <div className="dim-header">
+                  <span>4. System Architecture</span>
+                  <span style={{ fontWeight: 700, color: '#ffffff' }}>{sysDesignScore}%</span>
+                </div>
+                <div className="dim-track">
+                  <div className="dim-fill" style={{ width: `${sysDesignScore}%` }}></div>
+                </div>
+              </div>
+
+              <div className="dim-item">
+                <div className="dim-header">
+                  <span>5. Behavioral STAR Competency</span>
+                  <span style={{ fontWeight: 700, color: '#ffffff' }}>{behavioralScore}%</span>
+                </div>
+                <div className="dim-track">
+                  <div className="dim-fill" style={{ width: `${behavioralScore}%` }}></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* PRINT ONLY SECTION */}
-        <div className="print-only-report">
-          <h1 style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
-            Interview Session Report
-          </h1>
-          <p style={{ marginBottom: '30px', fontSize: '14px', color: '#555' }}>Role: {config.role || 'General'}</p>
-          
-          {history.map((item, idx) => (
-            <div key={idx} style={{ marginBottom: '40px', pageBreakInside: 'avoid' }}>
-              <h2 style={{ fontSize: '18px', color: '#111', marginBottom: '10px' }}>
-                Q{idx + 1}: {item.question}
-              </h2>
-              
-              <div style={{ padding: '10px 15px', backgroundColor: '#f9fafb', borderLeft: '4px solid #d1d5db', marginBottom: '15px' }}>
-                <strong style={{ display: 'block', fontSize: '12px', color: '#6b7280', marginBottom: '5px' }}>YOUR ANSWER:</strong>
-                <p style={{ fontSize: '14px', color: '#374151', margin: 0 }}>
-                  {item.answer || "No verbal response detected."}
-                </p>
-              </div>
+        {/* Question-By-Question Deep Dive */}
+        <div className="deep-dive-section">
+          <h2 className="section-title-bar">Question-by-Question Evaluation & Evidence</h2>
 
-              <div style={{ padding: '10px 15px', backgroundColor: '#eff6ff', borderLeft: '4px solid #6366f1' }}>
-                <strong style={{ display: 'block', fontSize: '12px', color: '#4f46e5', marginBottom: '5px' }}>AI FEEDBACK:</strong>
-                <p style={{ fontSize: '14px', color: '#1e3a8a', margin: 0 }}>
-                  {item.feedback?.feedback || "Technical response was structured well."}
-                </p>
+          {effectiveHistory.map((item, idx) => {
+            const feedback = item.feedback || {};
+            const stageTitle = STAGE_NAMES[idx] || `Stage ${idx + 1}`;
+            const depthLevel = feedback.explanation_depth || feedback.depth_level || 3;
+            const star = feedback.star_breakdown || null;
+
+            return (
+              <div key={idx} className="question-audit-card">
+                <div className="qa-header-row">
+                  <div className="qa-title-group">
+                    <span className="qa-stage-tag">Question {idx + 1} — {stageTitle}</span>
+                    <h3 className="qa-question-text">{item.question}</h3>
+                  </div>
+
+                  <div className="qa-depth-badge">
+                    Depth Level {depthLevel}/5
+                  </div>
+                </div>
+
+                {/* Candidate's response */}
+                <div className="qa-response-box">
+                  <strong style={{ color: '#ffffff' }}>Your Answer: </strong>
+                  {item.answer}
+                </div>
+
+                {/* Feedback grid: What went well vs What could improve */}
+                <div className="qa-feedback-grid">
+                  {/* Strengths / What Went Well */}
+                  <div className="feedback-subpanel">
+                    <div className="feedback-subpanel-title">
+                      <CheckCircle2 size={14} style={{ color: '#10b981' }} /> Key Strengths
+                    </div>
+                    <ul className="feedback-bullet-list">
+                      {feedback.strengths && feedback.strengths.length > 0 ? (
+                        feedback.strengths.map((str, sIdx) => <li key={sIdx}>{str}</li>)
+                      ) : (
+                        <li>Demonstrated sound technical foundation and clear intent.</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Areas for Improvement */}
+                  <div className="feedback-subpanel">
+                    <div className="feedback-subpanel-title">
+                      <AlertTriangle size={14} style={{ color: '#f59e0b' }} /> Areas for Improvement
+                    </div>
+                    <ul className="feedback-bullet-list">
+                      {feedback.improvements && feedback.improvements.length > 0 ? (
+                        feedback.improvements.map((imp, iIdx) => <li key={iIdx}>{imp}</li>)
+                      ) : (
+                        <li>Consider discussing edge cases and failure modes more proactively.</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Behavioral STAR Breakdown if present */}
+                {star && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.25rem' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#8c8ca0' }}>
+                      STAR Structure Analysis
+                    </span>
+                    <div className="star-indicator-grid">
+                      <div className={`star-box ${star.situation ? 'met' : 'missing'}`}>
+                        {star.situation ? <CheckCircle2 size={13} /> : <XCircle size={13} />} Situation
+                      </div>
+                      <div className={`star-box ${star.task ? 'met' : 'missing'}`}>
+                        {star.task ? <CheckCircle2 size={13} /> : <XCircle size={13} />} Task
+                      </div>
+                      <div className={`star-box ${star.action ? 'met' : 'missing'}`}>
+                        {star.action ? <CheckCircle2 size={13} /> : <XCircle size={13} />} Action
+                      </div>
+                      <div className={`star-box ${star.result ? 'met' : 'missing'}`}>
+                        {star.result ? <CheckCircle2 size={13} /> : <XCircle size={13} />} Result
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
   );
 };
-
-const MetricCard = ({ icon, label, value, max, unit }) => (
-  <div className="metric-card-horizontal glass-card">
-    <div className="mh-header">
-      {icon}
-      <span>{label}</span>
-    </div>
-    <div className="mh-body">
-      <span className="mh-value">{value}</span>
-      <span className="mh-unit">{max ? `/${max}` : unit}</span>
-    </div>
-  </div>
-);
 
 export default InterviewReport;

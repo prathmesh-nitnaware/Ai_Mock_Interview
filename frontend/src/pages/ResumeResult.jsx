@@ -1,189 +1,134 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { 
-  CheckCircle2, ArrowRight, RefreshCw, 
-  Sparkles, AlertTriangle, FileSearch, Zap, XCircle
+import {
+  CheckCircle2,
+  ArrowRight,
+  RefreshCw,
+  Sparkles,
+  AlertTriangle,
+  FileSearch,
+  Zap,
+  XCircle,
+  FileText,
+  Target,
+  Layers,
 } from 'lucide-react';
-import Button from '../components/ui/Button';
-import '../styles/theme.css';
 import './ResumeResult.css';
 
 const ResumeResult = () => {
   const location = useLocation();
-  
-  // Extract the data passed from the Upload page
+
   const results = location.state?.results || null;
   const jobRole = location.state?.job_role || 'Target Role';
 
-  // Dynamic UI Helper based on the 0-100 score
-  const getScoreTier = (score) => {
-    if (score >= 80) return { color: 'success', text: 'Highly Optimized', glow: 'glow-success' };
-    if (score >= 60) return { color: 'warning', text: 'Needs Refinement', glow: 'glow-warning' };
-    return { color: 'danger', text: 'Critical Gaps Detected', glow: 'glow-danger' };
-  };
-
-  // If no data is present (e.g., direct URL access), show empty state
   if (!results) {
     return (
-      <div className="result-empty page-container fade-in-up">
-        <FileSearch size={48} className="text-muted mb-4" />
-        <h1 className="empty-title">No Audit Data Found</h1>
-        <p className="empty-desc">Please upload your resume to generate an AI match report.</p>
-        <Link to="/resume/upload">
-          <Button variant="primary" className="mt-6">Go to Upload</Button>
-        </Link>
+      <div className="resume-result-page" style={{ alignItems: 'center' }}>
+        <div className="result-header-card" style={{ maxWidth: '500px', margin: '4rem auto', flexDirection: 'column', textAlign: 'center' }}>
+          <FileSearch size={40} style={{ color: '#8c8ca0', margin: '0 auto' }} />
+          <h2 style={{ fontSize: '1.25rem', color: '#ffffff', margin: 0 }}>No Resume Audit Data Found</h2>
+          <p style={{ fontSize: '0.875rem', color: '#8c8ca0', margin: 0 }}>
+            Upload your resume PDF to run a full ATS match analysis against your target placement role.
+          </p>
+          <Link to="/resume/upload" className="btn-dash-primary" style={{ marginTop: '0.5rem' }}>
+            Go to Resume Upload
+          </Link>
+        </div>
       </div>
     );
   }
 
-  const tier = getScoreTier(results.score);
+  const score = results.score || 0;
+  const isGood = score >= 80;
+  const isFair = score >= 60 && score < 80;
+
+  const badgeType = isGood ? 'success' : isFair ? 'warning' : 'danger';
+  const badgeText = isGood ? 'Strong Match' : isFair ? 'Moderate Match' : 'Action Required';
 
   return (
-    <div className="result-root page-container">
-      
-      {/* Ambient Background Glow based on score performance */}
-      <div className={`ambient-glow-resume ${tier.glow}`}></div>
-      
-      {/* HEADER */}
-      <div className="result-header fade-in-up">
-        <div className="brand-pill">
-            <Sparkles size={14} className="text-indigo" />
-            <span>AI ATS DIAGNOSTIC</span>
-        </div>
-        <h1 className="result-title">Audit Report: {jobRole}</h1>
-      </div>
-
-      <div className="report-grid fade-in-up delay-100">
-        
-        {/* SCORE SECTION (Left Column) */}
-        <div className={`glass-panel score-section border-${tier.color}`}>
-          <div className="score-header">
-            <h3 className="panel-heading">Match Accuracy</h3>
-          </div>
-          
-          <div className="score-circle-wrapper">
-            <div className={`score-circle text-${tier.color}`}>
-              <span className="score-huge">{results.score}</span>
-              <span className="score-max">/100</span>
+    <div className="resume-result-page">
+      <div className="resume-result-container">
+        {/* Header Card */}
+        <div className="result-header-card">
+          <div className="result-header-left">
+            <div className="result-role-tag">
+              <Target size={12} /> {jobRole}
             </div>
-          </div>
-          
-          <div className={`verdict-badge bg-${tier.color}`}>
-            {tier.text}
+            <h1 className="result-title">Resume ATS Match Report</h1>
           </div>
 
-          <p className="score-meta mt-4 text-center text-xs text-muted">
-            Analyzed via Ollama Deep-Parse Engine
-          </p>
-
-          <div className="score-actions mt-6">
-            <Link to="/resume/upload" className="w-full">
-              <Button variant="secondary" className="btn-glass-outline w-full">
-                <RefreshCw size={14} /> RE-SCAN RESUME
-              </Button>
-            </Link>
-          </div>
+          <Link to="/resume/upload" className="btn-dash-outline">
+            <RefreshCw size={13} /> Re-scan Another Resume
+          </Link>
         </div>
 
-        {/* DETAILS SECTION (Right Column) */}
-        <div className="details-grid">
-          
-          {/* AI Summary Card */}
-          <div className="glass-panel full-width">
-            <div className="panel-header-flex">
-              <Zap size={18} className="text-indigo" />
-              <h3 className="panel-heading">Executive Summary</h3>
+        {/* 2-Column Grid */}
+        <div className="result-grid-layout">
+          {/* Score Column */}
+          <div className="score-overview-card">
+            <span style={{ fontSize: '0.775rem', fontWeight: 600, textTransform: 'uppercase', color: '#8c8ca0', letterSpacing: '0.04em' }}>
+              Overall ATS Match
+            </span>
+
+            <div style={{ fontSize: '3rem', fontWeight: 800, color: '#ffffff', lineHeight: 1 }}>
+              {score}%
             </div>
-            <p className="summary-text text-muted">
-              {results.summary}
+
+            <div className={`score-badge-pill ${badgeType}`}>
+              {badgeText}
+            </div>
+
+            <p style={{ fontSize: '0.8rem', color: '#7c7c90', margin: '0.5rem 0 0 0', lineHeight: 1.4 }}>
+              Calibrated against standard technical job requirements for {jobRole}.
             </p>
           </div>
 
-          {/* Core Strengths Card */}
-          {results.strengths && results.strengths.length > 0 && (
-            <div className="glass-panel">
-              <div className="panel-header-flex">
-                <CheckCircle2 size={18} className="text-success" />
-                <h3 className="panel-heading">Core Strengths</h3>
+          {/* Details Column */}
+          <div className="details-column">
+            {/* Executive Summary */}
+            {results.summary && (
+              <div className="result-panel">
+                <h3 className="result-panel-heading">
+                  <Zap size={15} className="result-panel-heading-icon" /> Executive Summary
+                </h3>
+                <p style={{ fontSize: '0.875rem', color: '#b4b4c8', lineHeight: 1.6, margin: 0 }}>
+                  {results.summary}
+                </p>
               </div>
-              <ul className="list-glass success">
-                {results.strengths.map((strength, i) => (
-                  <li key={i}>
-                    <CheckCircle2 size={16} />
-                    <span>{strength}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+            )}
 
-          {/* Areas for Growth Card */}
-          {results.weaknesses && results.weaknesses.length > 0 && (
-            <div className="glass-panel">
-              <div className="panel-header-flex">
-                <AlertTriangle size={18} className="text-danger" />
-                <h3 className="panel-heading">Critical Weaknesses</h3>
-              </div>
-              <ul className="list-glass danger">
-                {results.weaknesses.map((weakness, i) => (
-                  <li key={i}>
-                    <XCircle size={16} />
-                    <span>{weakness}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Missing Keywords Card */}
-          {results.missing_keywords && results.missing_keywords.length > 0 && (
-            <div className="glass-panel full-width">
-              <div className="panel-header-flex">
-                <FileSearch size={18} className="text-warning" />
-                <h3 className="panel-heading">Missing Keywords</h3>
-              </div>
-              <div className="tags-container mt-4">
-                {results.missing_keywords.map((keyword, i) => (
-                  <span key={i} className="danger-pill">{keyword}</span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Improvement Tips Card */}
-          <div className="glass-panel full-width">
-            <div className="panel-header-flex">
-              <AlertTriangle size={18} className="text-warning" />
-              <h3 className="panel-heading">Optimization Strategy</h3>
-            </div>
-            <div className="suggestions-list">
-              {results.improvement_tips?.map((tip, i) => (
-                <div key={i} className="suggestion-row">
-                  <ArrowRight size={16} className="text-indigo shrink-0" />
-                  <span>{tip}</span>
+            {/* Extracted Skills */}
+            {results.skills && results.skills.length > 0 && (
+              <div className="result-panel">
+                <h3 className="result-panel-heading">
+                  <CheckCircle2 size={15} style={{ color: '#10b981' }} /> Verified Skills Detected ({results.skills.length})
+                </h3>
+                <div className="skills-tags-wrap">
+                  {results.skills.map((skill, idx) => (
+                    <span key={idx} className="skill-tag">
+                      {skill}
+                    </span>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            )}
 
-          {/* CTA: Next Step - Interview */}
-          <div className="glass-panel full-width highlight-panel">
-             <div className="cta-content-flex">
-                <div className="cta-text">
-                  <h3 className="panel-heading">Next Phase: Simulation</h3>
-                  <p className="text-muted text-sm">Practice an AI interview based on your parsed resume content.</p>
+            {/* Missing Skills */}
+            {results.missing_skills && results.missing_skills.length > 0 && (
+              <div className="result-panel">
+                <h3 className="result-panel-heading">
+                  <AlertTriangle size={15} style={{ color: '#f59e0b' }} /> Recommended Keywords to Add ({results.missing_skills.length})
+                </h3>
+                <div className="skills-tags-wrap">
+                  {results.missing_skills.map((skill, idx) => (
+                    <span key={idx} className="missing-tag">
+                      + {skill}
+                    </span>
+                  ))}
                 </div>
-                <Link 
-                  to="/interview/setup" 
-                  state={{ resume_text: results.extracted_text }}
-                >
-                  <Button variant="primary" className="btn-glow-indigo">
-                    Start Mock Interview <CheckCircle2 size={16} className="ml-2" />
-                  </Button>
-                </Link>
-             </div>
+              </div>
+            )}
           </div>
-
         </div>
       </div>
     </div>

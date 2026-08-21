@@ -1,13 +1,13 @@
 flask
 flask-cors
-pymongo
 python-dotenv
 gunicorn
-dnspython
 pyjwt
 werkzeug
 google-genai
 pymupdf
 ollama
 flask-sock
-requests
+requests
+psycopg2-binary
+certifi

@@ -25,7 +25,7 @@ const InputField = ({
         
         <input
           id={name}
-          className={`neon-input ${icon ? 'has-icon' : ''}`}
+          className={`input ${icon ? 'has-icon' : ''} ${className}`}
           type={type}
           name={name}
           value={value}

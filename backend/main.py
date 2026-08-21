@@ -4,23 +4,35 @@ from flask_cors import CORS
 from app.controllers.interview_socket import sock
 from routes import register_routes
 from config import Config
+from utils.middleware import register_request_logger, get_metrics
+from extensions import init_db
 
-# Allowed frontend origins
-ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
-    "https://prep-ai-smoky-five.vercel.app",  # Production Vercel frontend
-]
+# Environment-aware allowed frontend origins
+is_production = os.getenv("ENVIRONMENT", "development").lower() == "production"
+
+if is_production:
+    ALLOWED_ORIGINS = []
+    frontend_url = os.getenv("FRONTEND_URL")
+    if frontend_url:
+        ALLOWED_ORIGINS.append(frontend_url.rstrip("/"))
+    # Include localhost for local docker verification
+    ALLOWED_ORIGINS.extend(["http://localhost", "http://127.0.0.1"])
+else:
+    ALLOWED_ORIGINS = [
+        "http://localhost",
+        "http://127.0.0.1",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "https://prep-ai-smoky-five.vercel.app",
+    ]
+    frontend_url = os.getenv("FRONTEND_URL")
+    if frontend_url and frontend_url.rstrip("/") not in ALLOWED_ORIGINS:
+        ALLOWED_ORIGINS.append(frontend_url.rstrip("/"))
 
 def create_app():
     app = Flask(__name__)
-
-    # Add any extra origin from env variable
-    frontend_url = os.getenv("FRONTEND_URL")
-    if frontend_url and frontend_url not in ALLOWED_ORIGINS:
-        ALLOWED_ORIGINS.append(frontend_url.rstrip("/"))
 
     # Primary CORS setup via flask-cors
     CORS(
@@ -58,12 +70,38 @@ def create_app():
     # Initialize WebSockets
     sock.init_app(app)
 
+    # Register structured request logger
+    register_request_logger(app)
+
+    # Initialize Neon PostgreSQL schema (idempotent)
+    init_db()
+
     # Register existing routes (Legacy support)
     register_routes(app)
 
     @app.route("/api/health")
     def health():
         return {"status": "production-ready", "ai": "active"}
+
+    @app.route("/api/metrics")
+    def metrics():
+        """Internal metrics endpoint — cache stats, rate limiter state."""
+        return jsonify(get_metrics())
+
+    @app.route("/api/lb-test")
+    @app.route("/lb-test")
+    def lb_test():
+        """Diagnostic endpoint to verify load balancer routing across nodes."""
+        import socket
+        node_id = os.getenv("NODE_ID", socket.gethostname())
+        hostname = socket.gethostname()
+        resp = jsonify({
+            "status": "ok",
+            "backend": node_id,
+            "hostname": hostname
+        })
+        resp.headers["X-Backend-Node"] = node_id
+        return resp, 200
 
     return app
 

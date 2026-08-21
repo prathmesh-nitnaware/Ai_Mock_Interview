@@ -33,7 +33,13 @@ def send_email_async(app_config, to_email, subject, body):
         return False
 
 def send_verification_email(to_email, token):
-    """Sends an email with a verification link."""
+    """
+    Sends a verification email if EMAIL_VERIFICATION_ENABLED is True in Config.
+    In the current general deployment, EMAIL_VERIFICATION_ENABLED defaults to False.
+    """
+    if not getattr(Config, "EMAIL_VERIFICATION_ENABLED", False):
+        return False
+
     verify_url = f"{Config.FRONTEND_URL}/verify-email?token={token}"
     subject = "Verify Your Prep AI Account"
     body = f"""
@@ -46,10 +52,9 @@ def send_verification_email(to_email, token):
         </body>
     </html>
     """
-    
-    # Run in a separate thread so it doesn't block the request
     thread = threading.Thread(target=send_email_async, args=(Config, to_email, subject, body))
     thread.start()
+    return True
 
 def send_password_reset_email(to_email, token):
     """Sends an email with a password reset link."""

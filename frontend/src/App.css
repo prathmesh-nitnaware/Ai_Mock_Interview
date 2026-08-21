@@ -4,6 +4,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-base);
-  color: var(--text-primary);
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
 }

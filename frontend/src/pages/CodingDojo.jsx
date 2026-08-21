@@ -154,7 +154,6 @@ const CodingDojo = () => {
   if (view === 'selection') {
     return (
       <div className="dojo-root selection-view fade-in">
-        <div className="ambient-glow-dojo"></div>
         <div className="selection-header">
            <div className="brand-pill-light"><Code size={14}/> CODING_DOJO</div>
 
@@ -293,7 +292,8 @@ const CodingDojo = () => {
         </div>
         <div className="solver-actions-top" style={{ display: 'flex', gap: '12px' }}>
            <button 
-              className="run-btn-secondary" 
+              className="btn btn-secondary" 
+              style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-small)' }}
               onClick={() => handleExecute('run')} 
               disabled={submitting}
            >
@@ -301,7 +301,8 @@ const CodingDojo = () => {
               {submitting && actionType === 'run' ? "CHECKING..." : "RUN CODE"}
            </button>
            <button 
-              className="run-btn-main" 
+              className="btn btn-primary" 
+              style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-small)' }}
               onClick={() => handleExecute('submit')} 
               disabled={submitting}
            >
