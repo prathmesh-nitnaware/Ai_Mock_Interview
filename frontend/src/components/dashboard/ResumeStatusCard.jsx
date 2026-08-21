@@ -51,13 +51,13 @@ export const ResumeStatusCard = ({ resumeName, isUploading, onUpload }) => {
       ) : (
         <div className="resume-empty-box">
           <p className="resume-empty-prompt">
-            Upload your latest resume to personalize your interview questions and enable AI skill validation.
+            Resume not uploaded yet. Your interviews are personalized from your profile and preferences. Upload a resume anytime to enable resume-grounded skill verification.
           </p>
 
           <div className="resume-upload-cta">
             <label className="btn-dash-primary btn-sm">
               <UploadCloud size={14} />
-              <span>{isUploading ? 'Uploading...' : 'Upload PDF Resume'}</span>
+              <span>{isUploading ? 'Uploading...' : 'Upload PDF Resume (Optional)'}</span>
               <input
                 type="file"
                 hidden

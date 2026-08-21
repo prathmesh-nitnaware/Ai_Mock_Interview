@@ -37,6 +37,7 @@ from .schemas import (
     validate_resume_analysis,
 )
 from .exceptions import AIServiceError
+from models.user_model import get_user_by_id
 
 logger = logging.getLogger(__name__)
 
@@ -625,6 +626,18 @@ class InterviewOrchestrator:
         Creates an interview session with structured strategy and initial questions.
         Stores strategy, interview_state, and initial question set in Neon PostgreSQL.
         """
+        candidate_profile = {}
+        if user_id:
+            user_rec = get_user_by_id(user_id) or {}
+            candidate_profile = {
+                "education": user_rec.get("education", ""),
+                "current_job": user_rec.get("current_job", ""),
+                "target_job": user_rec.get("target_job", ""),
+                "bio": user_rec.get("bio", ""),
+            }
+            if not resume_ctx and user_rec.get("resume_text"):
+                resume_ctx = user_rec.get("resume_text", "")
+
         strategy = generate_interview_strategy(
             role=role,
             experience=experience,
@@ -667,6 +680,7 @@ class InterviewOrchestrator:
             difficulty=difficulty,
             resume_ctx=resume_ctx,
             count=question_count,
+            candidate_profile=candidate_profile,
         )
 
         try:
@@ -1255,6 +1269,16 @@ class InterviewOrchestrator:
                         topic_probes[prev_topic_key] = current_probes + 1
                 state["topic_probe_counts"] = topic_probes
 
+                candidate_profile = {}
+                if user_id:
+                    user_rec = get_user_by_id(user_id) or {}
+                    candidate_profile = {
+                        "education": user_rec.get("education", ""),
+                        "current_job": user_rec.get("current_job", ""),
+                        "target_job": user_rec.get("target_job", ""),
+                        "bio": user_rec.get("bio", ""),
+                    }
+
                 prompt = build_adaptive_next_question_prompt(
                     role=row.get("role", "Software Engineer"),
                     experience=row.get("experience", "Mid-Level"),
@@ -1272,6 +1296,7 @@ class InterviewOrchestrator:
                     validated_skills=state.get("validated_skills", []),
                     technical_gaps=state.get("technical_gaps", []),
                     technical_strengths=state.get("technical_strengths", []),
+                    candidate_profile=candidate_profile,
                 )
 
                 try:

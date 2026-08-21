@@ -173,11 +173,23 @@ const Interview = () => {
             <FileText size={18} style={{ color: resumeName ? '#10b981' : '#8c8ca0', flexShrink: 0 }} />
             <div>
               {resumeName ? (
-                <div style={{ color: '#ffffff', fontWeight: 600 }}>
-                  Resume Synced ({resumeName})
-                </div>
+                <>
+                  <div style={{ color: '#ffffff', fontWeight: 600 }}>
+                    Resume Synced: {resumeName}
+                  </div>
+                  <div style={{ color: '#8c8ca0', fontSize: '0.75rem', marginTop: '2px' }}>
+                    Skills and projects from your resume will be actively tested.
+                  </div>
+                </>
               ) : (
-                <div style={{ color: '#8c8ca0' }}>No resume synced (General questions will be used)</div>
+                <>
+                  <div style={{ color: '#d1d1e0', fontWeight: 600 }}>
+                    Resume Not Uploaded (Optional)
+                  </div>
+                  <div style={{ color: '#8c8ca0', fontSize: '0.75rem', marginTop: '2px' }}>
+                    PrepAI will personalize your interview from your profile, skills and preferences.
+                  </div>
+                </>
               )}
             </div>
           </div>

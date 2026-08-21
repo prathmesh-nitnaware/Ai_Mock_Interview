@@ -75,13 +75,15 @@ def upload_resume(current_user):
 @token_required
 def get_resume(current_user):
     user = get_user_by_id(str(current_user["id"]))
-    if not user or not user.get("resume_data"):
-        return jsonify({"error": "No resume found"}), 404
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
+    has_resume = bool(user.get("resume_data"))
     return jsonify({
-        "resume_filename": user.get("resume_filename"),
-        "resume_data":     user.get("resume_data"),
-        "resume_text":     user.get("resume_text", ""),
+        "has_resume":      has_resume,
+        "resume_filename": user.get("resume_filename") if has_resume else None,
+        "resume_data":     user.get("resume_data") if has_resume else None,
+        "resume_text":     user.get("resume_text", "") if has_resume else "",
     }), 200
 
 

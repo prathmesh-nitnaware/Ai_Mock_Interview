@@ -178,13 +178,17 @@ def get_current_user():
 
         return jsonify({
             "user": {
-                "id": str(user.get("id")),
-                "email": email,
-                "name": user.get("name", email.split("@")[0]),
-                "role": user.get("role", "candidate"),
-                "is_verified": user.get("is_verified", False),
-                "email_verified": user.get("email_verified", user.get("is_verified", False)),
+                "id":                   str(user.get("id")),
+                "email":                email,
+                "name":                 user.get("name", email.split("@")[0]),
+                "role":                 user.get("role", "candidate"),
+                "is_verified":          user.get("is_verified", False),
+                "email_verified":       user.get("email_verified", user.get("is_verified", False)),
                 "onboarding_completed": user.get("onboarding_completed", False),
+                "education":            user.get("education", ""),
+                "current_job":          user.get("current_job", ""),
+                "target_job":           user.get("target_job", ""),
+                "bio":                  user.get("bio", ""),
             }
         }), 200
     except jwt.ExpiredSignatureError:

@@ -43,8 +43,16 @@ def _row_to_dict(row: dict) -> dict:
 def get_resume_context(current_user):
     user = get_user_by_id(str(current_user["id"]))
     if user and user.get("resume_text"):
-        return jsonify({"resume_text": user["resume_text"]}), 200
-    return jsonify({"resume_text": ""}), 200
+        return jsonify({
+            "has_resume": True,
+            "resume_text": user["resume_text"],
+            "resume_filename": user.get("resume_filename")
+        }), 200
+    return jsonify({
+        "has_resume": False,
+        "resume_text": "",
+        "resume_filename": None
+    }), 200
 
 
 # ── INITIATE SESSION ────────────────────────────────────────
@@ -62,7 +70,7 @@ def initiate_session(current_user):
         focus = str(data.get("focus", "General"))[:100]
         difficulty = str(data.get("difficulty", "Medium"))[:50]
         resume_ctx = str(data.get("resume_context", ""))[:2000]
-        question_count = min(15, max(3, int(data.get("question_count", 5))))
+        question_count = min(15, max(3, int(data.get("question_count", data.get("intensity", 5)))))
 
         session, questions = orchestrator.initiate_interview(
             user_id=str(current_user["id"]),
@@ -74,9 +82,13 @@ def initiate_session(current_user):
             question_count=question_count,
         )
 
+        first_q = questions[0] if questions else {}
+
         return jsonify({
             "session": session,
-            "first_question": questions[0] if questions else {}
+            "session_id": session.get("id"),
+            "question": first_q,
+            "first_question": first_q
         }), 200
 
     except Exception as e:

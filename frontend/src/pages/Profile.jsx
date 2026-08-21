@@ -287,9 +287,9 @@ const Profile = () => {
                   </>
                 ) : (
                   <>
-                    <div className="vault-file-name" style={{ color: '#8c8ca0' }}>No resume uploaded</div>
+                    <div className="vault-file-name" style={{ color: '#8c8ca0' }}>No resume uploaded (Optional)</div>
                     <p className="vault-file-desc">
-                      Upload a PDF to allow the AI interviewer to validate your claimed skills and experience.
+                      Resume upload is optional. Interviews are personalized from your profile and preferences, or upload a PDF to enable resume-grounded skill probing.
                     </p>
                   </>
                 )}
