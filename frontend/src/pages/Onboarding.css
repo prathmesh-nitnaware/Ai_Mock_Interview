@@ -1,71 +1,306 @@
-/* =========================================
-   ONBOARDING CSS
-   Glassmorphism Setup Screen
-   ========================================= */
+/* ============================================================
+   ONBOARDING.CSS — Candidate Profile Setup Workspace
+   Linear / GitHub inspired: Clean, centered, professional setup flow
+   ============================================================ */
 
-.onboarding-root {
-    min-height: 100vh;
-    background-color: #050505;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    position: relative;
-    font-family: 'Inter', system-ui, sans-serif;
+.onboarding-workspace-page {
+  min-height: 100vh;
+  background-color: #0b0b0f;
+  color: #ededf2;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1.5rem 4rem 1.5rem;
 }
 
-.onboarding-container {
-    width: 100%;
-    max-width: 600px;
-    z-index: 10;
-    padding: 3rem;
+/* ── RESTRAINED TOP CHROME HEADER ────────────────────────── */
+.onboarding-chrome-header {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 2.5rem;
 }
 
-.glass-panel-inner {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
+.onboarding-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ffffff;
 }
 
-.glass-panel-inner:focus-within {
-    border-color: rgba(129, 140, 248, 0.4);
-    background: rgba(129, 140, 248, 0.05);
+.onboarding-brand-icon {
+  width: 26px;
+  height: 26px;
+  background: #7c5cfc;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 0.8rem;
 }
 
-.question-label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 600;
-    font-size: 1.05rem;
-    color: #e4e4e7;
+.onboarding-step-counter {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #8c8ca0;
+  background: #16161f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3px 10px;
+  border-radius: 20px;
 }
 
-.input-glass {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 14px 16px;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.2s;
-    outline: none;
+/* ── CENTERED ONBOARDING CONTAINER ───────────────────────── */
+.onboarding-content-container {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
 }
 
-.input-glass:focus {
-    border-color: #818cf8;
-    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+/* ── SEGMENTED PROGRESS STRIP ────────────────────────────── */
+.onboarding-progress-segments {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
 }
 
-.input-glass::placeholder {
-    color: #666;
+.progress-segment {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
+.progress-segment-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: #1c1c28;
+  transition: background-color 0.25s ease;
+}
+
+.progress-segment.active .progress-segment-bar,
+.progress-segment.completed .progress-segment-bar {
+  background: #7c5cfc;
+}
+
+.progress-segment-label {
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: #6a6a7c;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  transition: color 0.25s ease;
+}
+
+.progress-segment.active .progress-segment-label {
+  color: #ededf2;
+}
+
+.progress-segment.completed .progress-segment-label {
+  color: #a78bfa;
+}
+
+/* ── PAGE INTRODUCTION ───────────────────────────────────── */
+.onboarding-intro-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.onboarding-main-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.onboarding-main-desc {
+  font-size: 0.9rem;
+  color: #9494a8;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── QUESTION WORKSPACE PANEL ────────────────────────────── */
+.onboarding-question-panel {
+  background: #121218;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.question-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.question-step-badge {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: #7c5cfc;
+  background: rgba(124, 92, 252, 0.12);
+  border: 1px solid rgba(124, 92, 252, 0.25);
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.question-title-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.question-helper-desc {
+  font-size: 0.85rem;
+  color: #8c8ca0;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* ── FORM FIELD ──────────────────────────────────────────── */
+.onboarding-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.onboarding-input-label {
+  font-size: 0.775rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #a0a0b5;
+}
+
+.onboarding-text-input {
+  width: 100%;
+  height: 48px;
+  background: #16161f;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  padding: 0 1rem;
+  color: #ededf2;
+  font-size: 0.925rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.onboarding-text-input:focus {
+  background: #1a1a24;
+  border-color: #7c5cfc;
+}
+
+.onboarding-input-hint {
+  font-size: 0.775rem;
+  color: #6a6a7c;
+  margin: 0;
+}
+
+/* ── ALERT BANNER ────────────────────────────────────────── */
+.onboarding-error-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.65rem 0.85rem;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── ACTION ROW (NORMAL SIZED BUTTONS) ───────────────────── */
+.onboarding-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.5rem;
+}
+
+.btn-onboarding-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #16161f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.65rem 1.15rem;
+  color: #d1d1e0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-onboarding-back:hover {
+  background: #1e1e2c;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-onboarding-continue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #7c5cfc;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.65rem 1.35rem;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+  min-width: 140px;
+  box-shadow: 0 2px 8px rgba(124, 92, 252, 0.25);
+  margin-left: auto;
+}
+
+.btn-onboarding-continue:hover:not(:disabled) {
+  background: #6d4be2;
+}
+
+.btn-onboarding-continue:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 600px) {
-    .onboarding-container {
-        padding: 2rem 1.5rem;
-    }
+  .onboarding-workspace-page {
+    padding: 1rem 1rem 3rem 1rem;
+  }
+
+  .onboarding-question-panel {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .progress-segment-label {
+    display: none;
+  }
 }
