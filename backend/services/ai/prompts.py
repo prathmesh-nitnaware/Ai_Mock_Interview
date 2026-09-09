@@ -16,18 +16,30 @@ def build_question_generation_prompt(
     resume_ctx: str = "",
     count: int = 5,
     candidate_profile: Optional[Dict[str, Any]] = None,
+    job_description: str = "",
 ) -> str:
     """
     Builds a prompt to generate a structured, question-type-aware initial interview question set.
-    Supports both resume-grounded and resume-optional profile-driven interview modes.
+    Supports Job Description grounding, resume-grounded, and profile-driven modes.
     """
     has_resume = bool(resume_ctx and resume_ctx.strip())
     clean_resume = resume_ctx[:800].strip() if has_resume else ""
+    has_jd = bool(job_description and job_description.strip())
+    clean_jd = job_description[:1200].strip() if has_jd else ""
     
     profile_info = candidate_profile or {}
     education = profile_info.get("education", "")
     current_job = profile_info.get("current_job", "")
     bio = profile_info.get("bio", "")
+
+    jd_block = ""
+    if has_jd:
+        jd_block = f"""Mode: JOB-DESCRIPTION GROUNDED INTERVIEW
+Target Job Description:
+<<<UNTRUSTED_JOB_DESCRIPTION>>>
+{clean_jd}
+<<<END_UNTRUSTED_JOB_DESCRIPTION>>>
+- Grounding Rule: Extract specific technologies, frameworks, system components, and job requirements directly from this Job Description, and ground all generated interview questions in these specific JD requirements."""
 
     if has_resume:
         context_block = f"""Mode: RESUME-GROUNDED INTERVIEW
@@ -56,6 +68,7 @@ Primary Focus Area: {focus}
 Baseline Difficulty: {difficulty}
 Questions Required: {count}
 
+{jd_block}
 {context_block}
 
 Generate exactly {count} realistic, conversational interview questions that test job-readiness.
@@ -109,11 +122,11 @@ def build_adaptive_next_question_prompt(
     technical_gaps: Optional[List[str]] = None,
     technical_strengths: Optional[List[str]] = None,
     candidate_profile: Optional[Dict[str, Any]] = None,
+    job_description: str = "",
 ) -> str:
     """
     Generates a dynamic, adaptive next question responding to candidate's previous response.
-    Explicitly tracks claimed skills / competencies and probes detected weaknesses.
-    Works seamlessly in both resume-grounded and resume-optional modes.
+    Enforces Answer-Chained Follow-Up: next question explicitly references and builds upon candidate's previous answer details.
     """
     prev_q_text = previous_question.get("question", "")
     prev_topic = previous_question.get("topic", "General")
@@ -129,17 +142,19 @@ def build_adaptive_next_question_prompt(
 
     has_resume = bool(resume_ctx and resume_ctx.strip())
     clean_resume = resume_ctx[:600].strip() if has_resume else "None (Profile-driven session)"
+    has_jd = bool(job_description and job_description.strip())
+    clean_jd = job_description[:800].strip() if has_jd else "None"
 
     action_guidance = ""
     target_intent = "test_fundamentals"
     if recommended_action == "probe_deeper" or (prev_score < 60 and missing):
         target_intent = "probe_technical_gap"
         action_guidance = f"""The candidate gave a shallow or flawed response on '{prev_topic}' (missing: {missing or 'working mechanics'}).
-Ask a targeted diagnostic follow-up or clarifying scenario that tests if they understand the underlying mechanism of {prev_topic} or can rectify their approach. (Note: Do not over-probe the same concept if already probed previously)."""
+Ask a targeted diagnostic follow-up that references their answer and tests if they understand the underlying mechanism of {prev_topic} or can rectify their approach."""
     elif recommended_action == "increase_difficulty" or (prev_score >= 85 and prev_depth >= 4):
         target_intent = "increase_difficulty"
         action_guidance = f"""The candidate showed high mastery (Level {prev_depth}/5) on '{prev_topic}'.
-Escalate complexity: Introduce realistic production constraints (e.g. 100k QPS, split-brain network partition, zero-downtime schema migration, latency optimization, distributed race conditions)."""
+Escalate complexity: Introduce realistic production constraints (e.g. 100k QPS, split-brain network partition, zero-downtime schema migration, latency optimization, distributed race conditions) building on their previous response."""
     elif recommended_action == "behavioral" or stage_target == "behavioral":
         target_intent = "behavioral"
         action_guidance = """Transition to a behavioral inquiry. Ask for a concrete past situation involving cross-functional friction, critical production outage ownership, or engineering trade-off negotiation, requiring STAR structure."""
@@ -153,20 +168,17 @@ Formulate a practical engineering scenario to test whether the candidate has gen
         action_guidance = f"""Progress to the next competency stage: '{stage_target}'.
 Ensure the topic is distinct from previously covered areas: [{covered_str}]."""
 
-    resume_instruction = "Ground questions in resume claims." if has_resume else "Personalize questions using candidate profile and observed answers. Do NOT mention 'according to your resume'."
-
     return f"""You are a Principal Engineering Interviewer conducting an active, adaptive interview.
 Role: {role} ({experience})
 Question Number: {current_index + 1} of {total_questions}
 Target Stage: {stage_target.upper()} (Target Difficulty: {target_difficulty}/5)
 
-Candidate Context:
+Candidate & Job Context:
+- Target Job Description: {clean_jd}
 - Resume Context: {clean_resume}
 - Target Skills: [{to_val_str}]
 - Skills Validated: [{val_str}]
 - Topics Already Covered: [{covered_str}]
-- Persistent Gaps Flagged: [{gaps_str}]
-- Guidance: {resume_instruction}
 
 Previous Question: "{prev_q_text}" (Topic: {prev_topic}, Skill: {prev_skill})
 Candidate's Previous Answer:
@@ -175,6 +187,10 @@ Candidate's Previous Answer:
 <<<END_UNTRUSTED_CANDIDATE_ANSWER>>>
 
 Evaluation Summary: Score {prev_score}/100, Depth Level {prev_depth}/5, Errors: {errors}, Missing: {missing}
+
+Mandatory Answer-Chained Follow-Up Rule:
+Extract specific technologies, frameworks, architectural choices, or design details mentioned in the candidate's previous answer above.
+Formulate the next question so that it explicitly references and builds directly upon their previous answer (e.g. "In your previous response, you mentioned [concept/tool]... How would you handle [edge case/scale scenario] when using [concept/tool]?"). This creates a natural, deep-dive conversational interview experience.
 
 Adaptive Interviewer Directive:
 {action_guidance}
@@ -190,7 +206,7 @@ Rules:
 Exact JSON schema:
 {{
   "id": {current_index + 1},
-  "question": "Realistic, adaptive interviewer question",
+  "question": "Realistic, adaptive interviewer question explicitly referencing candidate's previous answer",
   "topic": "Target Topic",
   "skill": "Specific Competency",
   "difficulty": {target_difficulty},

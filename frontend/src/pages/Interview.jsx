@@ -43,6 +43,7 @@ const Interview = () => {
 
   const [formData, setFormData] = useState({
     role: 'Backend Software Engineer',
+    jobDescription: '',
     experience: '0-2 years',
     type: 'Technical',
     difficulty: 'Medium',
@@ -77,6 +78,7 @@ const Interview = () => {
     try {
       const config = {
         role: formData.role,
+        job_description: formData.jobDescription,
         experience: formData.experience,
         focus: formData.type,
         difficulty: formData.difficulty,
@@ -219,6 +221,29 @@ const Interview = () => {
                   Please specify a target role.
                 </span>
               )}
+            </div>
+
+            {/* Target Job Description Input */}
+            <div className="config-group">
+              <label className="config-label" htmlFor="jd-input">
+                Target Job Description (Optional / Grounding)
+              </label>
+              <textarea
+                id="jd-input"
+                name="jobDescription"
+                className="auth-input-field"
+                style={{
+                  paddingLeft: '0.85rem',
+                  minHeight: '85px',
+                  resize: 'vertical',
+                  fontFamily: 'inherit',
+                  fontSize: '0.825rem',
+                  lineHeight: '1.4'
+                }}
+                placeholder="Paste the target Job Description here to ground all interview questions in exact job requirements..."
+                value={formData.jobDescription}
+                onChange={handleChange}
+              />
             </div>
 
             {/* Experience Level */}

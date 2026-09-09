@@ -621,10 +621,11 @@ class InterviewOrchestrator:
         difficulty: str,
         resume_ctx: str = "",
         question_count: int = 5,
+        job_description: str = "",
     ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
         """
         Creates an interview session with structured strategy and initial questions.
-        Stores strategy, interview_state, and initial question set in Neon PostgreSQL.
+        Stores strategy, interview_state, job_description, and initial question set in Neon PostgreSQL.
         """
         candidate_profile = {}
         if user_id:
@@ -681,6 +682,7 @@ class InterviewOrchestrator:
             resume_ctx=resume_ctx,
             count=question_count,
             candidate_profile=candidate_profile,
+            job_description=job_description,
         )
 
         try:
@@ -882,9 +884,9 @@ class InterviewOrchestrator:
                     """
                     INSERT INTO interviews (
                         user_id, role, experience, focus, difficulty, status, questions, answers,
-                        interview_state, strategy, resume_context
+                        interview_state, strategy, resume_context, job_description
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, '[]'::jsonb, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, '[]'::jsonb, %s, %s, %s, %s)
                     RETURNING id, role, experience, focus, difficulty, status, questions, interview_state, strategy, created_at
                     """,
                     (
@@ -898,6 +900,7 @@ class InterviewOrchestrator:
                         json.dumps(initial_state),
                         json.dumps(strategy),
                         resume_ctx or "",
+                        job_description or "",
                     )
                 )
                 row = cur.fetchone()
@@ -1205,7 +1208,7 @@ class InterviewOrchestrator:
                 cur.execute(
                     """
                     SELECT id, role, experience, focus, difficulty, questions, answers,
-                           interview_state, strategy, resume_context
+                           interview_state, strategy, resume_context, job_description
                     FROM interviews
                     WHERE id = %s AND user_id = %s
                     FOR UPDATE
@@ -1297,6 +1300,7 @@ class InterviewOrchestrator:
                     technical_gaps=state.get("technical_gaps", []),
                     technical_strengths=state.get("technical_strengths", []),
                     candidate_profile=candidate_profile,
+                    job_description=row.get("job_description", ""),
                 )
 
                 try:

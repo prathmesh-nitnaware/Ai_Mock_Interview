@@ -70,6 +70,7 @@ def initiate_session(current_user):
         focus = str(data.get("focus", "General"))[:100]
         difficulty = str(data.get("difficulty", "Medium"))[:50]
         resume_ctx = str(data.get("resume_context", ""))[:2000]
+        job_description = str(data.get("job_description", data.get("jd", "")))[:4000]
         question_count = min(15, max(3, int(data.get("question_count", data.get("intensity", 5)))))
 
         session, questions = orchestrator.initiate_interview(
@@ -80,6 +81,7 @@ def initiate_session(current_user):
             difficulty=difficulty,
             resume_ctx=resume_ctx,
             question_count=question_count,
+            job_description=job_description,
         )
 
         first_q = questions[0] if questions else {}
