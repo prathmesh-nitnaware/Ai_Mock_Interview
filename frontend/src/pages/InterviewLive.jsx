@@ -61,6 +61,8 @@ const InterviewLive = () => {
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const recordedChunksRef = useRef([]);
 
   // Timer interval while answering
   useEffect(() => {
@@ -85,6 +87,9 @@ const InterviewLive = () => {
       window.speechSynthesis.cancel();
       defaultVoiceEngine.cleanup();
       defaultCameraEngine.stopSession();
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        try { mediaRecorderRef.current.stop(); } catch(e){}
+      }
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop());
       }
@@ -103,6 +108,24 @@ const InterviewLive = () => {
       }
       setCameraActive(true);
 
+      // Start video/audio recording
+      try {
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+          ? 'video/webm;codecs=vp9'
+          : 'video/webm';
+        const recorder = new MediaRecorder(stream, { mimeType });
+        recordedChunksRef.current = [];
+        recorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            recordedChunksRef.current.push(event.data);
+          }
+        };
+        recorder.start(1000);
+        mediaRecorderRef.current = recorder;
+      } catch (recErr) {
+        console.warn('MediaRecorder initialization warning:', recErr);
+      }
+
       await defaultVoiceEngine.initializeAudioMonitoring(stream);
       await defaultCameraEngine.loadModels('/models');
       if (videoRef.current) {
@@ -111,6 +134,50 @@ const InterviewLive = () => {
     } catch (e) {
       setCameraActive(false);
     }
+  };
+
+  const finishAndProcessRecording = async () => {
+    return new Promise((resolve) => {
+      const recorder = mediaRecorderRef.current;
+      if (!recorder || recorder.state === 'inactive') {
+        resolve(null);
+        return;
+      }
+
+      recorder.onstop = async () => {
+        try {
+          const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+
+          // 1. AUTO DOWNLOAD TO CANDIDATE'S PC
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = `PrepAI_Interview_${sessionId || 'Session'}.webm`;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 1000);
+
+          // 2. UPLOAD TO BACKEND DATABASE / STORAGE
+          if (sessionId) {
+            await api.uploadInterviewRecording(sessionId, blob);
+          }
+          resolve(blob);
+        } catch (err) {
+          console.error('Error saving/downloading recording:', err);
+          resolve(null);
+        }
+      };
+
+      try {
+        recorder.stop();
+      } catch (err) {
+        resolve(null);
+      }
+    });
   };
 
   useEffect(() => {
@@ -196,7 +263,7 @@ const InterviewLive = () => {
 
     try {
       if (questionIndex >= MAX_QUESTIONS) {
-        // Last question: finish evaluation then navigate to final report
+        // Last question: finish evaluation, save & download recording, then navigate to final report
         const evalResponse = await api.submitAnswer(payload);
         const updatedHistory = [
           ...sessionHistory,
@@ -209,6 +276,7 @@ const InterviewLive = () => {
           },
         ];
         setSessionHistory(updatedHistory);
+        await finishAndProcessRecording();
         navigate('/interview/report', {
           state: {
             history: updatedHistory,
@@ -262,6 +330,7 @@ const InterviewLive = () => {
         if (qText) speakText(qText);
       } else {
         // If index target reached or completed
+        await finishAndProcessRecording();
         navigate('/interview/report', {
           state: {
             history: updatedHistory,

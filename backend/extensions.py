@@ -155,6 +155,7 @@ def init_db():
     ALTER TABLE interviews ADD COLUMN IF NOT EXISTS interview_state JSONB DEFAULT '{}';
     ALTER TABLE interviews ADD COLUMN IF NOT EXISTS strategy JSONB DEFAULT '{}';
     ALTER TABLE interviews ADD COLUMN IF NOT EXISTS resume_context TEXT DEFAULT '';
+    ALTER TABLE interviews ADD COLUMN IF NOT EXISTS recording_url TEXT DEFAULT '';
 
     CREATE TABLE IF NOT EXISTS resumes (
         id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
