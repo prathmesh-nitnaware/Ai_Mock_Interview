@@ -106,6 +106,15 @@ export const api = {
     return res.data;
   },
 
+  loginWithGoogle: async (googlePayload) => {
+    const res = await apiClient.post("/api/auth/google", googlePayload);
+    if (res.data.token) {
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+    }
+    return res.data;
+  },
+
   /**
    * RESUME VAULT (Persistent MongoDB Storage)
    * Stores the resume once for use across all AI modules.
@@ -161,6 +170,16 @@ export const api = {
    */
   initiateInterview: async (payload) => {
     const res = await apiClient.post("/api/interview/initiate", payload);
+    return res.data;
+  },
+
+  submitAnswer: async (payload) => {
+    const res = await apiClient.post("/api/interview/submit", payload);
+    return res.data;
+  },
+
+  getNextQuestion: async (payload) => {
+    const res = await apiClient.post("/api/interview/next", payload);
     return res.data;
   },
 

@@ -362,25 +362,35 @@ Exact JSON schema:
 }}"""
 
 
-def build_resume_analysis_prompt(resume_text: str, target_role: str = "") -> str:
-    """Builds prompt for analyzing and scoring a resume."""
-    role_ctx = f"Target Role: {target_role}" if target_role else "Target: General Software Engineering"
-    return f"""You are an expert Technical Recruiter and ATS resume auditor.
-{role_ctx}
+def build_resume_analysis_prompt(resume_text: str, target_role: str = "", job_description: str = "") -> str:
+    """Builds prompt for analyzing and scoring a resume strictly against a Job Description."""
+    jd_block = f"Target Job Description:\n\"\"\"{job_description[:4000]}\"\"\"" if job_description.strip() else f"Target Role: {target_role or 'General Software Engineering'}"
 
-Resume Text:
+    return f"""You are an expert Technical Recruiter, ATS Resume Auditor, and Hiring Manager.
+Your job is to perform an un-biased, strict, and precise ATS match evaluation of a candidate's resume against a specific target Job Description.
+
+{jd_block}
+
+Candidate Resume Text:
 \"\"\"{resume_text[:4000]}\"\"\"
 
+Auditing Guidelines:
+1. Extract all required hard technical skills, tools, frameworks, system design concepts, and qualifications from the target Job Description.
+2. Evaluate the candidate's resume text line-by-line to verify explicit proof of those claimed skills, project impact, and experience.
+3. Calculate an objective ATS match score (0 to 100) based strictly on how many Job Description requirements and key technical concepts are fulfilled by the resume.
+4. Identify specific missing technical keywords, frameworks, or tools present in the Job Description that are absent or under-represented in the candidate's resume.
+5. Provide actionable, non-vague feedback. Highlight exact strengths that directly match the Job Description, and provide concrete instructions for what experiences, metrics, or keywords to add to increase alignment.
+
 Rules:
-- Return ONLY valid JSON.
-- Calculate objective ATS match, formatting score, and keyword density accurately.
+- Return ONLY valid JSON matching the exact schema below.
+- Do NOT generate generic or vague placeholder responses. Ground all strengths, improvements, and missing keywords in the provided Job Description and Resume.
 
 Exact JSON schema:
 {{
-  "ats_score": 82,
-  "summary": "Concise summary of strengths and profile readiness.",
+  "ats_score": 85,
+  "summary": "Detailed, specific evaluation summary comparing candidate skills directly against the target Job Description requirements.",
   "extracted_skills": ["Skill 1", "Skill 2"],
-  "strengths": ["Key strength 1"],
-  "improvements": ["Key improvement 1"],
-  "missing_keywords": ["Keyword 1"]
+  "strengths": ["Direct alignment 1 referencing JD requirement", "Direct alignment 2"],
+  "improvements": ["Specific improvement 1 to better match JD", "Specific improvement 2"],
+  "missing_keywords": ["Specific JD Keyword 1", "Specific JD Keyword 2"]
 }}"""

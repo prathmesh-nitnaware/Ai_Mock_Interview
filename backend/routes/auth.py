@@ -260,3 +260,51 @@ def reset_password():
         return jsonify({"error": "Invalid reset link"}), 400
     except Exception as e:
         return jsonify({"error": "Password reset failed"}), 500
+
+
+@auth_bp.route("/google", methods=["POST"])
+@rate_limit
+def google_auth():
+    """Google OAuth Sign-In / Sign-Up handler."""
+    try:
+        data = request.get_json(silent=True)
+        if data is None:
+            return jsonify({"error": "Missing or malformed JSON body"}), 400
+
+        email = str(data.get("email", "")).strip().lower()
+        name = str(data.get("name", email.split("@")[0])).strip()[:100]
+        google_id = str(data.get("google_id", data.get("sub", "")))
+
+        if not email or not EMAIL_REGEX.match(email):
+            return jsonify({"error": "Valid email is required for Google Sign-In"}), 400
+
+        user = get_user_by_email(email)
+        if not user:
+            # Create user automatically for first-time Google Sign-In
+            placeholder_pw = f"GoogleAuth_{google_id or 'oauth'}_{datetime.now().timestamp()}"
+            create_user(name, email, placeholder_pw)
+            verify_user(email)
+            user = get_user_by_email(email)
+
+        # Issue access token
+        token = jwt.encode({
+            "email": email,
+            "type":  "access",
+            "exp":   datetime.now(timezone.utc) + timedelta(hours=24)
+        }, Config.SECRET_KEY, algorithm="HS256")
+
+        return jsonify({
+            "token": token,
+            "user": {
+                "id":                   str(user.get("id")) if user else "",
+                "email":                email,
+                "name":                 user.get("name", name),
+                "role":                 user.get("role", "candidate"),
+                "onboarding_completed": user.get("onboarding_completed", False),
+                "is_verified":          True,
+            }
+        }), 200
+
+    except Exception as e:
+        logging.error("Google Auth Error: " + str(e))
+        return jsonify({"error": "Google Sign-In failed. Please try again."}), 500

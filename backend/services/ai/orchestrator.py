@@ -1240,8 +1240,8 @@ class InterviewOrchestrator:
                 if next_index >= total_questions and len(answers) >= total_questions:
                     return {"done": True, "message": "Interview complete", "session_id": session_id}
 
-                # If next question is already generated in questions list and has not been answered
-                if next_index < len(questions) and len(answers) < next_index:
+                # If next question is already available in the pre-generated questions list
+                if next_index < len(questions):
                     return {"question": questions[next_index], "index": next_index, "done": False}
 
                 # ── DYNAMIC ADAPTIVE QUESTION GENERATION ───────────────

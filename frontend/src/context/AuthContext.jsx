@@ -113,6 +113,33 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = async (googlePayload) => {
+    setSubmitting(true);
+    try {
+      const response = await fetch(`${API_URL}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(googlePayload)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('token', data.token);
+        setSubmitting(false);
+        return { success: true, user: data.user };
+      } else {
+        setSubmitting(false);
+        return { success: false, message: data.error || "Google Sign-In failed." };
+      }
+    } catch (error) {
+      setSubmitting(false);
+      return { success: false, message: "Connection error. Please try again." };
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
@@ -130,6 +157,7 @@ export const AuthProvider = ({ children }) => {
     // Keep legacy 'loading' alias so nothing else breaks
     loading: authLoading,
     login,
+    loginWithGoogle,
     signup,
     logout,
     updateUserData,

@@ -176,6 +176,7 @@ const InterviewLive = () => {
 
     const finalAnswer = userAnswer.trim() || 'No answer provided.';
     setSubmitting(true);
+    setLoadingNext(true);
 
     const voiceMetrics = defaultVoiceEngine.computeMetrics(finalAnswer);
     const cameraMetrics = defaultCameraEngine.getSummary();
@@ -194,20 +195,20 @@ const InterviewLive = () => {
     };
 
     try {
-      const evalResponse = await api.submitAnswer(payload);
-      const updatedHistory = [
-        ...sessionHistory,
-        {
-          question: question.question || question.description || question.title,
-          answer: finalAnswer,
-          feedback: evalResponse,
-          voice_metrics: voiceMetrics,
-          camera_metrics: cameraMetrics,
-        },
-      ];
-      setSessionHistory(updatedHistory);
-
       if (questionIndex >= MAX_QUESTIONS) {
+        // Last question: finish evaluation then navigate to final report
+        const evalResponse = await api.submitAnswer(payload);
+        const updatedHistory = [
+          ...sessionHistory,
+          {
+            question: question.question || question.description || question.title,
+            answer: finalAnswer,
+            feedback: evalResponse?.feedback || evalResponse,
+            voice_metrics: voiceMetrics,
+            camera_metrics: cameraMetrics,
+          },
+        ];
+        setSessionHistory(updatedHistory);
         navigate('/interview/report', {
           state: {
             history: updatedHistory,
@@ -218,26 +219,59 @@ const InterviewLive = () => {
         return;
       }
 
-      // Fetch next adaptive question
-      setLoadingNext(true);
-      const nextResponse = await api.client.post('/api/interview/next', {
-        session_id: sessionId,
-        previous_answer: finalAnswer,
-        feedback: evalResponse,
-        current_question_index: questionIndex,
-      });
+      // Execute answer evaluation and fetching next question in parallel
+      const [evalResult, nextResult] = await Promise.allSettled([
+        api.submitAnswer(payload),
+        api.getNextQuestion({
+          session_id: sessionId,
+          current_index: questionIndex - 1,
+          current_question_index: questionIndex - 1,
+          previous_answer: finalAnswer,
+        }),
+      ]);
 
-      if (nextResponse.data && nextResponse.data.question) {
-        const nextQ = nextResponse.data.question;
+      let evalFeedback = {};
+      if (evalResult.status === 'fulfilled') {
+        evalFeedback = evalResult.value?.feedback || evalResult.value || {};
+      } else {
+        console.warn('Background evaluation warning:', evalResult.reason);
+      }
+
+      const updatedHistory = [
+        ...sessionHistory,
+        {
+          question: question.question || question.description || question.title,
+          answer: finalAnswer,
+          feedback: evalFeedback,
+          voice_metrics: voiceMetrics,
+          camera_metrics: cameraMetrics,
+        },
+      ];
+      setSessionHistory(updatedHistory);
+
+      let nextQ = null;
+      if (nextResult.status === 'fulfilled' && nextResult.value) {
+        nextQ = nextResult.value.question || nextResult.value.data?.question;
+      }
+
+      if (nextQ) {
         setQuestion(nextQ);
         setQuestionIndex((prev) => prev + 1);
         setUserAnswer('');
         const qText = nextQ.question || nextQ.description || nextQ.title;
         if (qText) speakText(qText);
+      } else {
+        // If index target reached or completed
+        navigate('/interview/report', {
+          state: {
+            history: updatedHistory,
+            config: config,
+            session_id: sessionId,
+          },
+        });
       }
     } catch (err) {
       console.error('Answer submission error:', err);
-      alert('Answer recorded. Advancing session.');
     } finally {
       setSubmitting(false);
       setLoadingNext(false);

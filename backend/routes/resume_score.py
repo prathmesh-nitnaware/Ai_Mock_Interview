@@ -49,7 +49,9 @@ def score_resume(current_user):
         if ext == ".pdf" and not file_bytes.startswith(b"%PDF-"):
             return jsonify({"error": "Invalid PDF file structure."}), 400
 
-        job_role = str(request.form.get("job_description", "Software Engineer"))[:100]
+        raw_jd = str(request.form.get("job_description") or request.form.get("jd") or "").strip()
+        target_role = str(request.form.get("role") or request.form.get("target_role") or "Software Engineer")[:100]
+        job_description = raw_jd[:4000]
 
         with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as tmp_file:
             tmp_path = tmp_file.name
@@ -61,7 +63,11 @@ def score_resume(current_user):
             if os.path.exists(tmp_path):
                 os.remove(tmp_path)
 
-        prompt = build_resume_analysis_prompt(job_role=job_role, resume_text=resume_text)
+        prompt = build_resume_analysis_prompt(
+            resume_text=resume_text,
+            target_role=target_role,
+            job_description=job_description
+        )
 
         try:
             ai_res = gemini_service.execute_structured_request(
@@ -76,7 +82,7 @@ def score_resume(current_user):
             result_data = {
                 "score": 75,
                 "improvement_tips": ["Include more quantifiable metrics", "Highlight core architecture tools"],
-                "summary": f"Resume parsed and aligned with {job_role} requirements.",
+                "summary": f"Resume parsed and aligned with {target_role} requirements.",
                 "missing_keywords": ["System Design", "Cloud Infrastructure", "CI/CD"],
                 "strengths": ["Clear technical foundation", "Standard readable layout"],
                 "weaknesses": ["Impact metrics could be more prominent"],
@@ -92,8 +98,8 @@ def score_resume(current_user):
                     """,
                     (
                         str(current_user["id"]),
-                        job_role,
-                        result_data.get("score"),
+                        target_role,
+                        result_data.get("score") or result_data.get("ats_score", 75),
                         result_data.get("summary"),
                     )
                 )

@@ -315,3 +315,52 @@
     display: none;
   }
 }
+
+/* ── GOOGLE SIGN-IN BUTTON & DIVIDER ────────────────────── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.25rem 0;
+}
+
+.auth-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.auth-divider-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6a6a7c;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-google-auth {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.65rem 1rem;
+  background: #181822;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #ededf2;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-google-auth:hover {
+  background: #222230;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.google-icon-svg {
+  width: 18px;
+  height: 18px;
+}

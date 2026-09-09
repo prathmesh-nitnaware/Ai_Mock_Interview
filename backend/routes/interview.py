@@ -143,7 +143,7 @@ def next_question(current_user):
             return jsonify({"error": "Missing or malformed JSON body"}), 400
 
         session_id = data.get("session_id")
-        current_index = int(data.get("current_index", 0))
+        current_index = int(data.get("current_index", data.get("current_question_index", 0)))
         user_id = str(current_user["id"])
 
         if not session_id:
