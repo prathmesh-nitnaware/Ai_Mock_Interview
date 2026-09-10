@@ -5,7 +5,8 @@
    Premium deep-dark palette with violet/indigo/cyan accents
    ============================================================ */
 
-:root {
+:root,
+[data-theme="dark"] {
   /* ── BACKGROUNDS ─────────────────────────────────────────── */
   --color-bg-base:          #0b0b0f;        /* calm, neutral deep-dark */
   --color-bg-surface:       #121218;        /* subtle panel surface */
@@ -27,7 +28,33 @@
   --color-text-secondary:   #9494a8;
   --color-text-tertiary:    #6a6a7c;
   --color-text-inverse:     #0b0b0f;
+}
 
+[data-theme="light"] {
+  /* ── BACKGROUNDS ─────────────────────────────────────────── */
+  --color-bg-base:          #f8fafc;
+  --color-bg-surface:       #ffffff;
+  --color-bg-surface-hover: #f1f5f9;
+  --color-bg-card:          #ffffff;
+  --color-bg-card-hover:    #f8fafc;
+  --color-bg-elevated:      #ffffff;
+  --color-bg-input:         #ffffff;
+  --color-bg-input-focus:   #f8fafc;
+
+  /* ── BORDERS ─────────────────────────────────────────────── */
+  --color-border:           #e2e8f0;
+  --color-border-hover:     #cbd5e1;
+  --color-border-focus:     rgba(124, 92, 252, 0.5);
+  --color-border-accent:    rgba(124, 92, 252, 0.3);
+
+  /* ── TEXT ────────────────────────────────────────────────── */
+  --color-text-primary:     #0f172a;
+  --color-text-secondary:   #475569;
+  --color-text-tertiary:    #64748b;
+  --color-text-inverse:     #ffffff;
+}
+
+:root {
   /* ── BRAND / ACCENT SYSTEM ───────────────────────────────── */
   --color-primary:          #7c5cfc;        /* restrained violet */
   --color-primary-hover:    #6d4be2;
@@ -142,8 +169,8 @@ html {
 
 html, body {
   font-family: var(--font-family-base);
-  background-color: var(--color-bg-base);
-  color: var(--color-text-primary);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -162,7 +189,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: var(--space-4);
   letter-spacing: -0.02em;
-  color: var(--color-text-primary) !important;
+  color: var(--text-primary);
   line-height: 1.2;
 }
 

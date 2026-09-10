@@ -108,9 +108,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(124,58,237,0.12);
-  border: 1px solid rgba(124,58,237,0.3);
-  color: #a78bfa;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
   padding: 6px 16px;
   border-radius: 100px;
   font-size: 0.75rem;
@@ -164,9 +164,9 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #7c5cfc;
+  background: var(--accent);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -174,11 +174,11 @@
   text-decoration: none;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 2px 10px rgba(124, 92, 252, 0.25);
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.25);
 }
 .btn-hero-primary:hover {
-  background: #6d4be2;
-  box-shadow: 0 4px 16px rgba(124, 92, 252, 0.35);
+  background: var(--accent-hover);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
   transform: translateY(-1px);
 }
 
@@ -187,9 +187,9 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #181820;
-  color: #d1d1e0;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -199,9 +199,9 @@
   transition: all 0.15s ease;
 }
 .btn-hero-secondary:hover {
-  background: #20202a;
-  border-color: rgba(255, 255, 255, 0.16);
-  color: #ffffff;
+  background: var(--bg-card-hover);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
   transform: translateY(-1px);
 }
 
@@ -479,8 +479,9 @@
   font-family: var(--font-main);
   font-weight: 600;
   letter-spacing: 0.03em;
-  background: rgba(12,12,20,0.9);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(12px);
 }

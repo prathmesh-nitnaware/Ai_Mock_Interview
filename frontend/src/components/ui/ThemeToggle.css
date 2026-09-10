@@ -1,25 +1,30 @@
 .theme-toggle-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
   background: var(--bg-card);
   border: 1px solid var(--border-default);
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   font-size: 0.8rem;
   font-weight: 600;
+  font-family: var(--font-main);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
   backdrop-filter: blur(8px);
+  text-decoration: none !important;
+  line-height: 1;
+  box-shadow: var(--shadow-sm);
 }
 
 .theme-toggle-btn:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-strong);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .theme-toggle-icon-wrap {
@@ -27,6 +32,13 @@
   align-items: center;
   justify-content: center;
   color: var(--accent);
+}
+
+.theme-toggle-label {
+  line-height: 1;
+  text-decoration: none !important;
+  color: var(--text-primary) !important;
+  white-space: nowrap;
 }
 
 .sun-icon {

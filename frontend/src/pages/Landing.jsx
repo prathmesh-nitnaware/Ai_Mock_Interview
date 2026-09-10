@@ -72,7 +72,6 @@ const Landing = () => {
             <Link to="/login" className="btn-hero-secondary">
               Sign In
             </Link>
-            <ThemeToggle className="hero-theme-toggle" />
           </div>
 
           <div className="hero-social-proof">
