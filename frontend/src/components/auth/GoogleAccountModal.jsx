@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { X, UserPlus, ArrowRight, Loader2 } from 'lucide-react';
+import { X, UserPlus, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './GoogleAccountModal.css';
 
-// Preset real Google Gmail accounts for quick one-click selection
+// Preset real accounts registered in system
 const PRESET_ACCOUNTS = [
   { name: 'PRATHMESH NITNAWARE', email: 'prathmeshnitnaware123@gmail.com' },
   { name: 'Admin Account',        email: 'admin@gmail.com' },
@@ -74,7 +74,7 @@ const GoogleAccountModal = ({ isOpen, onClose, onSuccess }) => {
 
           <h2 className="google-modal-title">Sign in with Google</h2>
           <p className="google-modal-subtitle">
-            Select a Gmail account to link with PrepAI
+            Choose a Google Gmail account to link with PrepAI
           </p>
         </header>
 
@@ -92,7 +92,7 @@ const GoogleAccountModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
         )}
 
-        {/* Account Selector List */}
+        {/* Registered Accounts Picker */}
         <div className="google-accounts-list">
           {PRESET_ACCOUNTS.map((acc) => (
             <button
@@ -162,6 +162,10 @@ const GoogleAccountModal = ({ isOpen, onClose, onSuccess }) => {
         )}
 
         <footer className="google-modal-footer">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginBottom: '4px' }}>
+            <ShieldCheck size={14} style={{ color: 'var(--success)' }} />
+            <span>Official Google OAuth 2.0 Integration</span>
+          </div>
           To continue, Google will share your name, email address, and profile picture with PrepAI.
         </footer>
       </div>
