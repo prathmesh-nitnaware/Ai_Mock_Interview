@@ -234,9 +234,9 @@
 /* ── FEATURES ────────────────────────────────────────────── */
 .features-section {
   padding: 100px 2rem;
-  background: linear-gradient(180deg, transparent 0%, rgba(12,12,20,0.8) 30%, rgba(12,12,20,0.8) 70%, transparent 100%);
-  border-top: 1px solid rgba(255,255,255,0.05);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: var(--gradient-brand-subtle);
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
   position: relative;
   z-index: 1;
 }
@@ -431,8 +431,8 @@
 /* ── FOOTER ──────────────────────────────────────────────── */
 .landing-footer {
   padding: 2rem;
-  background: rgba(6,6,11,0.6);
-  border-top: 1px solid rgba(255,255,255,0.05);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-default);
   position: relative;
   z-index: 1;
 }
