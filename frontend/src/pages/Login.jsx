@@ -4,10 +4,13 @@ import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, AlertCircle, Sparkles, Layers, Target, ShieldCheck } from 'lucide-react';
 import './Login.css';
 
+import GoogleAccountModal from '../components/auth/GoogleAccountModal';
+
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState(null);
-  const { login, loginWithGoogle, submitting } = useAuth();
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
+  const { login, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,29 +21,19 @@ const Login = () => {
     if (error) setError(null);
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      // Handle Google OAuth authentication
-      const result = await loginWithGoogle({
-        email: formData.email.trim() || `google_user_${Date.now()}@gmail.com`,
-        name: 'Google User',
-        google_id: `google_${Date.now()}`
-      });
-
-      if (result.success) {
-        if (result.user && result.user.role === 'admin') {
-          navigate('/admin', { replace: true });
-        } else if (result.user && result.user.onboarding_completed === false) {
-          navigate('/onboarding', { replace: true });
-        } else {
-          navigate(from, { replace: true });
-        }
-      } else {
-        setError(result.message || 'Google Sign-In failed.');
-      }
-    } catch (err) {
-      setError('Google Sign-In service unavailable.');
+  const handleGoogleSuccess = () => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    if (currentUser?.role === 'admin') {
+      navigate('/admin', { replace: true });
+    } else if (currentUser?.onboarding_completed === false) {
+      navigate('/onboarding', { replace: true });
+    } else {
+      navigate(from, { replace: true });
     }
+  };
+
+  const handleGoogleSignIn = () => {
+    setIsGoogleModalOpen(true);
   };
 
   const handleSubmit = async (e) => {
@@ -230,6 +223,12 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      <GoogleAccountModal
+        isOpen={isGoogleModalOpen}
+        onClose={() => setIsGoogleModalOpen(false)}
+        onSuccess={handleGoogleSuccess}
+      />
     </div>
   );
 };

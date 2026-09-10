@@ -4,9 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import { User, Mail, Lock, AlertCircle, Sparkles, CheckCircle2, Layers, Target, ShieldCheck } from 'lucide-react';
 import './Login.css';
 
+import GoogleAccountModal from '../components/auth/GoogleAccountModal';
+
 const Signup = () => {
   const navigate = useNavigate();
-  const { signup, loginWithGoogle, submitting } = useAuth();
+  const { signup, submitting } = useAuth();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -15,32 +17,24 @@ const Signup = () => {
     confirmPassword: '',
   });
   const [error, setError] = useState(null);
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (error) setError(null);
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const result = await loginWithGoogle({
-        email: formData.email.trim() || `google_user_${Date.now()}@gmail.com`,
-        name: formData.name.trim() || 'Google User',
-        google_id: `google_${Date.now()}`
-      });
-
-      if (result.success) {
-        if (result.user && result.user.onboarding_completed === false) {
-          navigate('/onboarding', { replace: true });
-        } else {
-          navigate('/dashboard', { replace: true });
-        }
-      } else {
-        setError(result.message || 'Google Sign-In failed.');
-      }
-    } catch (err) {
-      setError('Google Sign-In service unavailable.');
+  const handleGoogleSuccess = () => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    if (currentUser?.onboarding_completed === false) {
+      navigate('/onboarding', { replace: true });
+    } else {
+      navigate('/dashboard', { replace: true });
     }
+  };
+
+  const handleGoogleSignIn = () => {
+    setIsGoogleModalOpen(true);
   };
 
   const handleSubmit = async (e) => {
@@ -315,6 +309,12 @@ const Signup = () => {
           </div>
         </div>
       </div>
+
+      <GoogleAccountModal
+        isOpen={isGoogleModalOpen}
+        onClose={() => setIsGoogleModalOpen(false)}
+        onSuccess={handleGoogleSuccess}
+      />
     </div>
   );
 };
