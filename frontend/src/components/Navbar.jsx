@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Sparkles } from 'lucide-react';
+import ThemeToggle from './ui/ThemeToggle';
 import "./components.css";
 
 const Navbar = () => {
@@ -28,6 +29,7 @@ const Navbar = () => {
 
         {/* Nav Links */}
         <div className="nav-links-right">
+          <ThemeToggle />
           <Link to="/login" className="nav-link-ghost">Sign In</Link>
           <Link to="/signup" className="nav-cta-btn">
             Get Started

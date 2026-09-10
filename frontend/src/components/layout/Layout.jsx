@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Chatbot from '../Chatbot';
+import ThemeToggle from '../ui/ThemeToggle';
 import '../../styles/layout.css';
 
 const Layout = () => {
@@ -73,8 +74,9 @@ const Layout = () => {
         </div>
 
         <div className="header-right">
+          <ThemeToggle />
           {user?.role === 'admin' ? (
-            <button onClick={logout} className="header-logout-btn">
+            <button onClick={logout} className="header-logout-btn" title="Sign Out">
               <LogOut size={14} />
               <span>Sign Out</span>
             </button>

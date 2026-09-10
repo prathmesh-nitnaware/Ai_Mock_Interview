@@ -2,6 +2,7 @@ import React from "react";
 
 // Context Providers
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
 // Routing
 import AppRoutes from "./routes/AppRoutes";
@@ -14,11 +15,13 @@ import "./App.css";
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="app-root">
-        <AppRoutes />
-      </div>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <div className="app-root">
+          <AppRoutes />
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

@@ -19,8 +19,17 @@ def get_analytics(current_user):
 
         with get_db() as conn:
             with dict_cursor(conn) as cur:
-                # Total users (non-admin)
-                cur.execute("SELECT COUNT(*) AS total FROM users WHERE role != 'admin'")
+                # Total users (non-admin and non-test)
+                cur.execute(
+                    """
+                    SELECT COUNT(*) AS total 
+                    FROM users 
+                    WHERE role != 'admin'
+                      AND email NOT LIKE '%%@example.com'
+                      AND email NOT LIKE '%%@test.com'
+                      AND email NOT LIKE '%%@prepai.test'
+                    """
+                )
                 total_users = cur.fetchone()["total"]
 
                 # Signups per day for last 7 days
@@ -30,6 +39,9 @@ def get_analytics(current_user):
                            COUNT(*) AS users
                     FROM users
                     WHERE role != 'admin'
+                      AND email NOT LIKE '%%@example.com'
+                      AND email NOT LIKE '%%@test.com'
+                      AND email NOT LIKE '%%@prepai.test'
                       AND created_at >= %s
                     GROUP BY TO_CHAR(created_at AT TIME ZONE 'UTC', 'Dy'),
                              DATE_TRUNC('day', created_at)
@@ -72,6 +84,9 @@ def get_users(current_user):
                     LEFT JOIN interviews        i  ON i.user_id = u.id
                     LEFT JOIN coding_submissions cs ON cs.user_id = u.id
                     WHERE u.role != 'admin'
+                      AND u.email NOT LIKE '%%@example.com'
+                      AND u.email NOT LIKE '%%@test.com'
+                      AND u.email NOT LIKE '%%@prepai.test'
                     GROUP BY u.id
                     ORDER BY u.created_at DESC
                     """
