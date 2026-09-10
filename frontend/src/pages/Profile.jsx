@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { api } from '../services/api';
 import {
   User,
@@ -15,11 +16,15 @@ import {
   Shield,
   Layers,
   Sparkles,
+  Sun,
+  Moon,
+  Palette,
 } from 'lucide-react';
 import './Profile.css';
 
 const Profile = () => {
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -267,7 +272,40 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Section 2: Resume Vault */}
+          {/* Section 2: Appearance & Theme Preferences */}
+          <div className="profile-section-panel">
+            <div className="panel-header-row">
+              <h2 className="panel-heading">
+                <Palette size={16} className="panel-heading-icon" /> Appearance & Theme
+              </h2>
+              <span className="panel-subheading">Customize interface theme (Light or Dark mode)</span>
+            </div>
+
+            <div className="vault-status-box" style={{ alignItems: 'center' }}>
+              <div className="vault-info-col">
+                <div className="vault-file-name" style={{ textTransform: 'capitalize' }}>
+                  Current Theme: {theme} Mode
+                </div>
+                <p className="vault-file-desc">
+                  Switch between sleek Dark Mode and modern Executive Light Mode anytime.
+                </p>
+              </div>
+
+              <div className="vault-actions-group">
+                <button
+                  type="button"
+                  className="btn-dash-primary"
+                  onClick={toggleTheme}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                  {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+                  <span>Switch to {theme === 'dark' ? 'Light' : 'Dark'} Mode</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 3: Resume Vault */}
           <div className="profile-section-panel">
             <div className="panel-header-row">
               <h2 className="panel-heading">
@@ -287,7 +325,7 @@ const Profile = () => {
                   </>
                 ) : (
                   <>
-                    <div className="vault-file-name" style={{ color: '#8c8ca0' }}>No resume uploaded (Optional)</div>
+                    <div className="vault-file-name" style={{ color: 'var(--text-tertiary)' }}>No resume uploaded (Optional)</div>
                     <p className="vault-file-desc">
                       Resume upload is optional. Interviews are personalized from your profile and preferences, or upload a PDF to enable resume-grounded skill probing.
                     </p>
@@ -314,7 +352,7 @@ const Profile = () => {
                     className="btn-dash-outline"
                     onClick={handleResumeDelete}
                     title="Remove active resume"
-                    style={{ color: '#ef4444' }}
+                    style={{ color: 'var(--danger)' }}
                   >
                     <Trash2 size={14} /> Delete
                   </button>
