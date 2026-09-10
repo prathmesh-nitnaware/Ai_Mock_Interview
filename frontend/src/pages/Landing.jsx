@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Terminal, Mic, FileText, Sparkles, UploadCloud, Cpu, LineChart, Users, Star, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ThemeToggle from '../components/ui/ThemeToggle';
 import './Landing.css';
 
 const Landing = () => {
@@ -39,6 +40,7 @@ const Landing = () => {
           PREP AI
         </div>
         <div className="nav-links">
+          <ThemeToggle />
           <Link to="/login" className="nav-link-login">Sign In</Link>
           <Link to="/signup" className="btn-hero-primary" style={{ padding: '8px 18px', fontSize: '0.875rem' }}>
             Get Started <ArrowRight size={14} />
@@ -70,6 +72,7 @@ const Landing = () => {
             <Link to="/login" className="btn-hero-secondary">
               Sign In
             </Link>
+            <ThemeToggle className="hero-theme-toggle" />
           </div>
 
           <div className="hero-social-proof">

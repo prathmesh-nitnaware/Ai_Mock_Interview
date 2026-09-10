@@ -40,11 +40,11 @@
 }
 
 .landing-nav.scrolled {
-  background: rgba(11, 11, 15, 0.92);
+  background: var(--header-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid var(--border-default);
+  box-shadow: var(--shadow-md);
 }
 
 .nav-brand {
