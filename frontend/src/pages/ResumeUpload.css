@@ -1,13 +1,13 @@
 /* ============================================================
    RESUME UPLOAD.CSS — Resume Workspace & ATS Scanner
-   Linear / GitHub inspired: Clean document upload workspace
+   Theme-aware document upload workspace
    ============================================================ */
 
 .resume-upload-page {
   min-height: calc(100vh - 64px);
-  background-color: #0b0b0f;
-  color: #ededf2;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-main);
   padding: 2.5rem 1.5rem 5rem 1.5rem;
   display: flex;
   justify-content: center;
@@ -31,9 +31,9 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(124, 92, 252, 0.12);
-  border: 1px solid rgba(124, 92, 252, 0.25);
-  color: #a78bfa;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 9px;
@@ -44,35 +44,35 @@
 .resume-upload-title {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.02em;
 }
 
 .resume-upload-subtitle {
   font-size: 0.875rem;
-  color: #8c8ca0;
+  color: var(--text-secondary);
   line-height: 1.5;
   margin: 0;
 }
 
 .resume-upload-card {
-  background: #121218;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 1.75rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-card);
 }
 
 .resume-dropzone {
   width: 100%;
   min-height: 180px;
-  border: 2px dashed rgba(255, 255, 255, 0.12);
+  border: 2px dashed var(--border-strong);
   border-radius: 9px;
-  background: #16161f;
+  background: var(--bg-input);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -84,28 +84,28 @@
 }
 
 .resume-dropzone:hover {
-  border-color: #7c5cfc;
-  background: #181824;
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
 }
 
 .dropzone-icon {
-  color: #7c5cfc;
+  color: var(--accent);
 }
 
 .dropzone-primary-text {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #ededf2;
+  color: var(--text-primary);
 }
 
 .dropzone-secondary-text {
   font-size: 0.775rem;
-  color: #727285;
+  color: var(--text-tertiary);
 }
 
 .file-selected-box {
-  background: #16161f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 1rem 1.25rem;
   display: flex;
@@ -123,18 +123,18 @@
 .file-name-text {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .file-size-text {
   font-size: 0.75rem;
-  color: #727285;
+  color: var(--text-tertiary);
 }
 
 .remove-file-btn {
   background: transparent;
   border: none;
-  color: #8c8ca0;
+  color: var(--text-secondary);
   cursor: pointer;
   padding: 4px;
   border-radius: 5px;
@@ -145,8 +145,8 @@
 }
 
 .remove-file-btn:hover {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  background: var(--danger-subtle);
 }
 
 .btn-analyze-resume {
@@ -155,19 +155,20 @@
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: 8px;
-  background: #7c5cfc;
+  background: var(--accent);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
 }
 
 .btn-analyze-resume:hover:not(:disabled) {
-  background: #6d4be2;
+  background: var(--accent-hover);
 }
 
 .btn-analyze-resume:disabled {
@@ -176,9 +177,9 @@
 }
 
 .resume-error-banner {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  color: #f87171;
+  background: var(--danger-subtle);
+  border: 1px solid var(--danger);
+  color: var(--danger);
   font-size: 0.8125rem;
   font-weight: 500;
   padding: 0.65rem 0.85rem;

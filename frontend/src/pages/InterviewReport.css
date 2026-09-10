@@ -1,13 +1,13 @@
 /* ============================================================
    INTERVIEW REPORT.CSS — Candidate Performance Review & Audit
-   Linear / GitHub inspired: Clean, professional evaluation report
+   Theme-aware clean evaluation report
    ============================================================ */
 
 .report-audit-page {
   min-height: calc(100vh - 64px);
-  background-color: #0b0b0f;
-  color: #ededf2;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-main);
   padding: 2rem 1.5rem 6rem 1.5rem;
   display: flex;
   justify-content: center;
@@ -33,11 +33,11 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #16161f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 0.5rem 0.95rem;
-  color: #d1d1e0;
+  color: var(--text-primary);
   font-size: 0.8125rem;
   font-weight: 600;
   text-decoration: none;
@@ -45,21 +45,21 @@
 }
 
 .report-back-link:hover {
-  background: #1e1e2c;
-  color: #ffffff;
+  background: var(--bg-card-hover);
+  border-color: var(--border-strong);
 }
 
 /* ── HERO OVERVIEW PANEL ─────────────────────────────────── */
 .report-hero-panel {
-  background: #121218;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 1.75rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-sm);
 }
 
 .report-hero-meta {
@@ -72,9 +72,9 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(124, 92, 252, 0.12);
-  border: 1px solid rgba(124, 92, 252, 0.25);
-  color: #a78bfa;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 9px;
@@ -85,14 +85,14 @@
 .report-hero-title {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.02em;
 }
 
 .report-hero-sub {
   font-size: 0.85rem;
-  color: #8c8ca0;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -121,19 +121,20 @@
 }
 
 .pillar-panel {
-  background: #121218;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.15rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .pillar-heading {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #ededf2;
+  color: var(--text-primary);
   margin: 0;
   display: flex;
   align-items: center;
@@ -147,8 +148,8 @@
 }
 
 .score-split-card {
-  background: #16161f;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-default);
   border-radius: 9px;
   padding: 1rem;
   display: flex;
@@ -159,21 +160,21 @@
 .split-score-num {
   font-size: 1.75rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1;
 }
 
 .split-score-lbl {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #8c8ca0;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
 .split-score-desc {
   font-size: 0.75rem;
-  color: #6a6a7c;
+  color: var(--text-tertiary);
   margin-top: 4px;
 }
 
@@ -195,12 +196,12 @@
   justify-content: space-between;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #d1d1e0;
+  color: var(--text-secondary);
 }
 
 .dim-track {
   height: 6px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-card-hover);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -208,7 +209,7 @@
 .dim-fill {
   height: 100%;
   border-radius: 4px;
-  background: #7c5cfc;
+  background: var(--accent);
   transition: width 0.5s ease;
 }
 
@@ -222,19 +223,20 @@
 .section-title-bar {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.01em;
 }
 
 .question-audit-card {
-  background: #121218;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.15rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .qa-header-row {
@@ -254,22 +256,22 @@
   font-size: 0.725rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #7c5cfc;
+  color: var(--accent);
   letter-spacing: 0.04em;
 }
 
 .qa-question-text {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1.4;
   margin: 0;
 }
 
 .qa-depth-badge {
-  background: rgba(124, 92, 252, 0.12);
-  border: 1px solid rgba(124, 92, 252, 0.25);
-  color: #a78bfa;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 3px 8px;
@@ -278,12 +280,12 @@
 }
 
 .qa-response-box {
-  background: #16161f;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 0.85rem 1rem;
   font-size: 0.85rem;
-  color: #b4b4c8;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -294,8 +296,8 @@
 }
 
 .feedback-subpanel {
-  background: #16161f;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 1rem;
   display: flex;
@@ -308,7 +310,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #ededf2;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -321,7 +323,7 @@
   padding-left: 1rem;
   margin: 0;
   font-size: 0.8125rem;
-  color: #9494a8;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -334,8 +336,8 @@
 }
 
 .star-box {
-  background: #16161f;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-default);
   border-radius: 7px;
   padding: 0.55rem;
   text-align: center;
@@ -348,13 +350,13 @@
 }
 
 .star-box.met {
-  color: #34d399;
-  border-color: rgba(16, 185, 129, 0.25);
-  background: rgba(16, 185, 129, 0.08);
+  color: var(--success);
+  border-color: var(--success);
+  background: var(--success-subtle);
 }
 
 .star-box.missing {
-  color: #727285;
+  color: var(--text-tertiary);
 }
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */

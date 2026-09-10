@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ThemeToggle from '../components/ui/ThemeToggle';
 import {
   ArrowRight,
   ArrowLeft,
@@ -115,8 +116,11 @@ const Onboarding = () => {
           <div className="onboarding-brand-icon">P</div>
           <span>PREP AI</span>
         </div>
-        <div className="onboarding-step-counter">
-          Step {step} of 3
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <ThemeToggle />
+          <div className="onboarding-step-counter">
+            Step {step} of 3
+          </div>
         </div>
       </header>
 
@@ -167,7 +171,7 @@ const Onboarding = () => {
             <>
               <div className="question-meta-row">
                 <span className="question-step-badge">STEP 01</span>
-                <GraduationCap size={16} style={{ color: '#7c5cfc' }} />
+                <GraduationCap size={16} style={{ color: 'var(--accent)' }} />
               </div>
 
               <div>
@@ -204,7 +208,7 @@ const Onboarding = () => {
             <>
               <div className="question-meta-row">
                 <span className="question-step-badge">STEP 02</span>
-                <Briefcase size={16} style={{ color: '#7c5cfc' }} />
+                <Briefcase size={16} style={{ color: 'var(--accent)' }} />
               </div>
 
               <div>
@@ -241,7 +245,7 @@ const Onboarding = () => {
             <>
               <div className="question-meta-row">
                 <span className="question-step-badge">STEP 03</span>
-                <Target size={16} style={{ color: '#7c5cfc' }} />
+                <Target size={16} style={{ color: 'var(--accent)' }} />
               </div>
 
               <div>

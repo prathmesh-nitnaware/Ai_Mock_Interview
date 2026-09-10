@@ -5,9 +5,9 @@
 
 .interview-setup-page {
   min-height: calc(100vh - 64px);
-  background-color: #0b0b0f;
-  color: #ededf2;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-main);
   padding: 2.5rem 1.5rem 5rem 1.5rem;
   display: flex;
   justify-content: center;
@@ -33,9 +33,9 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(124, 92, 252, 0.12);
-  border: 1px solid rgba(124, 92, 252, 0.25);
-  color: #a78bfa;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 9px;
@@ -46,7 +46,7 @@
 .setup-hero-title {
   font-size: 1.75rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -54,19 +54,20 @@
 
 .setup-hero-desc {
   font-size: 0.875rem;
-  color: #8c8ca0;
+  color: var(--text-secondary);
   line-height: 1.55;
   margin: 0.5rem 0 0 0;
 }
 
 .stage-progression-card {
-  background: #121218;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 1.25rem 1.35rem;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .stage-card-title {
@@ -74,7 +75,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #a0a0b5;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -89,15 +90,15 @@
   align-items: center;
   gap: 0.75rem;
   font-size: 0.8125rem;
-  color: #d1d1e0;
+  color: var(--text-primary);
 }
 
 .stage-num-badge {
   width: 20px;
   height: 20px;
   border-radius: 5px;
-  background: rgba(124, 92, 252, 0.15);
-  color: #a78bfa;
+  background: var(--accent-subtle);
+  color: var(--accent);
   font-size: 0.7rem;
   font-weight: 700;
   display: flex;
@@ -107,8 +108,8 @@
 }
 
 .resume-sync-status-box {
-  background: #16161f;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-default);
   border-radius: 9px;
   padding: 0.85rem 1.1rem;
   display: flex;
@@ -119,20 +120,20 @@
 
 /* ── RIGHT COLUMN: CONFIGURATION CARD ────────────────────── */
 .setup-config-card {
-  background: #121218;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-md);
 }
 
 .config-card-title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -148,7 +149,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #a0a0b5;
+  color: var(--text-secondary);
 }
 
 .button-chip-grid {
@@ -158,11 +159,11 @@
 }
 
 .config-chip-btn {
-  background: #16161f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 0.65rem 0.5rem;
-  color: #8c8ca0;
+  color: var(--text-secondary);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -175,15 +176,15 @@
 }
 
 .config-chip-btn:hover {
-  background: #1c1c28;
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.14);
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
 }
 
 .config-chip-btn.active {
-  background: rgba(124, 92, 252, 0.15);
-  border-color: #7c5cfc;
-  color: #ffffff;
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .btn-launch-interview {
@@ -192,9 +193,9 @@
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: 8px;
-  background: #7c5cfc;
+  background: var(--accent);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.15s ease;
   display: flex;
@@ -205,7 +206,7 @@
 }
 
 .btn-launch-interview:hover:not(:disabled) {
-  background: #6d4be2;
+  background: var(--accent-hover);
 }
 
 .btn-launch-interview:disabled {
